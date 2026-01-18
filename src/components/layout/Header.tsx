@@ -30,9 +30,9 @@ const Header = () => {
           <div className="flex items-center gap-4">
             <NavbarButton variant="secondary">Contact</NavbarButton>
             <NavbarButton variant="primary">Join Now</NavbarButton>
-           <div className="relative z-10">
+           {/* <div className="relative z-10">
              <ModeToggle />
-           </div>
+           </div> */}
           </div>
         </NavBody>
  

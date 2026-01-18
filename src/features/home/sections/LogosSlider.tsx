@@ -120,7 +120,7 @@ const LogoSliderRow = ({ logos, direction = 'left', duration = 30 }: LogoSliderR
               alt={logo.alt}
               width={logo.width || 48}
               height={logo.height || 48}
-              className="h-12 w-12 object-contain opacity-70 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
+              className="h-12 w-12 object-contain opacity-70 transition-all duration-300 hover:opacity-100 hover:grayscale-0"
             />
           </div>
         ))}
