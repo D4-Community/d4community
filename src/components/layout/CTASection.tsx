@@ -62,7 +62,7 @@ export function CTASection() {
                 className="bg-white dark:bg-black text-black dark:text-white hover:bg-white/90 dark:hover:bg-black/90 font-semibold px-8 py-6 text-lg rounded-full shadow-lg transition-all duration-300 group"
               >
                 <Users className="w-5 h-5 mr-2" />
-                Join Whatsapp Community
+                Join Community
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
