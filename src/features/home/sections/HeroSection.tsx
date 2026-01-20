@@ -200,7 +200,7 @@ const HeroSection = () => {
     <div className="relative overflow-hidden w-full -mt-18 pt-12">
       <BackgroundRippleEffect  />
       <div className="container mx-auto relative">
-        <div className="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col">
+        <div className="flex gap-8 py-36 lg:py-40 items-center justify-center flex-col">
           <div className="relative z-10">
             <Button variant="secondary" size="sm" className="gap-4">
               View our upcoming events
