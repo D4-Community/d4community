@@ -1176,7 +1176,7 @@ export const Footer = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-transparent to-background z-10 from-40%" />
         <div className="absolute inset-0">
           <FlickeringGrid
-            text={tablet ? "D4" : "Discrete Develop Debug Deploy"}
+            text={tablet ? "D4" : "Discite Develop Debug Deploy"}
             fontSize={tablet ? 70 : 90}
             className="h-full w-full"
             squareSize={2}

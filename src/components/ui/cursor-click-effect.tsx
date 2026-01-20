@@ -3,85 +3,61 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface ClickEffect {
-  id: number;
+interface Spark {
+  id: string;
   x: number;
   y: number;
+  angle: number;
 }
 
 export function CursorClickEffect() {
-  const [clicks, setClicks] = useState<ClickEffect[]>([]);
+  const [sparks, setSparks] = useState<Spark[]>([]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      const newClick: ClickEffect = {
-        id: Date.now(),
+      const baseId = Date.now();
+
+      const burst: Spark[] = Array.from({ length: 8 }).map((_, i) => ({
+        id: `${baseId}-${i}`,
         x: e.clientX,
         y: e.clientY,
-      };
+        angle: i * 45,
+      }));
 
-      setClicks((prev) => [...prev, newClick]);
+      setSparks((prev) => [...prev, ...burst]);
 
-      // Remove the click effect after animation completes
       setTimeout(() => {
-        setClicks((prev) => prev.filter((click) => click.id !== newClick.id));
-      }, 600);
+        setSparks((prev) =>
+          prev.filter((s) => !s.id.startsWith(baseId.toString()))
+        );
+      }, 450);
     };
 
     window.addEventListener("click", handleClick);
-
-    return () => {
-      window.removeEventListener("click", handleClick);
-    };
+    return () => window.removeEventListener("click", handleClick);
   }, []);
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-9999 overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-[9999]">
       <AnimatePresence>
-        {clicks.map((click) => (
+        {sparks.map((spark) => (
           <motion.div
-            key={click.id}
-            initial={{ scale: 0, opacity: 1 }}
-            animate={{ scale: 1, opacity: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="absolute"
-            style={{
-              left: click.x,
-              top: click.y,
-              transform: "translate(-50%, -50%)",
+            key={spark.id}
+            initial={{ width: 0, opacity: 1 }}
+            animate={{
+              width: [0, 22, 0],
+              opacity: [1, 1, 0],
+              x: Math.cos((spark.angle * Math.PI) / 180) * 40,
+              y: Math.sin((spark.angle * Math.PI) / 180) * 40,
             }}
-          >
-            {/* Outer ring */}
-            <motion.div
-              initial={{ scale: 0, opacity: 0.8 }}
-              animate={{ scale: 3, opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-yellow-700"
-            />
-            {/* Inner dot */}
-            <motion.div
-              initial={{ scale: 0, opacity: 1 }}
-              animate={{ scale: 1.5, opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow-700"
-            />
-            {/* Sparkle particles */}
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ scale: 0, x: 0, y: 0, opacity: 1 }}
-                animate={{
-                  scale: [0, 2, 0],
-                  x: Math.cos((i * 60 * Math.PI) / 180) * 30,
-                  y: Math.sin((i * 60 * Math.PI) / 180) * 30,
-                  opacity: [1, 1, 0],
-                }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="absolute h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow-400"
-              />
-            ))}
-          </motion.div>
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="absolute h-[3px] rounded-full  bg-[#fc9663]  origin-left"
+            style={{
+              left: spark.x,
+              top: spark.y,
+              rotate: `${spark.angle}deg`,
+            }}
+          />
         ))}
       </AnimatePresence>
     </div>

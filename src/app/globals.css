@@ -142,3 +142,8 @@
     }
   }
 }
+
+.event-image {
+  padding: 15px;
+  border-radius: 1.75rem;
+}

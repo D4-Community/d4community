@@ -30,7 +30,7 @@ const features = [
 
 const FeatureSection = () => {
   return (
-    <section className="py-16 md:py-32">
+    <section className="py-8 md:py-20">
       <div className="mx-auto w-full max-w-5xl space-y-8 px-4">
         <AnimatedContainer className="mx-auto text-center">
           <h2 className="text-3xl font-bold tracking-wide text-balance md:text-4xl lg:text-5xl xl:font-extrabold">

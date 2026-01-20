@@ -1,86 +1,83 @@
-'use client'
+"use client";
+
 import { useState } from "react";
-import { MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle, Navbar, NavbarButton, NavbarLogo, NavBody, NavItems } from "../ui/navbar"
-import { ModeToggle } from "../ui/theme-toggle";
+import {
+  MobileNav,
+  MobileNavHeader,
+  MobileNavMenu,
+  MobileNavToggle,
+  Navbar,
+  NavbarButton,
+  NavbarLogo,
+  NavBody,
+  NavItems,
+  ThemeToggle,
+} from "../ui/navbar";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const navItems = [
-    {
-      name: "Team",
-      link: "#team",
-    },
-    {
-      name: "About",
-      link: "#about",
-    },
-    {
-      name: "Events",
-      link: "#events",
-    },
+    { name: "Team", link: "#team" },
+    { name: "About", link: "#about" },
+    { name: "Events", link: "#events" },
   ];
- 
+
   return (
-    <>
     <Navbar>
-       {/* Desktop Navigation */}
-        <NavBody>
+      {/* Desktop */}
+      <NavBody>
+        <NavbarLogo />
+        <NavItems items={navItems} />
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+          <NavbarButton variant="secondary">Contact</NavbarButton>
+          <NavbarButton variant="primary">Join Now</NavbarButton>
+        </div>
+      </NavBody>
+
+      {/* Mobile */}
+      <MobileNav>
+        <MobileNavHeader>
           <NavbarLogo />
-          <NavItems items={navItems} />
-          <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">Contact</NavbarButton>
-            <NavbarButton variant="primary">Join Now</NavbarButton>
-           {/* <div className="relative z-10">
-             <ModeToggle />
-           </div> */}
-          </div>
-        </NavBody>
- 
-        {/* Mobile Navigation */}
-        <MobileNav>
-          <MobileNavHeader>
-            <NavbarLogo />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <MobileNavToggle
               isOpen={isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             />
-          </MobileNavHeader>
- 
-          <MobileNavMenu
-            isOpen={isMobileMenuOpen}
-            onClose={() => setIsMobileMenuOpen(false)}
-          >
+          </div>
+        </MobileNavHeader>
+
+        <MobileNavMenu 
+          isOpen={isMobileMenuOpen} 
+          onClose={() => setIsMobileMenuOpen(false)}
+        >
+          <div className="flex flex-col space-y-4">
             {navItems.map((item, idx) => (
               <a
-                key={`mobile-link-${idx}`}
+                key={idx}
                 href={item.link}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="relative text-neutral-600 dark:text-neutral-300"
+                className="text-lg font-medium text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white"
               >
-                <span className="block">{item.name}</span>
+                {item.name}
               </a>
             ))}
-            <div className="flex w-full flex-col gap-4">
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Join Now
-              </NavbarButton>
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Contact
-              </NavbarButton>
-            </div>
-          </MobileNavMenu>
-        </MobileNav>
-    </Navbar>
-    </>
-  )
-}
+          </div>
 
-export default Header
+          <div className="mt-6 flex flex-col gap-3 border-t border-neutral-100 pt-6 dark:border-neutral-800">
+            <NavbarButton className="w-full text-center" variant="primary">
+              Join Now
+            </NavbarButton>
+            <NavbarButton className="w-full text-center" variant="secondary">
+              Contact
+            </NavbarButton>
+          </div>
+        </MobileNavMenu>
+      </MobileNav>
+    </Navbar>
+  );
+};
+
+export default Header;
