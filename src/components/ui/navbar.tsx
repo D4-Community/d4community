@@ -16,8 +16,7 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import React, { useRef, useState, useEffect } from "react";
-
-/* ===================== TYPES ===================== */
+import Link from "next/link";
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -126,7 +125,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
       )}
     >
       {items.map((item, idx) => (
-        <a
+        <Link
           key={idx}
           href={item.link}
           onMouseEnter={() => setHovered(idx)}
@@ -140,7 +139,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
             />
           )}
           <span className="relative z-10">{item.name}</span>
-        </a>
+        </Link>
       ))}
     </div>
   );
@@ -218,7 +217,7 @@ export const NavbarLogo = () => {
   }, []);
 
   return (
-    <a href="#" className="flex items-center">
+    <Link href="#" className="flex items-center">
       <Image
         src={isDark ? "/d4logo.webp" : "/d4logo_black.png"}
         alt="D4 Logo"
@@ -226,7 +225,7 @@ export const NavbarLogo = () => {
         height={30}
         priority
       />
-    </a>
+    </Link>
   );
 };
 

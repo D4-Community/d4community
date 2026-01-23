@@ -13,6 +13,7 @@ import {
   NavItems,
   ThemeToggle,
 } from "../ui/navbar";
+import Link from "next/link";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -55,14 +56,14 @@ const Header = () => {
         >
           <div className="flex flex-col space-y-4">
             {navItems.map((item, idx) => (
-              <a
+              <Link
                 key={idx}
                 href={item.link}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-lg font-medium text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
 

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 
 /* ===================== FAQ DATA ===================== */
 const faqs = [
@@ -143,12 +144,12 @@ export default function FAQPage() {
         <div className="mt-16 text-center">
           <p className="text-sm text-muted-foreground">
             Still have questions?{" "}
-            <a
+            <Link
               href="#contact"
               className="font-bold text-primary underline-offset-4 hover:underline"
             >
               Contact our team
-            </a>
+            </Link>
           </p>
         </div>
       </div>
