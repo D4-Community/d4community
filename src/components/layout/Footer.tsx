@@ -1096,30 +1096,30 @@ export const siteConfig = {
     {
       title: "Company",
       links: [
-        { id: 1, title: "About", url: "#" },
-        { id: 2, title: "Contact", url: "#" },
-        { id: 3, title: "Blog", url: "#" },
-        { id: 4, title: "Story", url: "#" },
+        { id: 1, title: "About", url: "/about" },
+        { id: 2, title: "Contact", url: "/contact" },
+        { id: 3, title: "Team", url: "/team" },
+        { id: 4, title: "Events", url: "/events" },
       ],
     },
-    {
-      title: "Products",
-      links: [
-        { id: 5, title: "Company", url: "#" },
-        { id: 6, title: "Product", url: "#" },
-        { id: 7, title: "Press", url: "#" },
-        { id: 8, title: "More", url: "#" },
-      ],
-    },
-    {
-      title: "Resources",
-      links: [
-        { id: 9, title: "Press", url: "#" },
-        { id: 10, title: "Careers", url: "#" },
-        { id: 11, title: "Newsletters", url: "#" },
-        { id: 12, title: "More", url: "#" },
-      ],
-    },
+    // {
+    //   title: "Products",
+    //   links: [
+    //     { id: 5, title: "Company", url: "#" },
+    //     { id: 6, title: "Product", url: "#" },
+    //     { id: 7, title: "Press", url: "#" },
+    //     { id: 8, title: "More", url: "#" },
+    //   ],
+    // },
+    // {
+    //   title: "Resources",
+    //   links: [
+    //     { id: 9, title: "Press", url: "#" },
+    //     { id: 10, title: "Careers", url: "#" },
+    //     { id: 11, title: "Newsletters", url: "#" },
+    //     { id: 12, title: "More", url: "#" },
+    //   ],
+    // },
   ],
 };
 
@@ -1129,7 +1129,7 @@ export const Footer = () => {
   const tablet = useMediaQuery("(max-width: 1024px)");
 
   return (
-    <footer id="footer" className="sticky bottom-0 w-full pb-0 bg-background pt-28 md:pt-4">
+    <footer id="footer" className="lg:sticky bottom-0 w-full pb-0 bg-background pt-28 md:pt-4">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between p-4">
         <div className="flex flex-col items-start justify-start gap-y-5 max-w-xs mx-0">
           <Link href="/" className="flex items-center gap-2">
@@ -1138,19 +1138,9 @@ export const Footer = () => {
           <p className="tracking-tight text-muted-foreground font-medium">
             {siteConfig.hero.description}
           </p>
-          {/* <div className="flex items-center gap-2 dark:hidden">
-            <Icons.soc2 className="size-12" />
-            <Icons.hipaa className="size-12" />
-            <Icons.gdpr className="size-12" />
-          </div>
-          <div className="dark:flex items-center gap-2 hidden">
-            <Icons.soc2Dark className="size-12" />
-            <Icons.hipaaDark className="size-12" />
-            <Icons.gdprDark className="size-12" />
-          </div> */}
         </div>
         <div className="pt-5 md:w-1/2">
-          <div className="flex flex-col items-start justify-start md:flex-row md:items-center md:justify-between gap-y-5 lg:pl-10">
+          <div className="flex flex-col items-start justify-start md:flex-row md:items-center md:justify-end gap-y-5 lg:pl-10">
             {siteConfig.footerLinks.map((column, columnIndex) => (
               <ul key={columnIndex} className="flex flex-col gap-y-2">
                 <li className="mb-2 text-sm font-semibold text-primary">

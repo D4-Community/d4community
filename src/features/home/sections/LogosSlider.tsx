@@ -22,7 +22,6 @@ const programmingLanguages: Logo[] = [
 
 const technologies: Logo[] = [
   { src: "https://svgl.app/library/nextjs_icon_dark.svg", alt: "Next.js" },
-  { src: "https://svgl.app/library/react.svg", alt: "React" },
   { src: "https://svgl.app/library/vue.svg", alt: "Vue.js" },
   { src: "https://svgl.app/library/angular.svg", alt: "Angular" },
   { src: "https://svgl.app/library/nodejs.svg", alt: "Node.js" },
@@ -35,10 +34,8 @@ const tools: Logo[] = [
   { src: "https://svgl.app/library/vscode.svg", alt: "VS Code" },
   { src: "https://svgl.app/library/git.svg", alt: "Git" },
   { src: "https://svgl.app/library/figma.svg", alt: "Figma" },
-  { src: "https://svgl.app/library/aws.svg", alt: "AWS" },
   { src: "https://svgl.app/library/vercel_dark.svg", alt: "Vercel" },
   { src: "https://svgl.app/library/firebase.svg", alt: "Firebase" },
-  { src: "https://svgl.app/library/mongodb.svg", alt: "MongoDB" },
   { src: "https://svgl.app/library/redis.svg", alt: "Redis" },
 ];
 
