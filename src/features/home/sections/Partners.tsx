@@ -19,15 +19,21 @@ const PARTNERS: Partner[] = [
     description: "Partner",
   },
   {
-    id: "mug-chd",
-    name: "MUG CHD",
-    logo: "/images/partners/MUG CHD.png",
+    id: "osen",
+    name: "OSEN",
+    logo: "/images/partners/osen.png",
     description: "Partner",
   },
   {
-    id: "open-source-chandigarh",
-    name: "Open Source Chandigarh",
-    logo: "/images/partners/Open Source Chandigarh.png",
+    id: "requestly",
+    name: "Requestly",
+    logo: "/images/partners/requestly.png",
+    description: "Partner",
+  },
+  {
+    id: "bharatxr",
+    name: "BharatXR",
+    logo: "/images/partners/bharatxr.png",
     description: "Partner",
   },
   {
