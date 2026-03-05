@@ -19,10 +19,10 @@ export default function AnimatedContainer({
 
   return (
     <motion.div
-      initial={{ filter: "blur(4px)", translateY: -8, opacity: 0 }}
-      whileInView={{ filter: "blur(0px)", translateY: 0, opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ delay, duration: 0.8 }}
+      initial={{ translateY: -8, opacity: 0 }}
+      whileInView={{ translateY: 0, opacity: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ delay, duration: 0.5, ease: "easeOut" }}
       className={className}
     >
       {children}

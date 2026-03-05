@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { motion, useInView } from 'framer-motion';
-import Image from 'next/image';
-import React, { useRef, useState } from 'react';
+import { motion, useInView } from "framer-motion";
+import Image from "next/image";
+import React, { useRef, useState } from "react";
 
 type Logo = {
   src: string;
@@ -41,14 +41,14 @@ const tools: Logo[] = [
 
 interface LogoSliderRowProps {
   logos: Logo[];
-  direction?: 'left' | 'right';
+  direction?: "left" | "right";
   duration?: number;
   isActive: boolean;
 }
 
 const LogoSliderRow = ({
   logos,
-  direction = 'left',
+  direction = "left",
   duration = 60,
   isActive,
 }: LogoSliderRowProps) => {
@@ -69,16 +69,16 @@ const LogoSliderRow = ({
       <div className="pointer-events-none absolute right-0 top-0 z-20 h-full w-24 bg-gradient-to-l from-background to-transparent" />
 
       <motion.div
-        className="flex w-max gap-16 md:gap-24"
+        className="flex w-max gap-16 md:gap-24 will-change-transform"
         animate={
           shouldAnimate
-            ? { x: direction === 'left' ? '-50%' : '0%' }
-            : { x: direction === 'left' ? '0%' : '-50%' }
+            ? { x: direction === "left" ? "-50%" : "0%" }
+            : { x: direction === "left" ? "0%" : "-50%" }
         }
-        initial={{ x: direction === 'left' ? '0%' : '-50%' }}
+        initial={{ x: direction === "left" ? "0%" : "-50%" }}
         transition={{
           duration,
-          ease: 'linear',
+          ease: "linear",
           repeat: shouldAnimate ? Infinity : 0,
         }}
       >
@@ -105,7 +105,7 @@ const LogosSlider = () => {
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   const isInView = useInView(sectionRef, {
-    margin: '-100px',
+    margin: "-100px",
     once: false,
   });
 
@@ -119,7 +119,8 @@ const LogosSlider = () => {
           Our Tech Stack
         </h2>
         <p className="text-muted-foreground mt-4 text-sm tracking-wide text-balance md:text-base text-center">
-          We leverage the most reliable and cutting-edge technologies to build performant digital experiences.
+          We leverage the most reliable and cutting-edge technologies to build
+          performant digital experiences.
         </p>
       </div>
 

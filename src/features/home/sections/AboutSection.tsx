@@ -115,8 +115,8 @@ const mapData = {
   ],
   leads: [
     {
-      lat: 30.7710,
-      lng: 76.5790,
+      lat: 30.771,
+      lng: 76.579,
       city: "Chandigarh",
       country: "India",
       name: "Pawan",
@@ -142,8 +142,8 @@ const mapData = {
       org: "CGC University",
     },
     {
-      lat: 31.2550,
-      lng: 75.7050,
+      lat: 31.255,
+      lng: 75.705,
       city: "Jalandhar",
       country: "India",
       name: "Gagandeep Singh",
@@ -280,7 +280,7 @@ export default function AboutSection() {
     x: number;
     y: number;
   } | null>(null);
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -437,7 +437,7 @@ export default function AboutSection() {
 
     const svg = mapContainerRef.current.querySelector("svg");
     if (!svg) return;
-    
+
     const svgRect = svg.getBoundingClientRect();
 
     // Get the transform applied to the ZoomableGroup
@@ -465,7 +465,7 @@ export default function AboutSection() {
     const x = (location.lng + 180) * (svgRect.width / 360);
     const latRad = (location.lat * Math.PI) / 180;
     const mercN = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
-    const y = (svgRect.height / 2) - (svgRect.width * mercN / (2 * Math.PI));
+    const y = svgRect.height / 2 - (svgRect.width * mercN) / (2 * Math.PI);
 
     // Apply the current transform
     const transformedX = x * transform.scale + transform.x;
@@ -473,7 +473,7 @@ export default function AboutSection() {
 
     // Get the map container's position
     const containerRect = mapContainerRef.current.getBoundingClientRect();
-    
+
     // Calculate the screen position relative to the viewport
     const screenX = containerRect.left + transformedX;
     const screenY = containerRect.top + transformedY;
@@ -573,7 +573,7 @@ export default function AboutSection() {
               ))}
             </span>
           </h2>
-        
+
           <p className="text-base md:text-lg text-neutral-500 max-w-5xl mx-auto py-4 md:py-6 leading-relaxed">
             Discover our global footprint through speakers, partners, and events
             worldwide. Hover over markers to see details.
@@ -663,7 +663,10 @@ export default function AboutSection() {
         <div className="w-full relative" ref={containerRef}>
           <div className="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-lg border border-neutral-200 dark:border-neutral-800 p-1">
             {/* FIXED: Use mapContainerRef here, not containerRef */}
-            <div className="relative w-full h-[350px] sm:h-[550px] rounded-xl overflow-hidden" ref={mapContainerRef}>
+            <div
+              className="relative w-full h-[350px] sm:h-[550px] rounded-xl overflow-hidden"
+              ref={mapContainerRef}
+            >
               <ComposableMap
                 projection="geoEqualEarth"
                 projectionConfig={{

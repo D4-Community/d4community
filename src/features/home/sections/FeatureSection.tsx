@@ -37,7 +37,8 @@ const FeatureSection = () => {
             Building. Connecting. Growing.
           </h2>
           <p className="text-muted-foreground mt-4 text-sm tracking-wide text-balance md:text-base">
-            A thriving community of developers, partners, and students driving innovation together.
+            A thriving community of developers, partners, and students driving
+            innovation together.
           </p>
         </AnimatedContainer>
 
@@ -55,5 +56,3 @@ const FeatureSection = () => {
 };
 
 export default FeatureSection;
-
-

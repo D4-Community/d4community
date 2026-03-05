@@ -5,12 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { 
-  ExternalLink, 
-  Shuffle, 
-  ChevronRight, 
-  X, 
-  Share2, 
+import {
+  ExternalLink,
+  Shuffle,
+  ChevronRight,
+  X,
+  Share2,
   Download,
   Copy,
   Check,
@@ -44,42 +44,60 @@ const ALBUMS = [
     images: [
       {
         id: "hackathon-1",
-        src: getOptimizedDriveImageUrl("1QepStOk3MxZ7iNLQ8VRvwNgAbZKCxFxs", 600),
+        src: getOptimizedDriveImageUrl(
+          "1QepStOk3MxZ7iNLQ8VRvwNgAbZKCxFxs",
+          600,
+        ),
         alt: "Every frame tells a story of our D4 family",
         width: 600,
         height: 450,
       },
       {
         id: "hackathon-2",
-        src: getOptimizedDriveImageUrl("1vQZdLxUXWXzUwWjn4fWTlRbWGWd4rub5", 600),
+        src: getOptimizedDriveImageUrl(
+          "1vQZdLxUXWXzUwWjn4fWTlRbWGWd4rub5",
+          600,
+        ),
         alt: "Small moments that quietly build something bigger",
         width: 600,
         height: 450,
       },
       {
         id: "hackathon-3",
-        src: getOptimizedDriveImageUrl("13-3y_84no-tGxP2XAn3noeLf09bWoA4S", 600),
+        src: getOptimizedDriveImageUrl(
+          "13-3y_84no-tGxP2XAn3noeLf09bWoA4S",
+          600,
+        ),
         alt: "Where Discite leads to Develop, Debug, and Deploy",
         width: 600,
         height: 338,
       },
       {
         id: "hackathon-4",
-        src: getOptimizedDriveImageUrl("11KJA0XwNvp40bofD_52wRRmtVZhzUAW-", 600),
+        src: getOptimizedDriveImageUrl(
+          "11KJA0XwNvp40bofD_52wRRmtVZhzUAW-",
+          600,
+        ),
         alt: "Moments that matter",
         width: 600,
         height: 450,
       },
       {
         id: "hackathon-5",
-        src: getOptimizedDriveImageUrl("1Z6JYJx-aD5p1lqSMlzF3fbUcyw3jByD7", 600),
+        src: getOptimizedDriveImageUrl(
+          "1Z6JYJx-aD5p1lqSMlzF3fbUcyw3jByD7",
+          600,
+        ),
         alt: "A canvas of people and passion",
         width: 600,
         height: 750,
       },
       {
         id: "hackathon-6",
-        src: getOptimizedDriveImageUrl("1plapE6m0LeGFM4i3C2T6T_XVBgrfKP_F", 600),
+        src: getOptimizedDriveImageUrl(
+          "1plapE6m0LeGFM4i3C2T6T_XVBgrfKP_F",
+          600,
+        ),
         alt: "Every frame holds a story",
         width: 600,
         height: 338,
@@ -92,42 +110,60 @@ const ALBUMS = [
     images: [
       {
         id: "workshop-1",
-        src: getOptimizedDriveImageUrl("14tbHWOW6cHWtLqAH3NZB1VPxmmuks8zf", 600),
+        src: getOptimizedDriveImageUrl(
+          "14tbHWOW6cHWtLqAH3NZB1VPxmmuks8zf",
+          600,
+        ),
         alt: "Celebrating the people and passion that make up our D4 community",
         width: 600,
         height: 525,
       },
       {
         id: "workshop-2",
-        src: getOptimizedDriveImageUrl("1hvWSqq9HvorawF_1Ge6R8XiuRg4DzQMH", 600),
+        src: getOptimizedDriveImageUrl(
+          "1hvWSqq9HvorawF_1Ge6R8XiuRg4DzQMH",
+          600,
+        ),
         alt: "Every frame tells a story of our D4 family",
         width: 600,
         height: 375,
       },
       {
         id: "workshop-3",
-        src: getOptimizedDriveImageUrl("1HC7RGt9yPsAMIxUxVNo3mkIBcwaiIJ0b", 600),
+        src: getOptimizedDriveImageUrl(
+          "1HC7RGt9yPsAMIxUxVNo3mkIBcwaiIJ0b",
+          600,
+        ),
         alt: "Where Discite leads to Develop, Debug, and Deploy",
         width: 600,
         height: 675,
       },
       {
         id: "workshop-4",
-        src: getOptimizedDriveImageUrl("1TeG28iv-g0E6no9YhFt5IIQagxf2bW7Z", 600),
+        src: getOptimizedDriveImageUrl(
+          "1TeG28iv-g0E6no9YhFt5IIQagxf2bW7Z",
+          600,
+        ),
         alt: "Moments that matter",
         width: 600,
         height: 375,
       },
       {
         id: "workshop-5",
-        src: getOptimizedDriveImageUrl("1Hmx2qNyWo-cEefNWP_TO9iN6k2JQ_He0", 600),
+        src: getOptimizedDriveImageUrl(
+          "1Hmx2qNyWo-cEefNWP_TO9iN6k2JQ_He0",
+          600,
+        ),
         alt: "A canvas of people and passion",
         width: 600,
         height: 675,
       },
       {
         id: "workshop-6",
-        src: getOptimizedDriveImageUrl("1DDUygBu_449jEke1kkc3NZfcqZAhl6XL", 600),
+        src: getOptimizedDriveImageUrl(
+          "1DDUygBu_449jEke1kkc3NZfcqZAhl6XL",
+          600,
+        ),
         alt: "Where ideas find people, and moments find meaning",
         width: 600,
         height: 675,
@@ -140,35 +176,50 @@ const ALBUMS = [
     images: [
       {
         id: "community-1",
-        src: getOptimizedDriveImageUrl("1XJS93cIPge8AhC4WT2Fh74GScR77OPr-", 600),
+        src: getOptimizedDriveImageUrl(
+          "1XJS93cIPge8AhC4WT2Fh74GScR77OPr-",
+          600,
+        ),
         alt: "Where Discite leads to Develop, Debug, and Deploy",
         width: 600,
         height: 488,
       },
       {
         id: "community-2",
-        src: getOptimizedDriveImageUrl("1j4N65m3yWapWLq5f45WHy4WtxgVFX1fQ", 600),
+        src: getOptimizedDriveImageUrl(
+          "1j4N65m3yWapWLq5f45WHy4WtxgVFX1fQ",
+          600,
+        ),
         alt: "Celebrating the people and passion that make up our D4 community",
         width: 600,
         height: 413,
       },
       {
         id: "community-3",
-        src: getOptimizedDriveImageUrl("1LbwPQ7LTj4kzquzTmBVFLACAlSCtZj_q", 600),
+        src: getOptimizedDriveImageUrl(
+          "1LbwPQ7LTj4kzquzTmBVFLACAlSCtZj_q",
+          600,
+        ),
         alt: "Every frame tells a story of our D4 family",
         width: 600,
         height: 563,
       },
       {
         id: "community-4",
-        src: getOptimizedDriveImageUrl("1ya71AecbxMZiwTv3ol8peR0pgLNy2PZw", 600),
+        src: getOptimizedDriveImageUrl(
+          "1ya71AecbxMZiwTv3ol8peR0pgLNy2PZw",
+          600,
+        ),
         alt: "Moments that matter",
         width: 600,
         height: 488,
       },
       {
         id: "community-5",
-        src: getOptimizedDriveImageUrl("1u96Il8AWXiyCVnOJqje6ZRC1yTvsWW7x", 600),
+        src: getOptimizedDriveImageUrl(
+          "1u96Il8AWXiyCVnOJqje6ZRC1yTvsWW7x",
+          600,
+        ),
         alt: "A canvas of people and passion",
         width: 600,
         height: 413,
@@ -176,7 +227,10 @@ const ALBUMS = [
       {
         id: "community-6",
         // src: getOptimizedDriveImageUrl("1HC7RGt9yPsAMIxUxVNo3mkIBcwaiIJ0b", 600),
-        src: getOptimizedDriveImageUrl("1m9M0iEyjVjNLW38mfsaPR1oV2jn0zQgl", 600),
+        src: getOptimizedDriveImageUrl(
+          "1m9M0iEyjVjNLW38mfsaPR1oV2jn0zQgl",
+          600,
+        ),
         alt: "More than code",
         width: 600,
         height: 563,
@@ -189,42 +243,60 @@ const ALBUMS = [
     images: [
       {
         id: "special-1",
-        src: getOptimizedDriveImageUrl("1WOc7srIdU76qvQBw1i6uD7Jjta20jHCs", 600),
+        src: getOptimizedDriveImageUrl(
+          "1WOc7srIdU76qvQBw1i6uD7Jjta20jHCs",
+          600,
+        ),
         alt: "Moments that matter",
         width: 600,
         height: 500,
       },
       {
         id: "special-2",
-        src: getOptimizedDriveImageUrl("1kgd6WGgSZKOJVKflA4zuAH2YAOHpjYcx", 600),
+        src: getOptimizedDriveImageUrl(
+          "1kgd6WGgSZKOJVKflA4zuAH2YAOHpjYcx",
+          600,
+        ),
         alt: "Where Discite leads to Develop, Debug, and Deploy",
         width: 600,
         height: 638,
       },
       {
         id: "special-3",
-        src: getOptimizedDriveImageUrl("11qNevKLHwwe58PXewxGo5bz4poLxUleH", 600),
+        src: getOptimizedDriveImageUrl(
+          "11qNevKLHwwe58PXewxGo5bz4poLxUleH",
+          600,
+        ),
         alt: "Celebrating the people and passion that make up our D4 community",
         width: 600,
         height: 338,
       },
       {
         id: "special-4",
-        src: getOptimizedDriveImageUrl("1E3BcsP5y2qJRA3diOYCYdCeKgjvxLVLD", 600),
+        src: getOptimizedDriveImageUrl(
+          "1E3BcsP5y2qJRA3diOYCYdCeKgjvxLVLD",
+          600,
+        ),
         alt: "A journey shaped by people, passion, and progress",
         width: 600,
         height: 638,
       },
       {
         id: "special-5",
-        src: getOptimizedDriveImageUrl("1iH5lWFI_u5MaHz0Op2QHtqKwA7UQFskT", 600),
+        src: getOptimizedDriveImageUrl(
+          "1iH5lWFI_u5MaHz0Op2QHtqKwA7UQFskT",
+          600,
+        ),
         alt: "A canvas of people and passion",
         width: 600,
         height: 360,
       },
       {
         id: "special-6",
-        src: getOptimizedDriveImageUrl("1JFCp_vyFkJoVF7Oe7FhOSZgsSG9brSHQ", 600),
+        src: getOptimizedDriveImageUrl(
+          "1JFCp_vyFkJoVF7Oe7FhOSZgsSG9brSHQ",
+          600,
+        ),
         alt: "Shared moments from a journey we’re building together",
         width: 600,
         height: 360,
@@ -238,7 +310,10 @@ export interface GallerySectionProps {
   showAllLink?: boolean;
 }
 
-export function GallerySection({ className, showAllLink = true }: GallerySectionProps) {
+export function GallerySection({
+  className,
+  showAllLink = true,
+}: GallerySectionProps) {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [shuffled, setShuffled] = useState(false);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
@@ -250,7 +325,7 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
-      
+
       if (width < 640) {
         setColumns(2);
       } else if (width < 768) {
@@ -261,17 +336,17 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
         setColumns(4);
       }
     };
-    
+
     checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    
-    return () => window.removeEventListener('resize', checkScreenSize);
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
   // Initialize images from albums
   useEffect(() => {
     const allImages: GalleryImage[] = [];
-    
+
     ALBUMS.forEach((album) => {
       album.images.forEach((img) => {
         allImages.push({
@@ -293,7 +368,7 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
 
   const resetImages = () => {
     const allImages: GalleryImage[] = [];
-    
+
     ALBUMS.forEach((album) => {
       album.images.forEach((img) => {
         allImages.push({
@@ -323,12 +398,14 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
 
   const handleDownload = async () => {
     if (!selectedImage) return;
-    
+
     try {
       // For Google Drive images, we need to use the proper download URL
-      const driveId = selectedImage.src.split('id=')[1]?.split('&')[0];
-      const downloadUrl = driveId ? `https://drive.google.com/uc?export=download&id=${driveId}` : selectedImage.src;
-      
+      const driveId = selectedImage.src.split("id=")[1]?.split("&")[0];
+      const downloadUrl = driveId
+        ? `https://drive.google.com/uc?export=download&id=${driveId}`
+        : selectedImage.src;
+
       const response = await fetch(downloadUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -346,7 +423,7 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
 
   const copyToClipboard = async () => {
     if (!selectedImage) return;
-    
+
     try {
       await navigator.clipboard.writeText(selectedImage.src);
       setCopied(true);
@@ -358,13 +435,13 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
 
   const shareOnSocial = (platform: string) => {
     if (!selectedImage) return;
-    
+
     const text = `Check out this photo from our Community Gallery: ${selectedImage.alt}`;
     const url = selectedImage.src;
     const hashtags = "CommunityGallery #Hackathon #Workshop";
-    
+
     let shareUrl = "";
-    
+
     switch (platform) {
       case "twitter":
         shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent(hashtags)}`;
@@ -378,7 +455,7 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
       default:
         return;
     }
-    
+
     window.open(shareUrl, "_blank", "noopener,noreferrer");
   };
 
@@ -389,13 +466,16 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
         closeModal();
       }
     };
-    
+
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, [isModalOpen]);
 
   // Create tight masonry columns
-  const columnImages = Array.from({ length: columns }, () => [] as GalleryImage[]);
+  const columnImages = Array.from(
+    { length: columns },
+    () => [] as GalleryImage[],
+  );
 
   // Distribute images across columns for tight masonry effect
   images.forEach((image, index) => {
@@ -404,7 +484,12 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
 
   return (
     <>
-      <div className={cn("w-full max-w-7xl mx-auto px-4 py-16 md:py-24", className)}>
+      <div
+        className={cn(
+          "w-full max-w-7xl mx-auto px-4 py-16 md:py-24",
+          className,
+        )}
+      >
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
           <div>
@@ -459,8 +544,6 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
                         height={image.height}
                         className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
                         sizes="(max-width: 640px) 50vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        unoptimized={true}
-                        loading="lazy"
                       />
                     </div>
 
@@ -535,7 +618,7 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
               className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
               onClick={closeModal}
             />
-            
+
             {/* Modal Content - Max 74vh */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -545,7 +628,6 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
               className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6"
             >
               <div className="relative w-full max-w-6xl mx-auto max-h-[74vh] flex flex-col md:flex-row bg-white dark:bg-gray-900 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden">
-                
                 {/* Close Button */}
                 <button
                   onClick={closeModal}
@@ -566,24 +648,7 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
                         className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg md:rounded-xl"
                         sizes="(max-width: 768px) 90vw, 60vw"
                         priority={true}
-                        unoptimized={true}
                       />
-                      
-                      {/* View Album Button - Centered at Bottom */}
-                      {/* <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                        <Link
-                          href={selectedImage.albumLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2.5 bg-white/10 backdrop-blur-sm 
-                                   border border-white/20 text-white rounded-xl hover:bg-white/20 
-                                   transition-all duration-200"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                          <span className="text-sm font-medium">View Album</span>
-                        </Link>
-                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -670,17 +735,6 @@ export function GallerySection({ className, showAllLink = true }: GallerySection
                         </button>
                       </div>
                     </div>
-
-                    {/* Full Album Link */}
-                    {/* <Link
-                      href={selectedImage.albumLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#fd7d6e] hover:bg-[#e56d5e] text-white rounded-xl transition-colors duration-200 text-sm font-medium"
-                    >
-                      <Maximize2 className="w-4 h-4" />
-                      View Full Album
-                    </Link> */}
                   </div>
                 </div>
               </div>

@@ -3,7 +3,15 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Calendar, MapPin, Users, Trophy, Star } from "lucide-react";
+import {
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Calendar,
+  MapPin,
+  Users,
+  Trophy,
+  Star,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /* ===================== TYPES ===================== */
@@ -13,7 +21,7 @@ interface EventItem {
   title: string;
   description: string;
   imageUrl: string;
-  type: 'event' | 'hackathon';
+  type: "event" | "hackathon";
   date?: string;
   endDate?: string;
   location?: string;
@@ -31,37 +39,37 @@ const STATIC_ITEMS: EventItem[] = [
     title: "AI as Your CTO Co-Founder",
     description: "Build smarter with AI leadership.",
     imageUrl: "/images/events/ai-as-your-cto.png",
-    type: 'event'
+    type: "event",
   },
   {
     id: 2,
     title: "Hello World Conclave",
     description: "Meet developers and founders.",
     imageUrl: "/images/events/hello-world-conclave.png",
-    type: 'event'
+    type: "event",
   },
   {
     id: 3,
     title: "Digital Payments & LinkedIn",
     description: "Fintech growth insights.",
     imageUrl: "/images/events/digital-payments-and-linkedin-opportunies.png",
-    type: 'event'
+    type: "event",
   },
   {
     id: 4,
     title: "Hack-N-Win 2.0",
     description: "Build fast. Win big.",
     imageUrl: "/images/events/hack-n-win-2.png",
-    type: 'hackathon',
-    participants: 500
+    type: "hackathon",
+    participants: 500,
   },
   {
     id: 5,
     title: "D4 Community Event",
     description: "Join 63+ attendees for this sold-out event.",
-    imageUrl: "/images/events/d4-community-event.webp", 
-    type: 'event',
-  }
+    imageUrl: "/images/events/d4-community-event.webp",
+    type: "event",
+  },
 ];
 
 /* ===================== CONFIG ===================== */
@@ -79,8 +87,8 @@ export function EventCarousel({ className }: { className?: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState({
-    commudle: 'loading',
-    devfolio: 'loading'
+    commudle: "loading",
+    devfolio: "loading",
   });
 
   const [cardWidth, setCardWidth] = useState(0);
@@ -96,11 +104,11 @@ export function EventCarousel({ className }: { className?: string }) {
     const fetchAllData = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const allItems: EventItem[] = [];
         const errors: string[] = [];
-        const newApiStatus = { commudle: 'loading', devfolio: 'loading' };
+        const newApiStatus = { commudle: "loading", devfolio: "loading" };
 
         // Fetch Commudle events
         try {
@@ -112,47 +120,51 @@ export function EventCarousel({ className }: { className?: string }) {
           }
 
           const commudleData = await commudleRes.json();
-          
+
           const rawData = commudleData?.data?.values || [];
-          
+
           const commudleEvents: EventItem[] = rawData.map((item: any) => {
             // Extract clean description from HTML
             let description = "Community event";
             if (item.description) {
               const textOnly = item.description
-                .replace(/<[^>]*>/g, '')
-                .replace(/\s+/g, ' ')
+                .replace(/<[^>]*>/g, "")
+                .replace(/\s+/g, " ")
                 .trim();
-              
+
               const sentences = textOnly.split(/[.!?]+/);
               const firstSentence = sentences[0]?.trim() || textOnly;
-              
-              description = firstSentence.length > 70 
-                ? firstSentence.substring(0, 70) + '...' 
-                : firstSentence;
+
+              description =
+                firstSentence.length > 70
+                  ? firstSentence.substring(0, 70) + "..."
+                  : firstSentence;
             }
 
             // Format dates
-            const eventDate = item.start_time ? 
-              new Date(item.start_time).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              }) : undefined;
+            const eventDate = item.start_time
+              ? new Date(item.start_time).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })
+              : undefined;
 
-            const eventEndDate = item.end_time ? 
-              new Date(item.end_time).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              }) : undefined;
+            const eventEndDate = item.end_time
+              ? new Date(item.end_time).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })
+              : undefined;
 
             return {
               id: `commudle-${item.id}`,
               title: item.name || item.title || "Untitled Event",
               description: description,
-              imageUrl: item.header_image_path || "/images/events/placeholder.png",
-              type: 'event' as const,
+              imageUrl:
+                item.header_image_path || "/images/events/placeholder.png",
+              type: "event" as const,
               date: eventDate,
               endDate: eventEndDate,
               location: item.event_locations?.[0]?.name || "Online",
@@ -160,12 +172,13 @@ export function EventCarousel({ className }: { className?: string }) {
           });
 
           allItems.push(...commudleEvents);
-          newApiStatus.commudle = commudleEvents.length > 0 ? 'success' : 'no-data';
+          newApiStatus.commudle =
+            commudleEvents.length > 0 ? "success" : "no-data";
           console.log(`Added ${commudleEvents.length} Commudle events`);
         } catch (commudleError: any) {
           console.error("Commudle API error:", commudleError);
-          errors.push(`Events: ${commudleError.message || 'Failed to load'}`);
-          newApiStatus.commudle = 'error';
+          errors.push(`Events: ${commudleError.message || "Failed to load"}`);
+          newApiStatus.commudle = "error";
         }
 
         // Fetch Devfolio hackathons
@@ -174,7 +187,7 @@ export function EventCarousel({ className }: { className?: string }) {
           const devfolioRes = await fetch(DEVFOLIO_API_URL);
 
           let devfolioData;
-          
+
           if (!devfolioRes.ok) {
             console.warn(`Devfolio API returned ${devfolioRes.status}`);
             devfolioData = await devfolioRes.json(); // API route returns sample data on error
@@ -183,77 +196,88 @@ export function EventCarousel({ className }: { className?: string }) {
           }
 
           console.log("Devfolio data received:", devfolioData);
-          
+
           const rawData = Array.isArray(devfolioData) ? devfolioData : [];
-          
-          const devfolioHackathons: EventItem[] = rawData.map((item: any, index: number) => {
-            // Extract clean description
-            let description = item.tagline || item.desc || "Hackathon event";
-            if (item.desc) {
-              // Remove markdown formatting and get first paragraph
-              const cleanDesc = item.desc
-                .replace(/#+\s*/g, '') // Remove headers
-                .replace(/\*\*/g, '')  // Remove bold
-                .replace(/\*/g, '')    // Remove italics
-                .split('\n')[0]        // Get first line
-                .trim();
-              
-              if (cleanDesc) {
-                description = cleanDesc.length > 70 
-                  ? cleanDesc.substring(0, 70) + '...' 
-                  : cleanDesc;
+
+          const devfolioHackathons: EventItem[] = rawData.map(
+            (item: any, index: number) => {
+              // Extract clean description
+              let description = item.tagline || item.desc || "Hackathon event";
+              if (item.desc) {
+                // Remove markdown formatting and get first paragraph
+                const cleanDesc = item.desc
+                  .replace(/#+\s*/g, "") // Remove headers
+                  .replace(/\*\*/g, "") // Remove bold
+                  .replace(/\*/g, "") // Remove italics
+                  .split("\n")[0] // Get first line
+                  .trim();
+
+                if (cleanDesc) {
+                  description =
+                    cleanDesc.length > 70
+                      ? cleanDesc.substring(0, 70) + "..."
+                      : cleanDesc;
+                }
               }
-            }
 
-            // Format dates
-            const eventDate = item.starts_at ? 
-              new Date(item.starts_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              }) : undefined;
+              // Format dates
+              const eventDate = item.starts_at
+                ? new Date(item.starts_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })
+                : undefined;
 
-            const eventEndDate = item.ends_at ? 
-              new Date(item.ends_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              }) : undefined;
+              const eventEndDate = item.ends_at
+                ? new Date(item.ends_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })
+                : undefined;
 
-            let prizeAmount = "";
-            if (item.name?.includes("3.0")) {
-              prizeAmount = "$100+";
-            } else if (item.name?.includes("2.0")) {
-              prizeAmount = "$953+";
-            } else if (item.name?.includes("Hack-n-Win")) {
-              prizeAmount = "Prizes";
-            } else {
-              prizeAmount = "$652+";
-            }
+              let prizeAmount = "";
+              if (item.name?.includes("3.0")) {
+                prizeAmount = "$100+";
+              } else if (item.name?.includes("2.0")) {
+                prizeAmount = "$953+";
+              } else if (item.name?.includes("Hack-n-Win")) {
+                prizeAmount = "Prizes";
+              } else {
+                prizeAmount = "$652+";
+              }
 
-            return {
-              id: `devfolio-${item.uuid || item.id || `hackathon-${index}`}`,
-              title: item.name || "Untitled Hackathon",
-              description: description,
-              imageUrl: item.cover_img || item.hackathon_setting?.logo || "/images/events/placeholder.png",
-              type: 'hackathon' as const,
-              date: eventDate,
-              endDate: eventEndDate,
-              location: item.location,
-              participants: item.participants_count || 0,
-              rating: item.rating,
-              prize: prizeAmount,
-              slug: item.slug
-            };
-          });
+              return {
+                id: `devfolio-${item.uuid || item.id || `hackathon-${index}`}`,
+                title: item.name || "Untitled Hackathon",
+                description: description,
+                imageUrl:
+                  item.cover_img ||
+                  item.hackathon_setting?.logo ||
+                  "/images/events/placeholder.png",
+                type: "hackathon" as const,
+                date: eventDate,
+                endDate: eventEndDate,
+                location: item.location,
+                participants: item.participants_count || 0,
+                rating: item.rating,
+                prize: prizeAmount,
+                slug: item.slug,
+              };
+            },
+          );
 
           allItems.push(...devfolioHackathons);
-          newApiStatus.devfolio = devfolioHackathons.length > 0 ? 'success' : 'no-data';
+          newApiStatus.devfolio =
+            devfolioHackathons.length > 0 ? "success" : "no-data";
           console.log(`Added ${devfolioHackathons.length} Devfolio hackathons`);
         } catch (devfolioError: any) {
           console.error("Devfolio API error:", devfolioError);
-          errors.push(`Hackathons: ${devfolioError.message || 'Failed to load'}`);
-          newApiStatus.devfolio = 'error';
+          errors.push(
+            `Hackathons: ${devfolioError.message || "Failed to load"}`,
+          );
+          newApiStatus.devfolio = "error";
         }
 
         setApiStatus(newApiStatus);
@@ -277,14 +301,15 @@ export function EventCarousel({ className }: { className?: string }) {
         }
 
         if (errors.length > 0) {
-          setError(`Some data sources had issues: ${errors.join('; ')}. Showing available data.`);
+          setError(
+            `Some data sources had issues: ${errors.join("; ")}. Showing available data.`,
+          );
         }
-
       } catch (err: any) {
         console.error("Overall fetch error:", err);
         setError("Failed to load events. Showing sample data.");
         setItems(STATIC_ITEMS);
-        setApiStatus({ commudle: 'error', devfolio: 'error' });
+        setApiStatus({ commudle: "error", devfolio: "error" });
       } finally {
         setLoading(false);
       }
@@ -297,7 +322,7 @@ export function EventCarousel({ className }: { className?: string }) {
   useEffect(() => {
     const updateLayout = () => {
       if (!containerRef.current) return;
-      
+
       const width = window.innerWidth;
       let visible = 3;
       if (width < 640) visible = 1;
@@ -368,7 +393,7 @@ export function EventCarousel({ className }: { className?: string }) {
         <div className="flex items-center justify-center space-x-2">
           <motion.div
             className="w-3 h-3 rounded-full bg-[#8590e0]"
-            animate={{
+            whileInView={{
               y: ["0%", "-100%", "0%"],
             }}
             transition={{
@@ -381,7 +406,7 @@ export function EventCarousel({ className }: { className?: string }) {
           />
           <motion.div
             className="w-3 h-3 rounded-full bg-[#fd7d6e]"
-            animate={{
+            whileInView={{
               y: ["0%", "-100%", "0%"],
             }}
             transition={{
@@ -395,7 +420,7 @@ export function EventCarousel({ className }: { className?: string }) {
           />
           <motion.div
             className="w-3 h-3 rounded-full bg-[#4ade80]"
-            animate={{
+            whileInView={{
               y: ["0%", "-100%", "0%"],
             }}
             transition={{
@@ -408,9 +433,11 @@ export function EventCarousel({ className }: { className?: string }) {
             }}
           />
         </div>
-        
-        <p className="text-muted-foreground text-lg font-medium">Loading community events...</p>
-        
+
+        <p className="text-muted-foreground text-lg font-medium">
+          Loading community events...
+        </p>
+
         <div className="flex flex-col items-center gap-2 mt-4">
           <div className="flex gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
@@ -424,13 +451,19 @@ export function EventCarousel({ className }: { className?: string }) {
               <span className="text-green-500 animate-pulse">Loading...</span>
             </span>
           </div>
-          
+
           {/* Subtle pulse animation for loader */}
           <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
             <span className="animate-pulse">Fetching</span>
-            <span className="animate-pulse" style={{ animationDelay: "0.1s" }}>data</span>
-            <span className="animate-pulse" style={{ animationDelay: "0.2s" }}>from</span>
-            <span className="animate-pulse" style={{ animationDelay: "0.3s" }}>sources</span>
+            <span className="animate-pulse" style={{ animationDelay: "0.1s" }}>
+              data
+            </span>
+            <span className="animate-pulse" style={{ animationDelay: "0.2s" }}>
+              from
+            </span>
+            <span className="animate-pulse" style={{ animationDelay: "0.3s" }}>
+              sources
+            </span>
           </div>
         </div>
       </div>
@@ -441,7 +474,9 @@ export function EventCarousel({ className }: { className?: string }) {
     <div className={cn("max-w-7xl mx-auto px-4", className)}>
       <div className="mb-8 flex flex-col md:items-center justify-between gap-4">
         <div>
-          <h2 className="font-bold text-2xl md:text-4xl lg:text-5xl dark:text-white text-black tracking-tight text-center">Past Events & Hackathons</h2>
+          <h2 className="font-bold text-2xl md:text-4xl lg:text-5xl dark:text-white text-black tracking-tight text-center">
+            Past Events & Hackathons
+          </h2>
           <p className="text-muted-foreground mt-4 text-sm tracking-wide text-balance md:text-base text-center">
             Highlights from our past gatherings, workshops, and hackathons.
           </p>
@@ -487,13 +522,17 @@ export function EventCarousel({ className }: { className?: string }) {
 
       {error && (
         <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-          <p className="text-sm text-yellow-800 dark:text-yellow-300">{error}</p>
+          <p className="text-sm text-yellow-800 dark:text-yellow-300">
+            {error}
+          </p>
         </div>
       )}
 
       {items.length === 0 ? (
         <div className="text-center py-10">
-          <p className="text-muted-foreground">No events found. Displaying sample events.</p>
+          <p className="text-muted-foreground">
+            No events found. Displaying sample events.
+          </p>
         </div>
       ) : (
         <>
@@ -506,7 +545,11 @@ export function EventCarousel({ className }: { className?: string }) {
             <motion.div
               className="flex"
               animate={{ x: -index * cardWidth }}
-              transition={animate ? { type: "spring", stiffness: 300, damping: 30 } : { duration: 0 }}
+              transition={
+                animate
+                  ? { type: "spring", stiffness: 300, damping: 30 }
+                  : { duration: 0 }
+              }
             >
               {slides.map((item, i) => (
                 <div
@@ -514,39 +557,42 @@ export function EventCarousel({ className }: { className?: string }) {
                   style={{ width: cardWidth }}
                   className="px-3 shrink-0"
                 >
-                  <div className={cn(
-                    "bg-white dark:bg-card rounded-2xl border border-border overflow-hidden h-full flex flex-col transition-all duration-300 relative group/card",
-                    item.type === 'hackathon' 
-                      ? "border-green-500/20 hover:border-green-500/40" 
-                      : "border-blue-500/20 hover:border-blue-500/40"
-                  )}>
+                  <div
+                    className={cn(
+                      "bg-white dark:bg-card rounded-2xl border border-border overflow-hidden h-full flex flex-col transition-all duration-300 relative group/card",
+                      item.type === "hackathon"
+                        ? "border-green-500/20 hover:border-green-500/40"
+                        : "border-blue-500/20 hover:border-blue-500/40",
+                    )}
+                  >
                     {/* Type indicator */}
-                    <div className={cn(
-                      "absolute top-4 left-4 z-10 px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm",
-                      item.type === 'hackathon' 
-                        ? "bg-green-100/90 dark:bg-green-900/80 text-green-800 dark:text-green-300" 
-                        : "bg-blue-100/90 dark:bg-blue-900/80 text-blue-800 dark:text-blue-300"
-                    )}>
-                      {item.type === 'hackathon' ? 'Hackathon' : 'Event'}
+                    <div
+                      className={cn(
+                        "absolute top-4 left-4 z-10 px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm",
+                        item.type === "hackathon"
+                          ? "bg-green-100/90 dark:bg-green-900/80 text-green-800 dark:text-green-300"
+                          : "bg-blue-100/90 dark:bg-blue-900/80 text-blue-800 dark:text-blue-300",
+                      )}
+                    >
+                      {item.type === "hackathon" ? "Hackathon" : "Event"}
                     </div>
 
                     <div className="bg-white dark:bg-card rounded-2xl overflow-hidden">
-                    <div className="aspect-[16/9] relative overflow-hidden">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.title}
-                        fill
-                        className="object-cover transition-transform duration-500 event-image border-[#fc8568]"
-                        draggable={false}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        unoptimized={true}
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = "/images/events/placeholder.png";
-                          target.onerror = null;
-                        }}
-                      />
-                    </div>
+                      <div className="aspect-[16/9] relative overflow-hidden">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.title}
+                          fill
+                          className="object-cover transition-transform duration-500 event-image border-[#fc8568]"
+                          draggable={false}
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = "/images/events/placeholder.png";
+                            target.onerror = null;
+                          }}
+                        />
+                      </div>
                     </div>
 
                     {/* Content */}
@@ -566,16 +612,20 @@ export function EventCarousel({ className }: { className?: string }) {
                               <Calendar className="w-3 h-3 flex-shrink-0" />
                               <span className="truncate">{item.date}</span>
                               {item.endDate && item.endDate !== item.date && (
-                                <span className="text-xs">→ {item.endDate}</span>
+                                <span className="text-xs">
+                                  → {item.endDate}
+                                </span>
                               )}
                             </div>
                           )}
                         </div>
-                        
+
                         {item.location && (
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <MapPin className="w-3 h-3 flex-shrink-0" />
-                            <span className="line-clamp-1">{item.location}</span>
+                            <span className="line-clamp-1">
+                              {item.location}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -598,13 +648,13 @@ export function EventCarousel({ className }: { className?: string }) {
                   }}
                   className={cn(
                     "h-2 rounded-full transition-all duration-300",
-                    activeDot === i 
-                      ? item.type === 'hackathon' 
-                        ? "w-8 bg-green-500" 
+                    activeDot === i
+                      ? item.type === "hackathon"
+                        ? "w-8 bg-green-500"
                         : "w-8 bg-blue-500"
-                      : item.type === 'hackathon'
+                      : item.type === "hackathon"
                         ? "w-2 bg-green-500/30 hover:bg-green-500/50"
-                        : "w-2 bg-blue-500/30 hover:bg-blue-500/50"
+                        : "w-2 bg-blue-500/30 hover:bg-blue-500/50",
                   )}
                   aria-label={`Go to slide ${i + 1}`}
                 />

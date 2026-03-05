@@ -101,7 +101,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
       }}
       transition={{ type: "spring", stiffness: 200, damping: 50 }}
       className={cn(
-        "relative z-[60] mx-auto hidden max-w-7xl items-center justify-between rounded-xl px-4 py-2 lg:flex",
+        "relative z-60 mx-auto hidden max-w-7xl items-center justify-between rounded-xl px-4 py-2 lg:flex",
         visible &&
           "border border-black/10 bg-white/80 dark:border-white/10 dark:bg-neutral-950/80",
         className,

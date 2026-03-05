@@ -28,7 +28,7 @@ export const BackgroundRippleEffect = ({
       )}
     >
       <div className="relative h-auto w-auto overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 z-[2] h-full w-full overflow-hidden" />
+        <div className="pointer-events-none absolute inset-0 z-2 h-full w-full overflow-hidden" />
         <DivGrid
           key={`base-${rippleKey}`}
           className="mask-[radial-gradient(ellipse_100%_80%_at_50%_0%,black_20%,transparent_80%)]"
@@ -92,7 +92,7 @@ const DivGrid = ({
   };
 
   return (
-    <div className={cn("relative z-[3]", className)} style={gridStyle}>
+    <div className={cn("relative z-3 transform-[translateZ(0)]", className)} style={gridStyle}>
       {cells.map((idx) => {
         const rowIdx = Math.floor(idx / cols);
         const colIdx = idx % cols;

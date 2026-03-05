@@ -325,8 +325,7 @@ const ROW_2 = PARTNERS.slice(Math.ceil(PARTNERS.length / 2));
 function PartnerCard({ partner }: { partner: Partner }) {
   return (
     <div className="relative overflow-hidden flex flex-col items-center justify-center w-30 sm:w-35 md:w-40 p-4 rounded-2xl bg-white/5 dark:bg-black/5 border border-white/30 dark:border-gray-800/50">
-      <div className="flex flex-col items-center"
-      >
+      <div className="flex flex-col items-center">
         <div className="relative w-12 h-12 sm:w-14 sm:h-14">
           <Image
             src={partner.logo}
@@ -334,12 +333,11 @@ function PartnerCard({ partner }: { partner: Partner }) {
             fill
             className="object-contain"
             sizes="56px"
-            unoptimized
           />
         </div>
-      <span className="mt-2 text-xs md:text-sm font-medium text-center text-gray-900 dark:text-white truncate w-full">
-        {partner.name}
-      </span>
+        <span className="mt-2 text-xs md:text-sm font-medium text-center text-gray-900 dark:text-white truncate w-full">
+          {partner.name}
+        </span>
       </div>
     </div>
   );
