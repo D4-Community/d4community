@@ -22,7 +22,7 @@ export const HomePage = () => {
         <EventCarousel />
       </div>
       <AboutSection />
-      <LogosSlider />
+      {/* <LogosSlider /> */}
       <GallerySection />
       <FAQPage />
     </main>

@@ -203,7 +203,7 @@ export const MobileNavToggle = ({
 
 /* ===================== LOGO (THEME AWARE) ===================== */
 
-export const NavbarLogo = ({ onClick }: { onClick?: () => void }) => {
+export const NavbarLogo = () => {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
@@ -219,15 +219,13 @@ export const NavbarLogo = ({ onClick }: { onClick?: () => void }) => {
   }, []);
 
   return (
-    <Link href="/" className="flex items-center cursor-pointer" onClick={onClick}>
-      <Image
-        src={isDark ? "/d4logo.webp" : "/d4logo_black.webp"}
-        alt="D4 Logo"
-        width={70}
-        height={40}
-        priority
-      />
-    </Link>
+    <Image
+      src={isDark ? "/d4logo.webp" : "/d4logo_black.webp"}
+      alt="D4 Logo"
+      width={70}
+      height={40}
+      priority
+    />
   );
 };
 

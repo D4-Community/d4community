@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "json.commudle.com"
+      },
+      {
+        protocol: "https",
+        hostname: "media.giphy.com",
       }
     ],
   },

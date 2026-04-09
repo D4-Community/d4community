@@ -12,7 +12,7 @@ type FeatureCardPorps = React.ComponentProps<'div'> & {
 };
 
 export function FeatureCard({ feature, className, ...props }: FeatureCardPorps) {
-	const p = genRandomPattern();
+	const p = genRandomPattern(feature.title);
 
 	return (
 		<div className={cn('relative overflow-hidden p-6', className)} {...props}>
@@ -64,10 +64,27 @@ function GridPattern({
 	);
 }
 
-function genRandomPattern(length?: number): number[][] {
-	length = length ?? 5;
+function genRandomPattern(seed: string, length = 5): number[][] {
+	let state = hashString(seed) || 1;
+
+	const next = () => {
+		state = (state * 1664525 + 1013904223) >>> 0;
+		return state / 4294967296;
+	};
+
 	return Array.from({ length }, () => [
-		Math.floor(Math.random() * 4) + 7, // random x between 7 and 10
-		Math.floor(Math.random() * 6) + 1, // random y between 1 and 6
+		Math.floor(next() * 4) + 7,
+		Math.floor(next() * 6) + 1,
 	]);
+}
+
+function hashString(value: string) {
+	let hash = 0;
+
+	for (let index = 0; index < value.length; index += 1) {
+		hash = (hash << 5) - hash + value.charCodeAt(index);
+		hash |= 0;
+	}
+
+	return hash >>> 0;
 }

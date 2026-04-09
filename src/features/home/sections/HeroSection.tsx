@@ -38,21 +38,15 @@ const HeroSection = () => {
             <Button size="lg" className="gap-4" variant="outline">
               Join Community <Users className="w-4 h-4" />
             </Button>
-            <Link
-              href="https://connect.d4community.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Button asChild size="lg" className="gap-4">
               <Link
                 href="https://connect.d4community.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button size="lg" className="gap-4">
-                  Explore More <MoveRight className="w-4 h-4" />
-                </Button>
+                Explore More <MoveRight className="w-4 h-4" />
               </Link>
-            </Link>
+            </Button>
           </div>
         </div>
       </div>
