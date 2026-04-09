@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 const items = [
   {
     id: 1,
-    title: "Discrete",
+    title: "Discite",
     short: "Logic",
     icon: Blocks,
     color: "#6d9eeb", // Blue

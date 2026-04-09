@@ -58,7 +58,7 @@ const AboutContent = () => {
 
   const features = [
     {
-      title: "Discrete",
+      title: "Discite",
       icon: Blocks,
       color: "#6d9eeb", // Blue
       desc: "Breaking down complex challenges into manageable, logical components. Atomic thinking.",
