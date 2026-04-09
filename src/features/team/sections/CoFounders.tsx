@@ -20,11 +20,11 @@ const organizers = [
     name: "Ayush Tiwari",
     title: "Organizer",
     bio: "Ayush is a Software Engineer with 2.5+ years of experience building user-focused web applications using React.js, Next.js, TypeScript, and Angular, with experience across B2B platforms and cross-platform mobile apps.",
-    image: "/images/team/ayush-tiwari.jpg",
+    image: "/images/team/ayush-tiwari.png",
     socials: {
       linkedin: "https://www.linkedin.com/in/itsayu/",
-      twitter: "#",
-      github: "https://github.com/itsayu",
+      twitter: "https://twitter.com/its_AKT_/",
+      github: "https://github.com/itsayu/",
     },
   },
   {
