@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, 
@@ -20,6 +21,7 @@ import {
 } from "lucide-react";
 
 export default function JoinCommunityPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -33,13 +35,22 @@ export default function JoinCommunityPage() {
   const interests = ["Web Dev", "Mobile", "AI/ML", "Cloud", "DevOps", "UI/UX", "OS", "Startups"];
   const roles = ["Student", "Professional", "Freelancer", "Entrepreneur", "Designer", "Other"];
   const expLevels = [
-    "No Experience",
-    "Student",
-    "Beginner (0-1 years)",
-    "Intermediate (1-3 years)",
-    "Advanced (3-5 years)",
-    "Expert (5+ years)",
+      "Beginner (0-1 years)",
+      "Intermediate (1-3 years)",
+      "Advanced (3-5 years)",
+      "Expert (5+ years)",
+      "No Experience",
   ];
+
+  // Auto-refresh logic after submission
+  useEffect(() => {
+    if (submitted) {
+      const timer = setTimeout(() => {
+        window.location.reload();
+      }, 4500);
+      return () => clearTimeout(timer);
+    }
+  }, [submitted]);
 
   const handleInterestToggle = (item: string) => {
     setFormData(prev => ({
@@ -60,7 +71,6 @@ export default function JoinCommunityPage() {
   };
 
   const handleSubmit = async () => {
-    // Only Name and Email are strictly required
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "Full name is required";
     
@@ -98,10 +108,11 @@ export default function JoinCommunityPage() {
         <motion.div initial={{scale:0.9, opacity:0}} animate={{scale:1, opacity:1}} className="text-center">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-6" />
           <h1 className="text-3xl font-bold mb-3">You&apos;re in the Force!</h1>
-          <p className="text-muted-foreground text-sm max-w-xs mx-auto">
+          <p className="text-muted-foreground text-sm max-w-xs mx-auto mb-4">
             Check your inbox for your <strong>Member Certificate</strong>. 
             Welcome to D4.
           </p>
+          {/* <p className="text-[10px] text-muted-foreground/50 uppercase tracking-widest">Refreshing in 5 seconds...</p> */}
         </motion.div>
       </div>
     );
@@ -180,7 +191,6 @@ export default function JoinCommunityPage() {
                   </div>
                   {errors.email && <p className="text-red-500 text-[10px] mt-2 ml-2">{errors.email}</p>}
                   
-                  {/* Step Heading Below */}
                   <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/60 mt-4 text-start">Step 01 - Account Setup</p>
                 </motion.div>
               ) : (
@@ -266,7 +276,6 @@ export default function JoinCommunityPage() {
                     <button onClick={() => setStep(1)} className="text-[10px] uppercase tracking-widest text-muted-foreground/60 hover:text-foreground transition-colors">Back</button>
                   </div>
 
-                  {/* Step Heading Below */}
                   <p className="text-[8px] font-semibold uppercase tracking-widest text-muted-foreground/60 mt-4 text-start">Step 02 - Personal Details</p>
                 </motion.div>
               )}

@@ -58,7 +58,7 @@ export async function POST(req: Request) {
       from: `"D4 Community" <${process.env.GMAIL_USER}>`,
       to: "help.d4community@gmail.com",
       replyTo: email,
-      subject: `🚀 New Member Application: ${name}`,
+      subject: `New Member Application: ${name}`,
       html: generateAdminEmail({
         name,
         email,
