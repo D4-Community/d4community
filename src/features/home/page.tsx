@@ -7,6 +7,7 @@ import FAQPage from "./sections/FAQSection";
 import { GallerySection } from "./sections/GallerySection";
 import { CommunityPartners } from "./sections/CommunityPartners";
 import { Partners } from "./sections/Partners";
+import XReviews from "./sections/XReview";
 
 export const HomePage = () => {
   return (
@@ -23,6 +24,7 @@ export const HomePage = () => {
       </div>
       <AboutSection />
       {/* <LogosSlider /> */}
+      <XReviews />
       <GallerySection />
       <FAQPage />
     </main>
