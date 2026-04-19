@@ -1,7 +1,3 @@
-Here is a comprehensive, production-grade `README.md` that leverages the specific advanced libraries in your `package.json` (like Cobe, Sanity, and React Three Fiber). This version is structured to explain *why* these tools are used, making it easier for new contributors to understand the codebase.
-
----
-
 # D4 Community: Website Revamped
 
 The official digital gateway for the **D4 Community**. This platform is a high-performance, visually immersive web application designed to unite developers, designers, and tech leaders. It combines high-end 3D visuals with a robust headless CMS to deliver a world-class community experience.
