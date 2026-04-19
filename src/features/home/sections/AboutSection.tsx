@@ -311,7 +311,7 @@ export default function AboutSection() {
               ))}
             </span>
           </h2>
-          <p className="text-base md:text-lg text-neutral-500 max-w-5xl mx-auto py-4 md:py-6 leading-relaxed">
+          <p className="text-base md:text-lg text-neutral-500 max-w-5xl mx-auto py-2 md:py-4 leading-relaxed">
             Discover our global footprint through speakers, partners, and events worldwide.
             Hover a pin to explore all entries for that city.
           </p>
@@ -460,6 +460,19 @@ export default function AboutSection() {
                   className="w-10 h-10 rounded-lg bg-white dark:bg-neutral-800 shadow-lg border border-neutral-300 dark:border-neutral-700 flex items-center justify-center text-lg font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors disabled:opacity-40">+</button>
                 <button onClick={handleZoomOut} disabled={position.zoom <= 1}
                   className="w-10 h-10 rounded-lg bg-white dark:bg-neutral-800 shadow-lg border border-neutral-300 dark:border-neutral-700 flex items-center justify-center text-lg font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors disabled:opacity-40">−</button>
+              </div>
+
+              <div className="absolute top-4 left-4 bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm rounded-lg px-4 py-2 border border-neutral-300 dark:border-neutral-700 z-10">
+                <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
+                  Map Navigation
+                </div>
+
+                <div className="text-xs text-neutral-600 dark:text-neutral-400 space-y-0.5">
+                  <div>• Drag to pan</div>
+                  <div>• Scroll to zoom</div>
+                  <div>• Hover pin → city list</div>
+                  <div>• Click entry → details</div>
+                </div>
               </div>
 
               {/* Legend */}
