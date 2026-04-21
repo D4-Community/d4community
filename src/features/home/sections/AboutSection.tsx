@@ -406,7 +406,6 @@ function calcPopupPos(
 }
 
 // ─── Reactive dark-mode hook ─────────────────────────────────────────────────
-// Checks BOTH Tailwind class-based dark mode AND OS-level prefers-color-scheme.
 function useDarkMode() {
   const isDarkMode = () => {
     if (typeof window === "undefined") return false;
@@ -417,15 +416,20 @@ function useDarkMode() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
+    // Set immediately on mount
     setIsDark(isDarkMode());
+
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const handleMqChange = () => setIsDark(isDarkMode());
     mq.addEventListener("change", handleMqChange);
+
+    // Watch for class changes on <html> (Tailwind dark mode toggle)
     const observer = new MutationObserver(() => setIsDark(isDarkMode()));
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
     });
+
     return () => {
       mq.removeEventListener("change", handleMqChange);
       observer.disconnect();
@@ -435,23 +439,16 @@ function useDarkMode() {
   return isDark;
 }
 
-// Theme-aware map colors — matching the reference SVG style:
-// Light: white land + dark borders (like a clean atlas)
-// Dark:  dark charcoal land + subtle light borders (like the reference)
 function useMapTheme(isDark: boolean) {
   return {
-    // Land fill — solid so borders are always visible against it
     landFill: isDark ? "#1c1c1e" : "#e8e8e8",
-    // Country border stroke
     countryStroke: isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.2)",
     countryStrokeWidth: isDark ? 0.6 : 0.5,
-    // Globe ocean background fill
+    // FIX: ocean/container bg now properly tied to isDark
     oceanFill: isDark ? "#0a0a0a" : "#dde8f0",
-    // Globe sphere rim
+    containerBg: isDark ? "#080808" : "#dde8f0",
     sphereStroke: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)",
-    // Hover fill for land in map mode
     hoverFill: isDark ? "#2a2a2e" : "rgba(59,130,246,0.1)",
-    // Marker dot outline
     markerStroke: isDark ? "#0a0a0a" : "#ffffff",
   };
 }
@@ -478,23 +475,32 @@ export default function AboutSection() {
   } | null>(null);
 
   const isDark = useDarkMode();
+  const theme = useMapTheme(isDark);
   const {
     landFill,
     countryStroke,
     countryStrokeWidth,
     oceanFill,
+    containerBg,
     sphereStroke,
     hoverFill,
     markerStroke,
-  } = useMapTheme(isDark);
+  } = theme;
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  // FIX: Store container bg in ref so wheel handler always reads latest value
+  const containerBgRef = useRef(containerBg);
+  useEffect(() => { containerBgRef.current = containerBg; }, [containerBg]);
+
   const isDraggingGlobe = useRef(false);
   const lastMousePos = useRef<{ x: number; y: number } | null>(null);
   const rotationRef = useRef<[number, number, number]>([-78, -20, 0]);
   const autoRotateRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastPinchDistance = useRef<number | null>(null);
+  // FIX: track current viewMode in ref for wheel handler without stale closure
+  const viewModeRef = useRef<ViewMode>(viewMode);
+  useEffect(() => { viewModeRef.current = viewMode; }, [viewMode]);
 
   // ─── Data Logic ───
   const cityGroups = useMemo(() => {
@@ -560,19 +566,33 @@ export default function AboutSection() {
   }, [cityGroups, selectedRegion]);
 
   // ─── Auto-rotate ───
+  // FIX: Use rAF + throttle instead of setInterval every 50ms for smooth rotation
+  const rafRef = useRef<number | null>(null);
+  const lastFrameTime = useRef<number>(0);
+
   const startAutoRotate = useCallback(() => {
-    if (autoRotateRef.current) clearInterval(autoRotateRef.current);
-    autoRotateRef.current = setInterval(() => {
-      rotationRef.current = [
-        rotationRef.current[0] + 0.3,
-        rotationRef.current[1],
-        0,
-      ];
-      setRotation([...rotationRef.current]);
-    }, 50);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const tick = (now: number) => {
+      if (now - lastFrameTime.current >= 33) { // ~30fps for smooth but not heavy
+        lastFrameTime.current = now;
+        rotationRef.current = [
+          rotationRef.current[0] + 0.4,
+          rotationRef.current[1],
+          0,
+        ];
+        setRotation([...rotationRef.current]);
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
   }, []);
 
   const stopAutoRotate = useCallback(() => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    // keep old interval cleanup for safety
     if (autoRotateRef.current) {
       clearInterval(autoRotateRef.current);
       autoRotateRef.current = null;
@@ -631,12 +651,9 @@ export default function AboutSection() {
     if (!selectedRegion && !popup) startAutoRotate();
   }, [viewMode, selectedRegion, popup, startAutoRotate]);
 
-  // ─── Touch handling — pan + pinch-zoom for BOTH globe and flat map ───
-  // For the flat map we manually track touch so we can do precise pixel→coordinate conversion.
-  // ZoomableGroup's built-in touch handling is disabled (filterZoomEvent blocks touch) to
-  // prevent conflicts; we drive position state ourselves.
+  // ─── Touch handling ───
   const mapTouchStartRef = useRef<{ x: number; y: number } | null>(null);
-  const mapTouchZoomRef = useRef<number | null>(null); // zoom level at pinch start
+  const mapTouchZoomRef = useRef<number | null>(null);
 
   const handleTouchStart = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
@@ -653,11 +670,10 @@ export default function AboutSection() {
             t2.clientX - t1.clientX,
             t2.clientY - t1.clientY,
           );
-          mapTouchZoomRef.current = null; // will be set on first move
-          mapTouchStartRef.current = null; // cancel single-finger pan
+          mapTouchZoomRef.current = null;
+          mapTouchStartRef.current = null;
         }
       } else {
-        // Globe: reset pinch tracker
         lastPinchDistance.current = null;
       }
     },
@@ -666,11 +682,10 @@ export default function AboutSection() {
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
-      e.preventDefault(); // prevent page scroll while interacting with map
+      e.preventDefault();
 
       if (viewMode === "globe") {
         if (e.touches.length === 2) {
-          // Globe pinch-to-zoom
           isDraggingGlobe.current = false;
           const t1 = e.touches[0];
           const t2 = e.touches[1];
@@ -689,13 +704,10 @@ export default function AboutSection() {
           }
           lastPinchDistance.current = dist;
         }
-        // Single-finger globe drag handled by pointer events — no action needed here
         return;
       }
 
-      // ── Flat map mode ──
       if (e.touches.length === 2) {
-        // Pinch-to-zoom: scale zoom proportionally to finger distance ratio
         const t1 = e.touches[0];
         const t2 = e.touches[1];
         const dist = Math.hypot(
@@ -703,7 +715,6 @@ export default function AboutSection() {
           t2.clientY - t1.clientY,
         );
         if (lastPinchDistance.current !== null && dist > 0) {
-          // Use ratio of current to previous distance as zoom multiplier
           const ratio = dist / lastPinchDistance.current;
           setPosition((p) => ({
             ...p,
@@ -711,21 +722,13 @@ export default function AboutSection() {
           }));
         }
         lastPinchDistance.current = dist;
-        mapTouchStartRef.current = null; // no panning during pinch
+        mapTouchStartRef.current = null;
       } else if (e.touches.length === 1 && mapTouchStartRef.current) {
-        // Single-finger pan: convert pixel delta to geographic coordinate delta.
-        // The Mercator projection scales 360° of longitude across the full SVG width.
-        // At zoom level z, the effective scale is 160*z pixels per "projection unit".
-        // We use the container width to figure out how many degrees per pixel.
         const t = e.touches[0];
         const dx = t.clientX - mapTouchStartRef.current.x;
         const dy = t.clientY - mapTouchStartRef.current.y;
-
-        // Degrees per pixel: at scale=160*zoom, the full circumference is 2π*scale pixels.
-        // So 1 pixel = 360 / (2π * 160 * zoom) degrees.
         const degsPerPx = 360 / (2 * Math.PI * 160 * position.zoom);
         const lngDelta = -dx * degsPerPx;
-        // Mercator latitude is non-linear; approximate with same factor scaled for typical lat range
         const latDelta = dy * degsPerPx * 0.85;
 
         setPosition((p) => ({
@@ -750,7 +753,6 @@ export default function AboutSection() {
       if (e.touches.length === 0) {
         mapTouchStartRef.current = null;
       } else if (e.touches.length === 1 && viewMode === "map") {
-        // Finger lifted during pinch — resume pan from remaining finger
         mapTouchStartRef.current = {
           x: e.touches[0].clientX,
           y: e.touches[0].clientY,
@@ -760,9 +762,7 @@ export default function AboutSection() {
     [viewMode],
   );
 
-  // ─── Non-passive touchmove so we can call preventDefault() ───────────────
-  // React synthetic events are passive by default; we need a native listener
-  // to block page scroll while the user pans/pinches the map.
+  // ─── Non-passive touchmove ───
   const mapInnerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = mapInnerRef.current;
@@ -773,24 +773,36 @@ export default function AboutSection() {
     el.addEventListener("touchmove", handler, { passive: false });
     return () => el.removeEventListener("touchmove", handler);
   }, []);
-  const handleGlobeWheel = useCallback(
-    (e: React.WheelEvent<HTMLDivElement>) => {
-      if (viewMode === "globe") {
+
+  // FIX: Only zoom when pointer is actually over the map/globe area
+  // Use a native wheel listener on the container so we can check containment
+  useEffect(() => {
+    const container = mapInnerRef.current;
+    if (!container) return;
+
+    const handler = (e: WheelEvent) => {
+      // Only handle if the event target is inside our map container
+      if (!container.contains(e.target as Node)) return;
+      e.preventDefault();
+
+      if (viewModeRef.current === "globe") {
         const step = e.deltaY > 0 ? -25 : 25;
         setGlobeScale((s) =>
           Math.max(GLOBE_MIN_SCALE, Math.min(GLOBE_MAX_SCALE, s + step)),
         );
       } else {
-        // Flat map: scroll-wheel zoom by 15% per tick
         const factor = e.deltaY > 0 ? 1 / 1.15 : 1.15;
         setPosition((p) => ({
           ...p,
           zoom: Math.max(1, Math.min(8, p.zoom * factor)),
         }));
       }
-    },
-    [viewMode],
-  );
+    };
+
+    // passive: false so preventDefault() works
+    container.addEventListener("wheel", handler, { passive: false });
+    return () => container.removeEventListener("wheel", handler);
+  }, []);
 
   // ─── Globe zoom buttons ───
   const handleGlobeZoomIn = useCallback(
@@ -1021,10 +1033,10 @@ export default function AboutSection() {
           </div>
         </div>
 
-        {/* Main Map Box — bg matches ocean color for map mode, dark for globe */}
+        {/* FIX: Main map container — background now uses containerBg which is reactive to isDark */}
         <div
           className="relative border border-neutral-200 dark:border-white/15 rounded-[2.5rem] overflow-hidden shadow-3xl select-none"
-          style={{ background: isDark ? "#080808" : "#dde8f0" }}
+          style={{ background: containerBg }}
           ref={mapContainerRef}
         >
           {/* View Toggle */}
@@ -1047,7 +1059,7 @@ export default function AboutSection() {
           <div
             ref={mapInnerRef}
             className="h-[400px] md:h-[600px] w-full relative cursor-grab active:cursor-grabbing"
-            style={{ touchAction: viewMode === "globe" ? "none" : "none" }}
+            style={{ touchAction: "none" }}
             onPointerDown={
               viewMode === "globe" ? handleGlobePointerDown : undefined
             }
@@ -1063,7 +1075,8 @@ export default function AboutSection() {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            onWheel={handleGlobeWheel}
+            // FIX: Removed onWheel from React synthetic events — using native listener above
+            // so we can properly preventDefault() and check containment
           >
             <ComposableMap
               projection={
@@ -1088,17 +1101,15 @@ export default function AboutSection() {
                   onMoveEnd={({ coordinates, zoom }) =>
                     setPosition({ coordinates, zoom })
                   }
-                  filterZoomEvent={(element: SVGElement) => {
-                    // The library passes the SVGElement being interacted with, not the event.
-                    // We check for touch capability on the window to decide whether to block.
+                  filterZoomEvent={() => {
+                    // Disable built-in zoom — we handle it ourselves via native wheel listener
                     if (
                       typeof window !== "undefined" &&
                       ("ontouchstart" in window || navigator.maxTouchPoints > 0)
                     ) {
                       return false;
                     }
-                    // Allow interaction on non-touch (desktop) devices
-                    return true;
+                    return false; // always false — we own zoom
                   }}
                 >
                   <Geographies geography={geoUrl}>
@@ -1164,7 +1175,6 @@ export default function AboutSection() {
                           }
                           className="cursor-pointer"
                         >
-                          {/* Large invisible touch target for mobile */}
                           <circle r={18} fill="transparent" />
                           <circle
                             r={isActive ? 12 : 5}
@@ -1186,7 +1196,6 @@ export default function AboutSection() {
               ) : (
                 /* ─── GLOBE MODE ─── */
                 <g>
-                  {/* Ocean background — fills the globe disk so land borders contrast */}
                   <Sphere
                     id="rsm-sphere"
                     fill={oceanFill}
@@ -1266,7 +1275,6 @@ export default function AboutSection() {
                           }
                           className="cursor-pointer"
                         >
-                          {/* Large invisible touch target */}
                           <circle
                             r={18}
                             fill="transparent"
@@ -1313,7 +1321,6 @@ export default function AboutSection() {
             <div className="text-xs md:text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
               Map Navigation
             </div>
-
             <div className="text-xs text-neutral-600 dark:text-neutral-400 space-y-0.5">
               <div>• Drag to pan</div>
               <div>• Scroll to zoom</div>
