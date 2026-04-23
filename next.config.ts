@@ -38,7 +38,11 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "assets.aceternity.com",
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.lumacdn.com',
+      },
     ],
   },
   // For Next.js 16 with Turbopack, use serverExternalPackages
