@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ChevronLeft,
@@ -22,18 +21,41 @@ interface EventItem {
   title: string;
   description: string;
   imageUrl: string;
-  category: "Hackathon" | "Meetup" | "Workshop";
+  category: "Hackathon" | "Meetup" | "Workshop" | "Event";
   mode: "In-Person" | "Virtual";
   date?: string;
+  /** Raw ISO timestamp used for sorting — not displayed */
+  rawDate?: string;
   location?: string;
+  externalUrl?: string;
 }
 
 /* ===================== CONFIG ===================== */
 
 const AUTO_SCROLL_DELAY = 6000;
-const MOBILE_CLOSE_DELAY = 3000; // Time in ms the details stay visible on mobile
+const MOBILE_CLOSE_DELAY = 3000;
 const COMMUDLE_API_URL = "/api/commudle-events";
 const DEVFOLIO_API_URL = "/api/devfolio-hackathons";
+const LUMA_API_URL = "/api/luma-events";
+
+/* ===================== HELPERS ===================== */
+
+/** Parse any date string → ms epoch (NaN-safe). */
+function toEpoch(dateStr?: string): number {
+  if (!dateStr) return 0;
+  const ms = Date.parse(dateStr);
+  return isNaN(ms) ? 0 : ms;
+}
+
+/** Format an ISO string to "Apr 23" style. */
+function fmtDate(iso?: string): string {
+  if (!iso) return "TBD";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "TBD";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+/* ===================== COMPONENT ===================== */
 
 export function EventCarousel({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,22 +67,21 @@ export function EventCarousel({ className }: { className?: string }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [animate, setAnimate] = useState(true);
-
-  const [activeCardId, setActiveCardId] = useState<string | number | null>(
-    null,
-  );
+  const [activeCardId, setActiveCardId] = useState<string | number | null>(null);
 
   /* ===================== DATA FETCHING ===================== */
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [commudleRes, devfolioRes] = await Promise.allSettled([
+        const [commudleRes, devfolioRes, lumaRes] = await Promise.allSettled([
           fetch(COMMUDLE_API_URL),
           fetch(DEVFOLIO_API_URL),
+          fetch(LUMA_API_URL),
         ]);
 
         let allItems: EventItem[] = [];
 
+        /* ---------- Commudle ---------- */
         if (commudleRes.status === "fulfilled" && commudleRes.value.ok) {
           const data = await commudleRes.value.json();
           const mapped: EventItem[] = (data?.data?.values || []).map(
@@ -70,21 +91,20 @@ export function EventCarousel({ className }: { className?: string }) {
               description: item.tagline || "",
               imageUrl: item.header_image_path || "/placeholder.png",
               category: "Meetup" as const,
-              mode: (item.event_type === "online" ? "Virtual" : "In-Person") as
-                | "Virtual"
-                | "In-Person",
-              date: item.start_time
-                ? new Date(item.start_time).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })
-                : "TBD",
+              mode: (item.event_type === "online"
+                ? "Virtual"
+                : "In-Person") as "Virtual" | "In-Person",
+              rawDate: item.start_time,
+              date: fmtDate(item.start_time),
               location: item.event_locations?.[0]?.name || "Online",
+              externalUrl:
+                "https://www.commudle.com/communities/d4-community/events",
             }),
           );
           allItems = [...allItems, ...mapped];
         }
 
+        /* ---------- Devfolio ---------- */
         if (devfolioRes.status === "fulfilled" && devfolioRes.value.ok) {
           const data = await devfolioRes.value.json();
           const mapped: EventItem[] = (Array.isArray(data) ? data : []).map(
@@ -97,19 +117,63 @@ export function EventCarousel({ className }: { className?: string }) {
               mode: (item.location?.toLowerCase().includes("online")
                 ? "Virtual"
                 : "In-Person") as "Virtual" | "In-Person",
-              date: item.starts_at
-                ? new Date(item.starts_at).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })
-                : "Upcoming",
+              rawDate: item.starts_at,
+              date: fmtDate(item.starts_at),
               location: item.location || "Remote",
             }),
           );
           allItems = [...allItems, ...mapped];
         }
 
-        setItems(allItems.slice(0, 15));
+        /* ---------- Luma ---------- */
+        if (lumaRes.status === "fulfilled" && lumaRes.value.ok) {
+          const data = await lumaRes.value.json();
+
+          /**
+           * Luma response shape (observed):
+           * { entries: [ { event: {...}, hosts: [...] }, ... ] }
+           *
+           * Each event object typically contains:
+           *   api_id, name, cover_url, start_at, end_at, geo_address_info,
+           *   geo_latitude, geo_longitude, url, description, zoom_meeting_url
+           */
+          const entries: any[] = data?.entries ?? data?.data?.entries ?? [];
+
+          const mapped: EventItem[] = entries.map((entry: any) => {
+            const ev = entry?.event ?? entry;
+            const isVirtual =
+              !ev.geo_address_info?.city_state ||
+              ev.zoom_meeting_url ||
+              ev.meeting_url;
+
+            return {
+              id: `l-${ev.api_id ?? ev.id}`,
+              title: ev.name || "Luma Event",
+              description: ev.description || ev.summary || "",
+              imageUrl: ev.cover_url || ev.image_url || "/placeholder.png",
+              category: "Event" as const,
+              mode: (isVirtual ? "Virtual" : "In-Person") as
+                | "Virtual"
+                | "In-Person",
+              rawDate: ev.start_at,
+              date: fmtDate(ev.start_at),
+              location:
+                ev.geo_address_info?.city_state ||
+                ev.geo_address_info?.address ||
+                "Online",
+              externalUrl: ev.url
+                ? `https://lu.ma/${ev.url}`
+                : "https://lu.ma/user/usr-zPnx2wwYuPhns3S",
+            };
+          });
+
+          allItems = [...allItems, ...mapped];
+        }
+
+        /* ---------- Sort newest → oldest ---------- */
+        allItems.sort((a, b) => toEpoch(b.rawDate) - toEpoch(a.rawDate));
+
+        setItems(allItems.slice(0, 20));
       } catch (err) {
         console.error(err);
       } finally {
@@ -166,19 +230,12 @@ export function EventCarousel({ className }: { className?: string }) {
   };
 
   const handleCardClick = (id: string | number) => {
-    // If clicking same card, toggle it off
     if (activeCardId === id) {
       clearActiveCard();
       return;
     }
-
-    // Set new active card
     setActiveCardId(id);
-
-    // Clear any existing timer
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-    // Set new timer to close after 3 seconds
     timeoutRef.current = setTimeout(() => {
       setActiveCardId(null);
     }, MOBILE_CLOSE_DELAY);
@@ -204,6 +261,21 @@ export function EventCarousel({ className }: { className?: string }) {
     return () => clearInterval(interval);
   }, [paused, handleNext, total]);
 
+  /* =================== CATEGORY BADGE COLOR =================== */
+  const categoryStyle = (cat: EventItem["category"]) => {
+    switch (cat) {
+      case "Hackathon":
+        return "bg-violet-500/10 text-violet-500 border-violet-500/20";
+      case "Meetup":
+        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+      case "Workshop":
+        return "bg-sky-500/10 text-sky-500 border-sky-500/20";
+      case "Event":
+      default:
+        return "bg-pink-500/10 text-pink-500 border-pink-500/20";
+    }
+  };
+
   if (loading)
     return (
       <div className="h-96 flex items-center justify-center text-zinc-500 animate-pulse uppercase tracking-[0.4em] text-[10px] font-black">
@@ -219,22 +291,17 @@ export function EventCarousel({ className }: { className?: string }) {
       )}
     >
       <div className="mb-10 md:mb-12 text-center gap-3">
-        <div>
-          <h2 className="font-bold text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white tracking-tight text-center">
-            Past{" "}
-            <span className="text-gray-400 dark:text-white/30">Events.</span>
-          </h2>
-        </div>
+        <h2 className="font-bold text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white tracking-tight text-center">
+          Past{" "}
+          <span className="text-gray-400 dark:text-white/30">Events.</span>
+        </h2>
       </div>
 
       <div
         ref={containerRef}
         className="overflow-hidden relative"
         onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => {
-          setPaused(false);
-          // Don't clear immediately on mouse leave to allow click logic to persist
-        }}
+        onMouseLeave={() => setPaused(false)}
       >
         <motion.div
           className="flex"
@@ -247,6 +314,10 @@ export function EventCarousel({ className }: { className?: string }) {
         >
           {slides.map((item, i) => {
             const uniqueId = `${item.id}-${i}`;
+            const linkUrl =
+              item.externalUrl ||
+              "https://www.commudle.com/communities/d4-community/events";
+
             return (
               <div
                 key={uniqueId}
@@ -264,16 +335,22 @@ export function EventCarousel({ className }: { className?: string }) {
                     mode: item.mode,
                   }}
                 />
+
                 <motion.div className="group relative bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 rounded-[2rem] overflow-hidden flex flex-col h-[500px] transition-all duration-500 hover:border-[#fd7d6e]/30">
-                  <div className="relative aspect-[4/3] bg-zinc-50 dark:bg-zinc-900/50 p-4">
-                    <Image
+                  {/* Image */}
+                  <div className="relative aspect-[4/3] bg-zinc-50 dark:bg-zinc-900/50 p-4 flex items-center justify-center overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={item.imageUrl}
                       alt={item.title}
-                      fill
-                      className="object-contain p-4 transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 33vw"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src =
+                          "/placeholder.png";
+                      }}
+                      className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
                     />
 
+                    {/* Mode badge */}
                     <div className="absolute top-5 left-5 flex flex-col gap-2">
                       <span
                         className={cn(
@@ -290,9 +367,20 @@ export function EventCarousel({ className }: { className?: string }) {
                         )}
                         {item.mode}
                       </span>
+
+                      {/* Category badge */}
+                      <span
+                        className={cn(
+                          "text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full backdrop-blur-md border flex items-center gap-1.5 w-fit",
+                          categoryStyle(item.category),
+                        )}
+                      >
+                        {item.category}
+                      </span>
                     </div>
                   </div>
 
+                  {/* Content */}
                   <div className="p-8 flex-grow flex flex-col relative overflow-hidden">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
@@ -316,13 +404,11 @@ export function EventCarousel({ className }: { className?: string }) {
                       </span>
                     </div>
 
+                    {/* Hover / tap reveal drawer */}
                     <div
                       onClick={(e) => {
                         e.stopPropagation();
-                        window.open(
-                          "https://www.commudle.com/communities/d4-community/events",
-                          "_blank",
-                        );
+                        window.open(linkUrl, "_blank");
                       }}
                       className={cn(
                         "absolute inset-x-0 bottom-0 p-8 bg-white dark:bg-zinc-950 transition-transform duration-300 ease-out border-t border-zinc-100 dark:border-zinc-900 flex items-center justify-between cursor-pointer",
@@ -346,6 +432,7 @@ export function EventCarousel({ className }: { className?: string }) {
         </motion.div>
       </div>
 
+      {/* Pagination dots + nav arrows */}
       <div className="mt-6 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-900 pt-6 px-6">
         <div className="flex items-center gap-4">
           <div className="flex gap-2">

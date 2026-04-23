@@ -1,109 +1,38 @@
-# D4 Community: Website Revamped
-
-The official digital gateway for the **D4 Community**. This platform is a high-performance, visually immersive web application designed to unite developers, designers, and tech leaders. It combines high-end 3D visuals with a robust headless CMS to deliver a world-class community experience.
-
-**[ Live Website](https://d4community.com)** | **[ X (Twitter)](https://x.com/d4community)** | **[ LinkedIn](https://www.linkedin.com/company/d4community)**
-
----
-
-## Tech Stack & Architecture
-
-This project pushes the boundaries of the modern web using **Next.js 16** and **React 19**.
-
-### Visuals & UI
-* **3D Elements**: Powered by `Three.js`, `@react-three/fiber`, and `@react-three/drei`. We use these for interactive scenes and immersive backgrounds.
-* **Interactive Globe**: Utilizing `Cobe`, `d3-geo`, and `react-simple-maps` for lightweight, high-performance geographic visualizations of our global community.
-* **Styling**: Built with **Tailwind CSS v4** and `class-variance-authority` (CVA) for scalable, atomic design.
-* **Motion**: Orchestrated by **Framer Motion** for UI transitions and **Lenis** for smooth momentum scrolling.
-
-### Core Engine
-* **Headless CMS**: **Sanity v5** manages all dynamic content (Events, Blogs, Team members), allowing non-developers to update the site in real-time.
-* **State Management**: Optimized React 19 hooks and `react-use-measure` for responsive, layout-aware components.
-* **Form Logic**: `React Hook Form` paired with `Zod` for type-safe schema validation.
-
-### Backend & Utilities
-* **Document Generation**: `@react-pdf/renderer` and `pdfkit` for generating dynamic event certificates or invoices on the fly.
-* **Mailing**: `Nodemailer` for transactional emails and community notifications.
-* **Integrations**: `googleapis` for calendar/drive sync and `react-tweet` for embedding community feedback directly.
-
----
-
-## File Structure
-
-The project follows a modular, feature-based directory structure to keep the codebase maintainable as it grows:
-
-```text
-├── app/                  # Next.js App Router (Routing, Layouts, API Endpoints)
-├── components/           # UI Components
-│   ├── ui/               # Base primitive components (Shadcn/Radix)
-│   ├── canvas/           # Three.js / React Three Fiber components
-│   ├── shared/           # Reusable site-wide components (Nav, Footer)
-│   └── sections/         # Page-specific sections (Hero, Wall of Love)
-├── lib/                  # Core Business Logic
-│   ├── sanity/           # Sanity client and fetch queries
-│   ├── utils/            # Tailwind-merge and clsx helpers
-│   └── actions/          # Server Actions (Forms, Emailing)
-├── hooks/                # Custom React hooks (Marquee, Scroll logic)
-├── public/               # Static Assets (Logos, 3D Models, Optimized Images)
-├── styles/               # Global CSS & Tailwind configuration
-├── types/                # TypeScript interfaces and Sanity schemas
-└── .env.example          # Template for required environment variables
-```
-
----
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app)
 
 ## Getting Started
 
-### Prerequisites
-* **Node.js**: 20.x or higher
-* **Package Manager**: `npm` (Standard)
+First, run the development server:
 
-### Installation
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-1.  **Clone the Repository**
-    ```bash
-    git clone https://github.com/D4-Community/d4community.git
-    cd d4community
-    ```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-2.  **Install Dependencies**
-    ```bash
-    npm install
-    ```
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-3.  **Environment Configuration**
-    Create a `.env.local` file and fill in the following:
-    ```env
-    NEXT_PUBLIC_SANITY_PROJECT_ID=your_id
-    NEXT_PUBLIC_SANITY_DATASET=production
-    EMAIL_SERVER_USER=your_email
-    EMAIL_SERVER_PASSWORD=your_password
-    ```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-4.  **Run Development Server**
-    ```bash
-    npm run dev
-    ```
-    The site will be live at `http://localhost:3000`.
+## Learn More
 
----
+To learn more about Next.js, take a look at the following resources:
 
-## Contribution Guidelines
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-We believe in the power of open source. To contribute:
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-1.  **Fork** the repo and create your branch from `dev`.
-2.  **Linting**: Ensure your code passes `npm run lint` before pushing.
-3.  **Components**: Follow the atomic design pattern. Place reusable primitives in `components/ui`.
-4.  **Type Safety**: Always define TypeScript interfaces for new data structures in `types/`.
-5.  **Commit Messages**: Use conventional commits (e.g., `feat: add marquee to reviews`).
+## Deploy on Vercel
 
----
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## License
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
-
----
-
-**D4 Community** - *Empowering builders to create the exceptional.*
+Say, [Hello D4👋](https://www.d4community.com/connect)
