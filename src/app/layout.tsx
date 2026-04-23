@@ -29,6 +29,7 @@
 
 
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { SeoKeywords } from "@/components/SeoKeywords";
 
@@ -37,19 +38,16 @@ export const metadata: Metadata = {
   description:
     "D4 Community is a place where students, developers, and creators learn, build, grow, and connect together.",
   verification: {
-    google: "Wu3T8_LbSp7nhwyj_x2DH2UuUteYBjTld-zudlNfv_8",
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
 };
 
-// JSON-LD structured data — tells Google exactly what D4 Community is,
-// where it operates, and what events it runs. This powers Knowledge Panels
-// and rich results directly in search.
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://d4community.com/#organization",
+      "@id": "https://d4community.com/team",
       name: "D4 Community",
       alternateName: [
         "D4 Dev Community",
@@ -89,7 +87,7 @@ const jsonLd = {
     },
     {
       "@type": "Event",
-      "@id": "https://hacknwin.d4community.com/#event",
+      "@id": "https://d4community.com/events",
       name: "Hack-N-Win 3.0",
       description:
         "Hack-N-Win 3.0 is the second largest in-person 24-hour hackathon in India, organized by D4 Community. The biggest 24-hour hackathon under one roof in India, bringing together hundreds of student developers, designers, and innovators.",
@@ -97,7 +95,7 @@ const jsonLd = {
       eventStatus: "https://schema.org/EventScheduled",
       organizer: {
         "@type": "Organization",
-        "@id": "https://d4community.com/#organization",
+        "@id": "https://d4community.com/team",
         name: "D4 Community",
       },
       location: {
@@ -121,20 +119,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* JSON-LD structured data for Google Knowledge Panel + rich results */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="antialiased" suppressHydrationWarning>
-        {/* SEO keyword layer — visually hidden, crawler-readable */}
         <SeoKeywords />
         {children}
       </body>
+      {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
 }
