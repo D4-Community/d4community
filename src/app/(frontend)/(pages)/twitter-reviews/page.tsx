@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Component, ErrorInfo, ReactNode } from "react";
 import { Tweet } from "react-tweet";
 
 /* ===================== DATA ===================== */
@@ -19,6 +19,36 @@ const TWEET_IDS = [
 
 const SCROLL_ITEMS = [...TWEET_IDS, ...TWEET_IDS, ...TWEET_IDS];
 
+/* ===================== ERROR BOUNDARY ===================== */
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  fallback: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class TweetErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  public state: ErrorBoundaryState = { hasError: false };
+
+  public static getDerivedStateFromError(_: Error): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.warn("Handled tweet rendering exception safely:", error.message);
+  }
+
+  public render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+
 /* ===================== HOOK ===================== */
 
 function useMarqueeHover(direction: "up" | "down", duration = 60) {
@@ -28,7 +58,6 @@ function useMarqueeHover(direction: "up" | "down", duration = 60) {
   const isHovered = useRef(false);
 
   const animate = () => {
-    // Disable animation on small mobile screens to prevent layout issues
     if (typeof window !== "undefined" && window.innerWidth <= 576) {
       if (colRef.current) colRef.current.style.transform = "none";
       return;
@@ -86,9 +115,38 @@ function useMarqueeHover(direction: "up" | "down", duration = 60) {
 /* ===================== SUB-COMPONENTS ===================== */
 
 function TweetCard({ id }: { id: string }) {
+  const fallbackCard = (
+    <div className="w-full p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm flex flex-col justify-between min-h-[130px]">
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
+        <div className="space-y-1 flex-1">
+          <div className="w-24 h-3 bg-zinc-100 dark:bg-zinc-800 rounded animate-pulse" />
+          <div className="w-16 h-2 bg-zinc-100 dark:bg-zinc-800 rounded animate-pulse" />
+        </div>
+      </div>
+      <p className="text-xs text-zinc-400 dark:text-zinc-500 italic my-3">
+        Review temporarily unavailable or post removed.
+      </p>
+      <a
+        href={`https://x.com/i/status/${id}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-xs text-blue-500 hover:underline font-medium self-start"
+      >
+        View original on X →
+      </a>
+    </div>
+  );
+
   return (
-    <div className="w-full px-2 mb-4">
-      <Tweet id={id} />
+    /* FIXES APPLIED BELOW:
+      1. Added `@container` to isolate container query measurements to the individual card width.
+      2. Added strict nested resets (`[&>div]:!max-w-full`, `[&_blockquote]:!max-w-full`) to prevent layout leaks.
+    */
+    <div className="@container w-full px-2 mb-4 flex flex-col [&>div]:!max-w-full [&>div]:!w-full [&_blockquote]:!max-w-full [&_blockquote]:!w-full [&_blockquote]:!mx-0">
+      <TweetErrorBoundary fallback={fallbackCard}>
+        <Tweet id={id} />
+      </TweetErrorBoundary>
     </div>
   );
 }
@@ -98,11 +156,11 @@ function MarqueeColumn({ direction, duration, className = "", isMobile = false }
 
   return (
     <div 
-      className={`h-full overflow-hidden ${className}`} 
+      className={`h-full overflow-hidden min-w-0 ${className}`} 
       onMouseEnter={onMouseEnter} 
       onMouseLeave={onMouseLeave}
     >
-      <div ref={colRef} className="flex flex-col will-change-transform">
+      <div ref={colRef} className="flex flex-col will-change-transform w-full">
         {(isMobile ? TWEET_IDS : SCROLL_ITEMS).map((id, i) => (
           <TweetCard key={`${direction}-${id}-${i}`} id={id} />
         ))}
@@ -118,15 +176,11 @@ export default function ReviewsPage() {
 
   useEffect(() => {
     setMounted(true);
-    // FIX: Force scroll to top on redirect/mount
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
 
   return (
     <main className="min-h-screen bg-white dark:bg-black transition-colors duration-300">
-      {/* FIX: Added opacity-0 until mounted to prevent "flashing" or 
-         scrolling to the bottom of a zero-height container.
-      */}
       <section className={`relative w-full pt-24 md:pt-32 pb-24 px-4 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
         
         {/* HEADER AREA */}
