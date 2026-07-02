@@ -15,7 +15,8 @@ const organizers = [
       linkedin: "https://www.linkedin.com/in/itsayu/",
       twitter: "https://twitter.com/its_AKT_/",
       github: "https://github.com/itsayu/",
-      website: "https://itsayu.d4community.com", // Added portfolio link here
+      website: "https://itsayu.d4community.com",
+      bioWebsite: "https://itsakt.d4community.com",
     },
   },
   {
@@ -147,7 +148,7 @@ export const CoFounders = () => {
                       </h3>
                     </div>
                     <p className="text-muted-foreground leading-relaxed text-base mt-4 mb-8">
-                      {formatBio(founder.bio, founder.name, founder.socials.website)}
+                      {formatBio(founder.bio, founder.name, founder.socials.bioWebsite || founder.socials.website)}
                     </p>
 
                     {/* Socials anchored to bottom */}
@@ -166,6 +167,11 @@ export const CoFounders = () => {
                           <Globe className="w-5 h-5 relative z-10" />
                         </a>
                       )}
+                      {/* {founder.socials.bioWebsite && (
+                        <a href={founder.socials.bioWebsite} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                          <Globe className="w-5 h-5 relative z-10 opacity-80" />
+                        </a>
+                      )} */}
                     </div>
                   </div>
                 </div>
@@ -228,7 +234,7 @@ export const CoFounders = () => {
                     </h3>
                   </div>
                   <p className="text-muted-foreground leading-relaxed text-base md:text-lg max-w-xl">
-                    {formatBio(organizer.bio, organizer.name, organizer.socials.website)}
+                    {formatBio(organizer.bio, organizer.name, organizer.socials.bioWebsite || organizer.socials.website)}
                   </p>
 
                   {/* Socials horizontal card */}
@@ -245,6 +251,11 @@ export const CoFounders = () => {
                     {organizer.socials.website && (
                       <a href={organizer.socials.website} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
                         <Globe className="w-5 h-5 relative z-10" />
+                      </a>
+                    )}
+                    {organizer.socials.bioWebsite && (
+                      <a href={organizer.socials.bioWebsite} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                        <Globe className="w-5 h-5 relative z-10 opacity-80" />
                       </a>
                     )}
                   </div>
