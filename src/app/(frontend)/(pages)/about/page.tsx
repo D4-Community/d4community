@@ -1,6 +1,7 @@
 import AboutPage from "@/features/about/page";
-import OrgSchema from "@/schema/org-schema";
 import { Metadata } from "next";
+import OrgSchema from "@/schema/org-schema";
+import { FAQSchema } from "@/schema";
 
 export const metadata: Metadata = {
   title: "About Us | D4 Community",
@@ -37,6 +38,8 @@ export default function Page() {
   return (
     <>
       <OrgSchema />
+      <FAQSchema page="join-faq" />
+      <FAQSchema page="faq" />
       <AboutPage />
       
       {/* Semantic Structural Hyperlink Map 

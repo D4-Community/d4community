@@ -6,21 +6,28 @@ import FAQPage from "../sections/FAQSection";
 import { UpcomingEvents } from "../sections/UpcomingEvents";
 import { GallerySection } from "../sections/GallerySection";
 import { Partners } from "../sections/Partners";
+import OrgSchema from "@/schema/org-schema";
+import { FAQSchema } from "@/schema";
 
 export const HomePage = () => {
   return (
-    <main className="flex flex-col min-h-screen">
-      <HeroSection />
-      <div>
-        <EventCarousel />
-      </div>
-      <Partners />
-      <UpcomingEvents />
-      <AboutSection />
-      <FeatureSection />
-      <LogosSlider />
-      <GallerySection />
-      <FAQPage />
-    </main>
+    <>
+      <OrgSchema />
+      <FAQSchema page="join-faq" />
+      <FAQSchema page="faq" />
+      <main className="flex flex-col min-h-screen">
+        <HeroSection />
+        <div>
+          <EventCarousel />
+        </div>
+        <Partners />
+        <UpcomingEvents />
+        <AboutSection />
+        <FeatureSection />
+        <LogosSlider />
+        <GallerySection />
+        <FAQPage />
+      </main>
+    </>
   );
 };

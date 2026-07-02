@@ -1,5 +1,5 @@
 export const faqRegistry = {
-  general: [
+  faq: [
     {
       question: "What exactly is the D4 Community?",
       answer:
@@ -55,7 +55,7 @@ export const faqRegistry = {
     // Add about-page-specific FAQs here
   ],
 
-  join: [
+  "join-faq": [
     {
       question: "Who can join the D4 Community?",
       answer:

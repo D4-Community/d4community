@@ -158,7 +158,7 @@ export default function JoinCommunityPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-[#fd7d6e]/30 pt-20 pb-20 px-6 transition-colors duration-300">
-      {FAQSchema && <FAQSchema page="join" />}
+      {FAQSchema && <FAQSchema page="join-faq" />}
       
       {/* --- GLOBAL LOADER OVERLAY --- */}
       <AnimatePresence>

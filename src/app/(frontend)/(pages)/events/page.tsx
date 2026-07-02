@@ -1,5 +1,6 @@
 import EventsPage from "@/features/events/page";
 import OrgSchema from "@/schema/org-schema";
+import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -37,6 +38,8 @@ export default function Page() {
   return (
     <>
       <OrgSchema />
+      <FAQSchema page="join-faq" />
+      <FAQSchema page="faq" />
       <EventsPage />
       
       {/* Semantic Structural Hyperlink Map 

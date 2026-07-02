@@ -1,12 +1,15 @@
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { Metadata } from "next";
+import OrgSchema from "@/schema/org-schema";
+import { FAQSchema } from "@/schema";
 
 export const revalidate = 3600; // Revalidate every hour
 
 export const metadata: Metadata = {
   title: "Sitemap | D4 Community",
-  description: "Overview and directory of all pages, events, and team members within the D4 Community.",
+  description:
+    "Overview and directory of all pages, events, and team members within the D4 Community.",
 };
 
 interface SanityItem {
@@ -52,7 +55,7 @@ export default async function HtmlSitemapPage() {
         title
       }`,
       {},
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: 3600 } },
     );
 
     events = dynamicData.filter((item) => item.type === "event");
@@ -62,67 +65,80 @@ export default async function HtmlSitemapPage() {
   }
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:py-16">
-      <div className="border-b border-gray-200 pb-5 mb-10">
-        <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          Sitemap
-        </h1>
-        <p className="mt-2 text-lg text-gray-500 dark:text-gray-400">
-          Find your way around the D4 Community platform.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {/* Section: Main Navigation */}
-        <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 border-l-4 border-blue-500 pl-3">
-            Main Pages
-          </h2>
-          <ul className="space-y-2.5">
-            {mainPages.map((page) => (
-              <li key={page.href}>
-                <Link href={page.href} className="text-blue-600 hover:underline dark:text-blue-400 transition">
-                  {page.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+    <>
+      <OrgSchema />
+      <FAQSchema page="join-faq" />
+      <FAQSchema page="faq" />
+      <main className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:py-16">
+        <div className="border-b border-gray-200 pb-5 mb-10">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            Sitemap
+          </h1>
+          <p className="mt-2 text-lg text-gray-500 dark:text-gray-400">
+            Find your way around the D4 Community platform.
+          </p>
         </div>
 
-        {/* Section: Reviews & Feedback */}
-        <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 border-l-4 border-indigo-500 pl-3">
-            Wall of Fame & Reviews
-          </h2>
-          <ul className="space-y-2.5">
-            {reviewPages.map((page) => (
-              <li key={page.href}>
-                <Link href={page.href} className="text-blue-600 hover:underline dark:text-blue-400 transition">
-                  {page.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {/* Section: Main Navigation */}
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 border-l-4 border-blue-500 pl-3">
+              Main Pages
+            </h2>
+            <ul className="space-y-2.5">
+              {mainPages.map((page) => (
+                <li key={page.href}>
+                  <Link
+                    href={page.href}
+                    className="text-blue-600 hover:underline dark:text-blue-400 transition"
+                  >
+                    {page.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        {/* Section: Legal & Policies */}
-        <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 border-l-4 border-gray-500 pl-3">
-            Legal & Compliance
-          </h2>
-          <ul className="space-y-2.5">
-            {legalPages.map((page) => (
-              <li key={page.href}>
-                <Link href={page.href} className="text-blue-600 hover:underline dark:text-blue-400 transition">
-                  {page.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+          {/* Section: Reviews & Feedback */}
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 border-l-4 border-indigo-500 pl-3">
+              Wall of Fame & Reviews
+            </h2>
+            <ul className="space-y-2.5">
+              {reviewPages.map((page) => (
+                <li key={page.href}>
+                  <Link
+                    href={page.href}
+                    className="text-blue-600 hover:underline dark:text-blue-400 transition"
+                  >
+                    {page.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        {/* Section: Dynamic Events */}
-        {/* {events.length > 0 && (
+          {/* Section: Legal & Policies */}
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 border-l-4 border-gray-500 pl-3">
+              Legal & Compliance
+            </h2>
+            <ul className="space-y-2.5">
+              {legalPages.map((page) => (
+                <li key={page.href}>
+                  <Link
+                    href={page.href}
+                    className="text-blue-600 hover:underline dark:text-blue-400 transition"
+                  >
+                    {page.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Section: Dynamic Events */}
+          {/* {events.length > 0 && (
           <div className="md:col-span-2 lg:col-span-1">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 border-l-4 border-emerald-500 pl-3">
               Community Events ({events.length})
@@ -139,8 +155,8 @@ export default async function HtmlSitemapPage() {
           </div>
         )} */}
 
-        {/* Section: Dynamic Team Members */}
-        {/* {teamMembers.length > 0 && (
+          {/* Section: Dynamic Team Members */}
+          {/* {teamMembers.length > 0 && (
           <div className="md:col-span-2 lg:col-span-2">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 border-l-4 border-amber-500 pl-3">
               Our Core Team ({teamMembers.length})
@@ -156,7 +172,8 @@ export default async function HtmlSitemapPage() {
             </ul>
           </div>
         )} */}
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }
