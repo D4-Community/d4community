@@ -1,5 +1,6 @@
 import D4ContactForm from "./connect";
 import OrgSchema from "@/schema/org-schema";
+import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -38,6 +39,8 @@ export default function ContactPage() {
     <>
       {/* Structural Schema Data */}
       <OrgSchema />
+      <FAQSchema page="join-faq" />
+      <FAQSchema page="faq" />
       
       {/* Visual Form Component */}
       <D4ContactForm />

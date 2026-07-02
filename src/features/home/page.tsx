@@ -8,10 +8,13 @@ import { GallerySection } from "./sections/GallerySection";
 import { CommunityPartners } from "./sections/CommunityPartners";
 import { Partners } from "./sections/Partners";
 import XReviews from "./sections/XReview";
+import { FAQSchema } from "@/schema";
 
 export const HomePage = () => {
   return (
     <main className="flex flex-col min-h-screen">
+      <FAQSchema page="join-faq" />
+      <FAQSchema page="faq" />
       <HeroSection />
       <FeatureSection />
       <CommunityPartners />

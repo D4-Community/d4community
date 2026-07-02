@@ -1,5 +1,6 @@
 import TeamPage from "@/features/team/page";
 import OrgSchema from "@/schema/org-schema";
+import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -65,6 +66,8 @@ export default function Page() {
     <>
       {/* Structural Corporate Schema Identification */}
       <OrgSchema />
+      <FAQSchema page="join-faq" />
+      <FAQSchema page="faq" />
       
       {/* Visual Home Page Layout View */}
       <TeamPage />
