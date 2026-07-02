@@ -1,5 +1,6 @@
 import TeamPage from "@/features/team/page";
 import OrgSchema from "@/schema/org-schema";
+import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,7 +16,10 @@ export const metadata: Metadata = {
     "developer hackathons India", 
     "India second largest hackathon", 
     "D4 community meetups",
-    "industry-ready engineers"
+    "industry-ready engineers",
+    "Biggest developer community in Punjab",
+    "biggest community in punjab",
+    "biggest developer community in north india"
   ],
   alternates: {
     canonical: "https://www.d4community.com/",
@@ -45,7 +49,7 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  // Complete data-map layout array structured from your primary sitemap routing configuration
+  
   const internalLinks = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
@@ -63,16 +67,12 @@ export default function Page() {
 
   return (
     <>
-      {/* Structural Corporate Schema Identification */}
       <OrgSchema />
+      <FAQSchema page="join-faq" />
+      <FAQSchema page="faq" />
       
-      {/* Visual Home Page Layout View */}
       <TeamPage />
 
-      {/* Semantic Structural Link Matrix Container.
-        'sr-only' isolates this markup structure block completely from graphic rendering viewports,
-        enabling programmatic search crawlers to scan cross-route links cleanly.
-      */}
       <nav className="sr-only" aria-hidden="false" aria-label="Hidden Navigation Map">
         {internalLinks.map((link) => (
           <a key={link.href} href={link.href}>

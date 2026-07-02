@@ -7,7 +7,7 @@ import Link from "next/link";
 import { FAQSchema, faqRegistry } from "@/schema";
 
 // Pull FAQs directly from the registry — single source of truth
-const faqs = faqRegistry.general;
+const faqs = faqRegistry.faq;
 
 const FAQItem = ({
   question,
@@ -62,7 +62,7 @@ export default function FAQSection() {
 
   return (
     <section className="relative w-full bg-background px-4 py-24 sm:px-6 lg:py-32">
-      <FAQSchema page="general" />
+      <FAQSchema page="faq" />
 
       <div className="mx-auto max-w-3xl">
         <div className="mb-16 space-y-4 text-center">
