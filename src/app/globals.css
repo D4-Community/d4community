@@ -180,3 +180,30 @@
 .slider-wrapper:hover .slider-track-right {
   animation-play-state: paused;
 }
+
+/* ─── View Transition Fix for Next.js & Tailwind v4 ─────────────── */
+html {
+  view-transition-name: root;
+}
+
+/* Clear default browser cross-fade animations */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none !important;
+  mix-blend-mode: normal !important;
+  display: block !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+/* Ensure old screen snapshot stays beneath during transition */
+::view-transition-old(root) {
+  z-index: 1 !important;
+}
+
+/* Ensure incoming theme snapshot sweeps over the top */
+::view-transition-new(root) {
+  z-index: 99999 !important;
+}
