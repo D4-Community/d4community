@@ -43,7 +43,6 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
-  // We keep all your high-value SEO keywords right here in the native HTML tags where Google expects them
   keywords: [
     "best developer community India", 
     "largest developer community India", 
@@ -70,7 +69,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* This component handles your structural data perfectly without duplicates */}
         <OrgSchema />
       </head>
       <body className="antialiased" suppressHydrationWarning>

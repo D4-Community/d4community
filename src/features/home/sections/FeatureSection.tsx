@@ -31,7 +31,7 @@ const FeatureSection = () => {
   return (
     <section className="py-8 md:py-20">
       <div className="mx-auto w-full max-w-5xl space-y-8 px-4">
-        {/* Trigger title immediately */}
+        {/* Instant display with no delay */}
         <AnimatedContainer className="mx-auto text-center" delay={0}>
           <h2 className="text-3xl font-bold tracking-wide text-balance md:text-4xl lg:text-5xl xl:font-extrabold">
             Building. Connecting. Growing.
@@ -42,9 +42,9 @@ const FeatureSection = () => {
           </p>
         </AnimatedContainer>
 
-        {/* Lowered delay from 0.4s to 0.1s for fast entry */}
+        {/* Removed delay (set to 0) for immediate render */}
         <AnimatedContainer
-          delay={0.1}
+          delay={0}
           className="grid grid-cols-1 border border-dashed sm:grid-cols-2"
         >
           {features.map((feature, i) => (

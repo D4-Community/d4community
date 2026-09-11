@@ -24,8 +24,8 @@ interface Event {
   description: string;
   imageUrl: string;
   date: string;
-  rawStartDate?: string; // Added for Schema compliance
-  rawEndDate?: string;   // Added for Schema compliance
+  rawStartDate?: string;
+  rawEndDate?: string;
   location: string;
   startTime?: string;
   endTime?: string;
@@ -35,6 +35,7 @@ interface Event {
   learnMoreLink?: string;
   slug?: string;
   komunitySlug?: string;
+  dataFormEntityId?: number;
 }
 
 // ─── Cache ────────────────────────────────────────────────────────────────────
@@ -132,37 +133,66 @@ function fmtTime(iso?: string) {
   });
 }
 
+function extractAttendeeFormId(item: any): number | undefined {
+  if (item.data_form_entity_id) return item.data_form_entity_id;
+
+  const groups =
+    item.event_data_form_entity_groups || item.data_form_entity_groups || [];
+  if (Array.isArray(groups) && groups.length > 0) {
+    const attendeeGroup = groups.find(
+      (g: any) =>
+        g?.registration_type?.name === "attendee" ||
+        g?.name?.toLowerCase().includes("attendee")
+    );
+    if (attendeeGroup?.data_form_entity_id) {
+      return attendeeGroup.data_form_entity_id;
+    }
+    const firstGroupWithId = groups.find((g: any) => g?.data_form_entity_id);
+    if (firstGroupWithId?.data_form_entity_id) {
+      return firstGroupWithId.data_form_entity_id;
+    }
+  }
+  return undefined;
+}
+
 function getRegistrationLink(event: any): string {
+  const formId = event.dataFormEntityId || extractAttendeeFormId(event);
+
+  if (formId) {
+    return `https://www.commudle.com/fill-form/${formId}`;
+  }
+
   if (event.description) {
     const decodedDesc = decodeHtmlEntities(event.description);
     const regMatch = decodedDesc.match(
-      /https?:\/\/[^\s"'<>]*(?:register|signup|sign-up|form|apply|devfolio)[^\s"'<>]*/i,
+      /https?:\/\/[^\s"'<>]*(?:register|signup|sign-up|form|apply|devfolio)[^\s"'>]*/i
     );
     if (regMatch) return regMatch[0];
   }
 
+  // Base event URL without #details anchor
   if (event.slug) {
-    return `https://commudle.com/events/${event.slug}/register`;
+    return `https://commudle.com/communities/d4-community/events/${event.slug}`;
   }
 
   return "";
 }
 
 function getLearnMoreLink(event: any): string {
+  // Uses #details anchor strictly for Learn More
+  if (event.slug) {
+    return `https://commudle.com/communities/d4-community/events/${event.slug}/#details`;
+  }
+
   if (event.description) {
     const decodedDesc = decodeHtmlEntities(event.description);
     const allLinks = [...decodedDesc.matchAll(/https?:\/\/[^\s"'<>]+/g)].map(
-      (m) => m[0],
+      (m) => m[0]
     );
-    const regLink = getRegistrationLink(event);
     const learnLink = allLinks.find(
-      (l) => l !== regLink && !/register|signup|apply/i.test(l),
+      (l) => !/register|signup|apply|fill-form/i.test(l)
     );
     if (learnLink) return learnLink;
-  }
-
-  if (event.slug) {
-    return `https://commudle.com/events/${event.slug}`;
   }
 
   return "";
@@ -333,23 +363,29 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
         if (!res.ok) throw new Error(`${res.status}`);
         const data = await res.json();
         const mapped: Event[] = (data?.data?.values ?? []).map((item: any) => {
+          const attendeeFormId = extractAttendeeFormId(item);
+
           return {
             id: item.id,
             title: decodeHtmlEntities(item.name || "Untitled Event"),
             description: parseDescription(item.description),
             imageUrl: item.header_image_path || "",
             date: fmtDate(item.start_time),
-            rawStartDate: item.start_time || undefined, // Preserved raw ISO string
-            rawEndDate: item.end_time || undefined,     // Preserved raw ISO string
+            rawStartDate: item.start_time || undefined,
+            rawEndDate: item.end_time || undefined,
             location: item.event_locations?.[0]?.name || "Location TBD",
             startTime: fmtTime(item.start_time),
             endTime: fmtTime(item.end_time),
             participants: item.interested_members_count || undefined,
             eventType: item.event_type || "online",
-            registrationLink: getRegistrationLink(item),
-            learnMoreLink: getLearnMoreLink(item),
             slug: item.slug,
             komunitySlug: item.kommunity_slug,
+            dataFormEntityId: attendeeFormId,
+            registrationLink: getRegistrationLink({
+              ...item,
+              dataFormEntityId: attendeeFormId,
+            }),
+            learnMoreLink: getLearnMoreLink(item),
           };
         });
         writeCache(mapped);
@@ -365,11 +401,11 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
   // ── Auto-rotate ───────────────────────────────────────────────────────────
   const next = useCallback(
     () => setIdx((i) => (i + 1) % events.length),
-    [events.length],
+    [events.length]
   );
   const prev = useCallback(
     () => setIdx((i) => (i - 1 + events.length) % events.length),
-    [events.length],
+    [events.length]
   );
 
   const startTimer = useCallback(() => {
@@ -404,7 +440,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
     <section
       className={cn(
         "w-full max-w-7xl mx-auto px-4 lg:px-0 pt-4 sm:pt-12 md:pt-20 pb-12 md:pb-20",
-        className,
+        className
       )}
     >
       {/* ── Section header ── */}
@@ -444,12 +480,11 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
       {/* ── Event card ── */}
       {!loading && !error && ev && (
         <div className="relative rounded-3xl bg-white dark:bg-neutral-950 border border-gray-200 dark:border-white/[0.07] overflow-hidden">
-          {/* Formatted absolute data parameters sent cleanly to schema layer */}
           <EventSchema
             event={{
               title: ev.title,
               description: ev.description,
-              date: ev.rawStartDate || "", 
+              date: ev.rawStartDate || "",
               endDate: ev.rawEndDate,
               location: ev.location,
               imageUrl: ev.imageUrl,
@@ -461,7 +496,6 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
           <div className="hidden md:grid md:grid-cols-[1fr_400px] lg:grid-cols-[1fr_440px]">
             {/* Left: Image panel */}
             <div className="relative flex flex-col p-4 lg:p-6 bg-gray-50 dark:bg-[#0a0a0a]">
-              {/* Subtle dot grid */}
               <div
                 className="absolute inset-0 opacity-[0.03] dark:opacity-[0.025] pointer-events-none"
                 style={{
@@ -471,7 +505,6 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                 }}
               />
 
-              {/* Image */}
               <div className="relative z-10 flex-1 flex items-center">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -487,7 +520,6 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                 </AnimatePresence>
               </div>
 
-              {/* Nav row */}
               {events.length > 1 && (
                 <div className="relative z-10 mt-6 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
@@ -499,7 +531,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                           "rounded-full transition-all duration-300",
                           i === idx
                             ? "w-6 h-[5px] bg-[#fd7d6e]"
-                            : "w-[5px] h-[5px] bg-gray-400 dark:bg-white/20 hover:bg-gray-600 dark:hover:bg-white/40",
+                            : "w-[5px] h-[5px] bg-gray-400 dark:bg-white/20 hover:bg-gray-600 dark:hover:bg-white/40"
                         )}
                       />
                     ))}
@@ -526,7 +558,6 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                   transition={{ duration: 0.38, ease: "easeOut" }}
                   className="h-full flex flex-col p-7 lg:p-9 gap-5"
                 >
-                  {/* Badges */}
                   <div className="flex flex-wrap gap-2">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-widest uppercase bg-[#fd7d6e]/10 text-[#fd7d6e] border border-[#fd7d6e]/25">
                       <Wifi className="w-3 h-3" />
@@ -540,20 +571,16 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                     )}
                   </div>
 
-                  {/* Title */}
                   <h3 className="text-[1.6rem] lg:text-3xl font-black text-gray-900 dark:text-white leading-snug tracking-tight">
                     {ev.title}
                   </h3>
 
-                  {/* Description */}
                   <p className="text-gray-600 dark:text-white/45 text-sm leading-relaxed line-clamp-4 flex-shrink-0">
                     {ev.description}
                   </p>
 
-                  {/* Divider */}
                   <div className="h-px bg-gray-200 dark:bg-white/[0.06]" />
 
-                  {/* Meta */}
                   <div className="flex flex-col gap-3">
                     <div className="flex items-start gap-3">
                       <Calendar className="w-4 h-4 text-[#fd7d6e] mt-0.5 shrink-0" />
@@ -577,7 +604,6 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                     </div>
                   </div>
 
-                  {/* Divider */}
                   <div className="h-px bg-gray-200 dark:bg-white/[0.06]" />
 
                   {/* CTA Buttons - Side by Side */}
@@ -607,14 +633,12 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                     )}
                   </div>
 
-                  {/* Show message if no buttons available */}
                   {!ev.registrationLink && !ev.learnMoreLink && (
                     <p className="text-gray-500 dark:text-white/20 text-xs text-center py-1 tracking-wide">
                       Registration details coming soon
                     </p>
                   )}
 
-                  {/* Auto-rotate progress */}
                   {events.length > 1 && (
                     <ProgressBar duration={AUTO_MS} id={ev.id} />
                   )}
@@ -648,7 +672,6 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                 transition={{ duration: 0.32 }}
                 className="p-5 flex flex-col gap-4"
               >
-                {/* Badges */}
                 <div className="flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-widest uppercase bg-[#fd7d6e]/10 text-[#fd7d6e] border border-[#fd7d6e]/25">
                     <Wifi className="w-3 h-3" />
@@ -711,7 +734,6 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                   )}
                 </div>
 
-                {/* Show message if no buttons available */}
                 {!ev.registrationLink && !ev.learnMoreLink && (
                   <p className="text-gray-500 dark:text-white/20 text-xs text-center py-1 tracking-wide">
                     Registration details coming soon
@@ -729,7 +751,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                             "rounded-full transition-all duration-300",
                             i === idx
                               ? "w-6 h-[5px] bg-[#fd7d6e]"
-                              : "w-[5px] h-[5px] bg-gray-400 dark:bg-white/20",
+                              : "w-[5px] h-[5px] bg-gray-400 dark:bg-white/20"
                           )}
                         />
                       ))}
