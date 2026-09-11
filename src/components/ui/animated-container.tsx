@@ -22,13 +22,16 @@ export default function AnimatedContainer({
 
   return (
     <motion.div
-      initial={{ translateY: 12, opacity: 0 }}
-      whileInView={{ translateY: 0, opacity: 1 }}
-      // '100px' pre-triggers the animation before the element fully rolls into view
-      viewport={{ once: true, margin: "100px" }}
-      // Accelerated duration (0.3s) and smoother spring-like ease
-      transition={{ delay, duration: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
+      initial={{ y: 8, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, amount: 0.01, margin: "200px 0px" }}
+      transition={{
+        delay,
+        duration: 0.2,
+        ease: "easeOut",
+      }}
       className={className}
+      style={{ willChange: "opacity, transform" }}
     >
       {children}
     </motion.div>
