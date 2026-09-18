@@ -170,7 +170,6 @@ function getRegistrationLink(event: any): string {
     if (regMatch) return regMatch[0];
   }
 
-  // Base event URL without #details anchor
   if (event.slug) {
     return `https://commudle.com/communities/d4-community/events/${event.slug}`;
   }
@@ -179,7 +178,6 @@ function getRegistrationLink(event: any): string {
 }
 
 function getLearnMoreLink(event: any): string {
-  // Uses #details anchor strictly for Learn More
   if (event.slug) {
     return `https://commudle.com/communities/d4-community/events/${event.slug}/#details`;
   }
@@ -237,7 +235,7 @@ function EventImage({
         >
           <Image
             src={imgSrc}
-            alt={alt}
+            alt={alt || "D4 Community Tech Event Poster"}
             width={900}
             height={600}
             className="w-full h-auto object-contain"
@@ -322,7 +320,7 @@ function NavArrow({
   return (
     <button
       onClick={onClick}
-      aria-label={dir === "left" ? "Previous event" : "Next event"}
+      aria-label={dir === "left" ? "Previous event slide" : "Next event slide"}
       className="w-8 h-8 rounded-full border border-gray-300 dark:border-white/10 bg-gray-100 dark:bg-white/[0.04] hover:bg-gray-200 dark:hover:bg-white/10 flex items-center justify-center transition-all active:scale-90"
     >
       {dir === "left" ? (
@@ -391,10 +389,10 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
         writeCache(mapped);
         setEvents(mapped);
       } catch {
-        setError("Failed to load events. Please try again.");
-      } finally {
-        setLoading(false);
-      }
+  setError("Failed to load events. Please try again.");
+} finally {
+  setLoading(false);
+}
     })();
   }, []);
 
@@ -435,9 +433,9 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
 
   const ev = events[idx];
 
-  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <section
+      aria-labelledby="upcoming-events-heading"
       className={cn(
         "w-full max-w-7xl mx-auto px-4 lg:px-0 pt-4 sm:pt-12 md:pt-20 pb-12 md:pb-20",
         className
@@ -446,7 +444,10 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
       {/* ── Section header ── */}
       <div className="mb-10 md:mb-12 text-center gap-3">
         <div>
-          <h2 className="font-bold text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white tracking-tight text-center">
+          <h2
+            id="upcoming-events-heading"
+            className="font-bold text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white tracking-tight text-center"
+          >
             Upcoming{" "}
             <span className="text-gray-400 dark:text-white/30">Events.</span>
           </h2>
@@ -479,7 +480,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
 
       {/* ── Event card ── */}
       {!loading && !error && ev && (
-        <div className="relative rounded-3xl bg-white dark:bg-neutral-950 border border-gray-200 dark:border-white/[0.07] overflow-hidden">
+        <article className="relative rounded-3xl bg-white dark:bg-neutral-950 border border-gray-200 dark:border-white/[0.07] overflow-hidden">
           <EventSchema
             event={{
               title: ev.title,
@@ -492,6 +493,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
               mode: ev.eventType,
             }}
           />
+
           {/* ════ DESKTOP ════ */}
           <div className="hidden md:grid md:grid-cols-[1fr_400px] lg:grid-cols-[1fr_440px]">
             {/* Left: Image panel */}
@@ -515,18 +517,21 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                     transition={{ duration: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
                     className="w-full"
                   >
-                    <EventImage src={ev.imageUrl} alt={ev.title} id={ev.id} />
+                    <EventImage src={ev.imageUrl} alt={`${ev.title} Poster`} id={ev.id} />
                   </motion.div>
                 </AnimatePresence>
               </div>
 
               {events.length > 1 && (
                 <div className="relative z-10 mt-6 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    {events.map((_, i) => (
+                  <div className="flex items-center gap-1.5" role="tablist" aria-label="Event slides">
+                    {events.map((e, i) => (
                       <button
                         key={i}
                         onClick={() => go(i)}
+                        aria-label={`View event ${i + 1}: ${e.title}`}
+                        aria-selected={i === idx}
+                        role="tab"
                         className={cn(
                           "rounded-full transition-all duration-300",
                           i === idx
@@ -586,7 +591,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                       <Calendar className="w-4 h-4 text-[#fd7d6e] mt-0.5 shrink-0" />
                       <div>
                         <p className="text-gray-800 dark:text-white/70 text-sm font-semibold">
-                          {ev.date}
+                          <time dateTime={ev.rawStartDate}>{ev.date}</time>
                         </p>
                         {ev.startTime && ev.endTime && (
                           <p className="text-gray-500 dark:text-white/30 text-xs mt-0.5 flex items-center gap-1">
@@ -606,13 +611,14 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
 
                   <div className="h-px bg-gray-200 dark:bg-white/[0.06]" />
 
-                  {/* CTA Buttons - Side by Side */}
+                  {/* CTA Buttons */}
                   <div className="flex flex-row gap-3 mt-auto">
                     {ev.registrationLink && (
                       <a
                         href={ev.registrationLink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`Register for ${ev.title}`}
                         className="flex-1 group flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-[#fd7d6e] hover:bg-[#f06b5c] text-white font-bold text-sm tracking-wide transition-all active:scale-[0.97] shadow-lg shadow-[#fd7d6e]/20"
                       >
                         <span>Register Now</span>
@@ -625,6 +631,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                         href={ev.learnMoreLink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`Learn more about ${ev.title}`}
                         className="flex-1 group flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-gray-300 dark:border-white/[0.1] text-gray-700 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-white/[0.04] hover:text-gray-900 dark:hover:text-white/80 font-semibold text-sm tracking-wide transition-all active:scale-[0.97]"
                       >
                         <span>Learn More</span>
@@ -658,7 +665,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.38 }}
                 >
-                  <EventImage src={ev.imageUrl} alt={ev.title} id={ev.id} />
+                  <EventImage src={ev.imageUrl} alt={`${ev.title} Poster`} id={ev.id} />
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -691,7 +698,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                   <div className="flex items-center gap-2.5">
                     <Calendar className="w-4 h-4 text-[#fd7d6e] shrink-0" />
                     <span className="text-gray-800 dark:text-white/65 text-sm font-semibold">
-                      {ev.date}
+                      <time dateTime={ev.rawStartDate}>{ev.date}</time>
                     </span>
                   </div>
                   {ev.startTime && ev.endTime && (
@@ -710,13 +717,14 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                   </div>
                 </div>
 
-                {/* CTA Buttons - Side by Side for Mobile */}
+                {/* CTA Buttons */}
                 <div className="flex flex-row gap-2">
                   {ev.registrationLink && (
                     <a
                       href={ev.registrationLink}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={`Register for ${ev.title}`}
                       className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-[#fd7d6e] hover:bg-[#f06b5c] text-white font-bold text-sm tracking-wide transition-all active:scale-[0.97] shadow-lg shadow-[#fd7d6e]/20"
                     >
                       Register Now <ArrowRight className="w-4 h-4" />
@@ -727,6 +735,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
                       href={ev.learnMoreLink}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={`Learn more about ${ev.title}`}
                       className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-300 dark:border-white/10 text-gray-700 dark:text-white/50 hover:bg-gray-50 dark:hover:bg-white/[0.04] hover:text-gray-900 dark:hover:text-white/80 font-semibold text-sm tracking-wide transition-all active:scale-[0.97]"
                     >
                       Learn More <ArrowRight className="w-4 h-4" />
@@ -742,11 +751,14 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
 
                 {events.length > 1 && (
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      {events.map((_, i) => (
+                    <div className="flex items-center gap-1.5" role="tablist" aria-label="Event slides">
+                      {events.map((e, i) => (
                         <button
                           key={i}
                           onClick={() => go(i)}
+                          aria-label={`View event ${i + 1}: ${e.title}`}
+                          aria-selected={i === idx}
+                          role="tab"
                           className={cn(
                             "rounded-full transition-all duration-300",
                             i === idx
@@ -772,7 +784,7 @@ export function UpcomingEvents({ className }: UpcomingEventsProps) {
               </motion.div>
             </AnimatePresence>
           </div>
-        </div>
+        </article>
       )}
       <p className="mt-2 md:mt-4 text-center">
         {!loading && events.length > 0 && (
