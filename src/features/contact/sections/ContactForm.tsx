@@ -103,7 +103,7 @@ const COMMUNITY_LINKS = [
   {
     label: "Become a Volunteer",
     icon: <UserPlus size={14} />,
-    link: "https://forms.gle/CY8eDostKx2t8Wx49",
+    link: "https://recruitment.d4community.com/",
     bg: "bg-rose-50 dark:bg-rose-950/30",
     color: "text-rose-600 dark:text-rose-400",
   },
