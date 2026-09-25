@@ -1,58 +1,98 @@
 import EventsPage from "@/features/events/page";
 import OrgSchema from "@/schema/org-schema";
-import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "D4 Community Events | Developer Meetups, Workshops & Hackathons",
+  title: "D4 Community Events | Meetups, Workshops & Hackathons",
+
   description:
-    "Explore upcoming tech events, developer workshops, and hackathons hosted by D4 Community. Network, build projects, and grow your tech skills.",
+    "Explore D4 Community events, from developer meetups and hands-on workshops to Hack-N-Win and GenAI Conclave. Learn, build and connect with developers.",
+
   keywords: [
+    // Brand
     "D4 Community",
-    "Tech Events",
-    "Hackathons",
-    "Developer Meetups",
-    "Coding Workshops",
-    "Commudle Events",
-    "GenAI Conclave Series",
+    "D4 Community Events",
+    "D4 events",
+    "Discite Develop Debug Deploy",
+
+    // Developer events
+    "developer events India",
+    "developer meetups India",
+    "developer workshops India",
+    "tech events India",
+    "tech meetups India",
+    "coding workshops India",
+    "developer networking events",
+
+    // Hackathons
+    "hackathons India",
+    "developer hackathons India",
+    "in-person hackathons India",
+    "Hack-N-Win",
+    "Hack-N-Win Hackathon",
+    "InnoSprint Hackathon",
+    "largest 24 hour hackathon India",
+    "biggest 24 hour hackathon India",
+    "Innosprint",
+    "InnoSprint Hackathon",
+
+    // AI / GenAI
     "GenAI Conclave",
+    "GenAI Conclave Series",
     "GenAI Conclave Chandigarh",
     "GenAI events India",
+    "Generative AI events India",
     "AI events India",
     "AI events Chandigarh",
-    "AI developer community India",
+    "AI developer events India",
+
+    // Location
     "developer events Chandigarh",
     "tech events Chandigarh",
+    "developer community Chandigarh",
+    "developer events Punjab",
+    "tech events Punjab",
+
+    // Community
     "D4 Community events",
-    "multi-city initiative",
-    "multi-city developer community",
-    "Multi-city GenAI Conclave",
-    "Multi city Generative AI Community Series",
+    "D4 Community meetups",
+    "D4 Community workshops",
   ],
+
   alternates: {
     canonical: "https://www.d4community.com/events",
   },
+
   openGraph: {
-    title: "D4 Community Events | Developer Meetups, Workshops & Hackathons",
+    title: "D4 Community Events | Meetups, Workshops & Hackathons",
+
     description:
-      "Explore upcoming tech events, developer workshops, and hackathons hosted by D4 Community. Network, build projects, and grow your tech skills.",
+      "Explore D4 Community events, from developer meetups and hands-on workshops to Hack-N-Win and GenAI Conclave. Learn, build and connect with developers.",
+
     url: "https://www.d4community.com/events",
     siteName: "D4 Community",
     type: "website",
+    locale: "en_IN",
+
     images: [
       {
-        url: "https://www.d4community.com/og-events.png", // Ensure this fallback asset exists
+        url: "https://www.d4community.com/og-events.png",
         width: 1200,
         height: 630,
-        alt: "D4 Community Upcoming Events",
+        alt: "D4 Community Events",
       },
     ],
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "D4 Community Events | Developer Meetups & Hackathons",
+
+    title: "D4 Community Events | Meetups, Workshops & Hackathons",
+
     description:
-      "Join developer workshops, tech meetups, and hackathons with D4 Community.",
+      "Explore developer meetups, workshops, hackathons and GenAI events hosted by D4 Community.",
+
+    images: ["https://www.d4community.com/og-events.png"],
   },
 };
 
@@ -60,69 +100,74 @@ export default function Page() {
   const internalLinks = [
     { name: "D4 Community Home", href: "/" },
     { name: "About D4 Community", href: "/about" },
-    { name: "Contact Support & Organizers", href: "/contact" },
-    { name: "Community Code of Conduct", href: "/code-of-conduct" },
-    { name: "Upcoming Tech Events", href: "/events" },
-    { name: "Core Community Team", href: "/team" },
-    { name: "Terms of Service", href: "/terms" },
+    { name: "D4 Community Events", href: "/events" },
+    { name: "D4 Community Team", href: "/team" },
+    { name: "Join D4 Community", href: "/join" },
+    { name: "D4 Community Gallery", href: "/gallery" },
+    { name: "D4 Community Reviews", href: "/reviews" },
+    { name: "Twitter Reviews", href: "/twitter-reviews" },
+    { name: "Contact D4 Community", href: "/contact" },
+    { name: "Code of Conduct", href: "/code-of-conduct" },
+    { name: "Terms", href: "/terms" },
     { name: "Privacy Policy", href: "/privacy-policy" },
-    { name: "Join the D4 Community", href: "/join" },
-    { name: "Event Photo Gallery", href: "/gallery" },
-    { name: "Twitter Member Reviews", href: "/twitter-reviews" },
-    { name: "Community Member Reviews", href: "/reviews" },
   ];
-
-  // ItemList Schema for SEO/AEO Carousel indexing
-  const itemListSchema = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "D4 Community Upcoming Tech Events",
-    description: "List of upcoming developer meetups, hackathons, and workshops.",
-    url: "https://www.d4community.com/events",
-  };
 
   return (
     <>
       <OrgSchema />
-      <FAQSchema page={["join-faq", "faq"]} />
-      
-      {/* Search Engine & AI Crawler Schema injection */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
-      />
 
       <main>
-        {/* Dynamic Client UI */}
         <EventsPage />
 
-        {/* Semantic Content Section optimized for AI Engine Summarization (AEO) */}
-        <section className="sr-only" aria-label="About D4 Community Events">
-          <h1>Upcoming Tech Events and Developer Hackathons</h1>
-          <p>
-            D4 Community hosts hands-on technical workshops, developer meetups, 
-            and competitive hackathons for software engineers, designers, and tech enthusiasts. 
-            Events are available in online and in-person formats, featuring industry speakers 
-            and collaborative building sessions.
-          </p>
-          
-          <h2>How to Join D4 Events?</h2>
-          <p>
-            Explore our scheduled events on this page, click "Register Now" to fill out 
-            the participant form via Commudle, or click "Learn More" to view full schedules and speaker details.
+        <section
+          aria-labelledby="d4-events-introduction"
+          className="mx-auto max-w-5xl px-6 py-12"
+        >
+          <h1
+            id="d4-events-introduction"
+            className="text-2xl font-semibold"
+          >
+            Developer Events, Hackathons & Workshops
+          </h1>
+
+          <p className="mt-4 text-base leading-7">
+            D4 Community brings developers and technology enthusiasts
+            together through practical events designed around learning,
+            building and sharing. Our events include developer meetups,
+            hands-on workshops, technical sessions, hackathons and
+            conversations around emerging technologies.
           </p>
 
-          {/* Semantic Link Crawling Graph */}
-          <nav aria-label="Internal Site Navigation">
-            <ul>
-              {internalLinks.map((link) => (
-                <li key={link.href}>
-                  <a href={link.href}>{link.name}</a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <p className="mt-4 text-base leading-7">
+            Our event calendar includes initiatives such as Hack-N-Win and
+            the GenAI Conclave, along with community-led sessions covering
+            software development, cloud, AI, open source and other areas of
+            technology.
+          </p>
+
+          <h2 className="mt-8 text-xl font-semibold">
+            How to Join a D4 Community Event
+          </h2>
+
+          <p className="mt-4 text-base leading-7">
+            Browse the events listed above to find an upcoming session.
+            Registration details, dates, venues, speakers and participation
+            requirements are provided on the respective event page.
+          </p>
         </section>
+
+        <nav
+          className="sr-only"
+          aria-label="D4 Community site navigation"
+        >
+          <ul>
+            {internalLinks.map((link) => (
+              <li key={link.href}>
+                <a href={link.href}>{link.name}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </main>
     </>
   );

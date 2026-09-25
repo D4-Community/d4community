@@ -1,58 +1,49 @@
 import TermsOfUse from "./terms";
 import OrgSchema from "@/schema/org-schema";
-import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "D4 Community Terms of Use | Guidelines & Agreement",
-  description: "Understand the rules for joining the D4 Community.",
+  title: "D4 Community Terms of Use | Terms & Conditions",
+
+  description:
+    "Read the D4 Community Terms of Use to understand the rules, responsibilities and conditions that apply when using our website and community services.",
+
   alternates: {
     canonical: "https://www.d4community.com/terms",
   },
+
   openGraph: {
-    title: "D4 Community Terms of Use | Guidelines & Agreement",
-    description: "Understand the rules for joining the D4 Community.",
+    title: "D4 Community Terms of Use | Terms & Conditions",
+    description:
+      "Read the D4 Community Terms of Use to understand the rules, responsibilities and conditions that apply when using our website and community services.",
     url: "https://www.d4community.com/terms",
     siteName: "D4 Community",
     type: "website",
   },
+
+  twitter: {
+    card: "summary",
+    title: "D4 Community Terms of Use | Terms & Conditions",
+    description:
+      "Read the terms and conditions that apply to using the D4 Community website and services.",
+  },
+
+  keywords: [
+    "D4 Community Terms of Use",
+    "D4 Community Terms and Conditions",
+    "D4 Community terms",
+    "D4 Community agreement",
+    "D4 Community rules",
+    "D4 Community website terms",
+    "D4 Community policies",
+  ],
 };
 
 export default function Page() {
-  // Complete data-map taken directly from your dynamic sitemap
-  const internalLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    { name: "Code of Conduct", href: "/code-of-conduct" },
-    { name: "Events", href: "/events" },
-    { name: "Team", href: "/team" },
-    { name: "Terms", href: "/terms" },
-    { name: "Privacy Policy", href: "/privacy-policy" },
-    { name: "Join Us", href: "/join" },
-    { name: "Gallery", href: "/gallery" },
-    { name: "Twitter Reviews", href: "/twitter-reviews" },
-    { name: "Reviews", href: "/reviews" },
-  ];
-
   return (
     <>
       <OrgSchema />
-      <FAQSchema page={["join-faq", "faq"]} />
       <TermsOfUse />
-      
-      {/* 
-        Semantic HTML link mapping container. 
-        'sr-only' hides this visually from 100% of human users, 
-        but leaves the hyperlink graph readable for modern search crawlers.
-      */}
-      <nav className="sr-only" aria-hidden="false" aria-label="Hidden Navigation Map">
-        {internalLinks.map((link) => (
-          <a key={link.href} href={link.href}>
-            {link.name}
-          </a>
-        ))}
-      </nav>
     </>
   );
 }

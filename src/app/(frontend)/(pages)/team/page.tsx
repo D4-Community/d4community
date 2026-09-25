@@ -1,98 +1,70 @@
 import TeamPage from "@/features/team/page";
 import OrgSchema from "@/schema/org-schema";
-import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "D4 Community | India's Leading Developer Hub (Discite-Develop-Debug-Deploy)",
-  description: "D4 Community (Discite-Develop-Debug-Deploy) is North India's largest and top-rated developer community. Join a non-profit organization of industry-ready engineers, developers, and creators learning and building together.",
-  keywords: [
-    "D4 Community", 
-    "Discite Develop Debug Deploy", 
-    "North India largest community", 
-    "best developer community in India", 
-    "top tech community North India", 
-    "Ayush Kumar Tiwari", 
-    "developer hackathons India", 
-    "India second largest hackathon", 
-    "D4 community meetups",
-    "industry-ready engineers",
-    "Biggest developer community in Punjab",
-    "biggest community in punjab",
-    "biggest developer community in north india",
-    "GenAI Conclave Series",
-    "GenAI Conclave",
-    "GenAI Conclave Chandigarh",
-    "GenAI events India",
-    "AI events India",
-    "AI events Chandigarh",
-    "AI developer community India",
-    "developer events Chandigarh",
-    "tech events Chandigarh",
-    "D4 Community events",
-    "multi-city initiative",
-    "multi-city developer community",
-    "Multi-city GenAI Conclave",
-    "Multi city Generative AI Community Series",
-  ],
+  title: "D4 Community Team | Meet the People Behind D4",
+
+  description:
+    "Meet the people behind D4 Community - developers and community builders creating spaces to learn, build, share and connect.",
+
   alternates: {
-    canonical: "https://www.d4community.com/",
+    canonical: "https://www.d4community.com/team",
   },
+
   openGraph: {
-    title: "D4 Community | Learn, Build, Grow & Connect",
-    description: "Transforming learners into leaders. Join the largest developer hub in North India and participate in India's top-tier hackathons and tech meetups.",
-    url: "https://www.d4community.com/",
+    title: "D4 Community Team | Meet the People Behind D4",
+    description:
+      "Meet the people behind D4 Community - developers and community builders creating spaces to learn, build, share and connect.",
+    url: "https://www.d4community.com/team",
     siteName: "D4 Community",
-    images: [
-      {
-        url: "https://www.d4community.com/_next/image?url=%2Fd4logo.webp&w=256&q=75",
-        width: 256,
-        height: 256,
-        alt: "D4 Community Logo",
-      },
-    ],
     locale: "en_IN",
     type: "website",
+    images: [
+      {
+        url: "https://www.d4community.com/d4logo.webp",
+        width: 1200,
+        height: 630,
+        alt: "D4 Community Team",
+      },
+    ],
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "D4 Community | Discite-Develop-Debug-Deploy",
-    description: "North India's biggest developer organization helping creators become industry-ready.",
-    images: ["https://www.d4community.com/_next/image?url=%2Fd4logo.webp&w=256&q=75"],
+    title: "D4 Community Team | Meet the People Behind D4",
+    description:
+      "Meet the developers and community builders behind D4 Community.",
+    images: ["https://www.d4community.com/d4logo.webp"],
   },
+
+  keywords: [
+    "D4 Community Team",
+    "D4 Community",
+    "D4 Community organizers",
+    "D4 Community volunteers",
+    "D4 Community leadership",
+    "D4 Community developers",
+    "developer community organizers",
+    "developer community team India",
+    "tech community organizers India",
+    "D4 Community Chandigarh",
+    "D4 Community Punjab",
+    "D4 Community events",
+    "Hack-N-Win organizers",
+    "Hack-N-Win",
+    "GenAI Conclave organizers",
+    "GenAI Conclave",
+    "GenAI Conclave Chandigarh",
+    "Discite Develop Debug Deploy",
+  ],
 };
 
 export default function Page() {
-  
-  const internalLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    { name: "Code of Conduct", href: "/code-of-conduct" },
-    { name: "Events", href: "/events" },
-    { name: "Team", href: "/team" },
-    { name: "Terms", href: "/terms" },
-    { name: "Privacy Policy", href: "/privacy-policy" },
-    { name: "Join Us", href: "/join" },
-    { name: "Gallery", href: "/gallery" },
-    { name: "Twitter Reviews", href: "/twitter-reviews" },
-    { name: "Reviews", href: "/reviews" },
-  ];
-
   return (
     <>
       <OrgSchema />
-      <FAQSchema page={["join-faq", "faq"]} />
-      
       <TeamPage />
-
-      <nav className="sr-only" aria-hidden="false" aria-label="Hidden Navigation Map">
-        {internalLinks.map((link) => (
-          <a key={link.href} href={link.href}>
-            {link.name}
-          </a>
-        ))}
-      </nav>
     </>
   );
 }
