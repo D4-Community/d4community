@@ -910,7 +910,7 @@ const SuccessModal = ({
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-2xl font-bold dark:text-white text-gray-900">
-                    Thanks — you're awesome!
+                    Thanks! you're awesome!
                   </h3>
                   <p className="mt-2 text-sm dark:text-gray-300 text-gray-600 max-w-md">
                     We received your application and will get back to you soon.

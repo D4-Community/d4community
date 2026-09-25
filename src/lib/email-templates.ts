@@ -166,7 +166,7 @@ export const generateCertificateEmail = (name: string, memberId: string) => `
         </div>
         
         <div class="note">
-          <p><strong>📎 PDF Attached</strong> — Your certificate is attached. Download, save, and share it proudly!</p>
+          <p><strong>📎 PDF Attached</strong> - Your certificate is attached. Download, save, and share it proudly!</p>
         </div>
         
         <p class="message" style="margin-bottom: 0;">

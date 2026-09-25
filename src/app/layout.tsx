@@ -35,7 +35,7 @@ import { SeoKeywords } from "@/components/SeoKeywords";
 import OrgSchema from "@/schema/org-schema";
 
 export const metadata: Metadata = {
-  title: "D4 Community | India's Leading Developer Community",
+  title: "D4 Community | India's Leading Developer Community (Discite-Develop-Debug-Deploy)",
 
   description:
     "D4 Community is India's leading developer community for people who love to learn, build and share. Explore hackathons, GenAI Conclave and tech events.",
