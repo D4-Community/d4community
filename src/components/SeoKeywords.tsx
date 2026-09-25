@@ -73,7 +73,7 @@ export function SeoKeywords() {
       hackathon India 2025, offline hackathon India 2025, hackathon under one
       roof India, D4 Community hackathon, D4 Community Hack-N-Win, Hack N Win
       hackathon India, second largest hackathon India, 2nd largest hackathon
-      India, largest 24 hour hackathon India, biggest 24 hour hackathon India.
+      India, largest 24 hour hackathon India, biggest 24 hour hackathon India, GenAI Conclave, Multi-city GenAI Conclave, Multi city Generative AI Community Series.
     </span>
   );
 }
