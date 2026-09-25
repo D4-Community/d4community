@@ -28,8 +28,6 @@
 
 
 
-// app/layout.tsx
-
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
@@ -37,25 +35,41 @@ import { SeoKeywords } from "@/components/SeoKeywords";
 import OrgSchema from "@/schema/org-schema";
 
 export const metadata: Metadata = {
-  title: "D4 Community | India's Leading Developer Hub",
+  title: "D4 Community | India's Leading Developer Community",
+
   description:
-    "D4 Community (Discite-Develop-Debug-Deploy) is India's largest and most active developer community for students, developers, and creators — home of Hack-N-Win, the second largest in-person 24-hour hackathon in India.",
+    "D4 Community is India's leading developer community for people who love to learn, build and share. Explore hackathons, GenAI Conclave and tech events.",
+
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
+
   keywords: [
-    "best developer community India", 
-    "largest developer community India", 
-    "biggest developer community India", 
-    "best hackathon India", 
-    "Hack-N-Win", 
-    "D4 Community", 
-    "biggest hackathon North India", 
-    "second largest hackathon India", 
-    "in-person hackathon India", 
-    "student developer community India", 
-    "Ayush Kumar Tiwari", 
-    "D4 Community founder"
+    "D4 Community",
+    "developer community India",
+    "India developer community",
+    "developer events India",
+    "tech community India",
+    "developer events",
+    "software developer community",
+    "programming community India",
+    "tech events India",
+    "hackathons India",
+    "Hack-N-Win",
+    "GenAI Conclave Series",
+    "GenAI Conclave",
+    "GenAI Conclave Chandigarh",
+    "GenAI events India",
+    "AI events India",
+    "AI events Chandigarh",
+    "AI developer community India",
+    "developer events Chandigarh",
+    "tech events Chandigarh",
+    "D4 Community events",
+    "multi-city initiative",
+    "multi-city developer community",
+    "Multi-city GenAI Conclave",
+    "Multi city Generative AI Community Series",
   ],
 };
 
@@ -71,10 +85,13 @@ export default function RootLayout({
       <head>
         <OrgSchema />
       </head>
+
       <body className="antialiased" suppressHydrationWarning>
         <SeoKeywords />
+
         {children}
       </body>
+
       {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
