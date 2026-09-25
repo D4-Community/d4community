@@ -1,57 +1,64 @@
 import DetailedGalleryPage from "./gallery";
 import OrgSchema from "@/schema/org-schema";
-import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "D4 Community Gallery | Event Photos & Highlights", 
-  description: "Explore our D4 Community photo gallery and events.",
+  title: "D4 Community Gallery | Event Photos & Highlights",
+  description:
+    "Explore photos and highlights from D4 Community events, hackathons, meetups and workshops featuring developers, speakers and the community.",
+
   alternates: {
     canonical: "https://www.d4community.com/gallery",
   },
+
   openGraph: {
     title: "D4 Community Gallery | Event Photos & Highlights",
-    description: "Explore our D4 Community photo gallery and events.",
+    description:
+      "Explore photos and highlights from D4 Community events, hackathons, meetups and workshops featuring developers, speakers and the community.",
     url: "https://www.d4community.com/gallery",
     siteName: "D4 Community",
     type: "website",
+    images: [
+      {
+        url: "https://www.d4community.com/d4logo.webp",
+        width: 1200,
+        height: 630,
+        alt: "D4 Community Event Gallery",
+      },
+    ],
   },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "D4 Community Gallery | Event Photos & Highlights",
+    description:
+      "See photos and highlights from D4 Community events, hackathons, meetups and workshops.",
+    images: ["https://www.d4community.com/d4logo.webp"],
+  },
+
+  keywords: [
+    "D4 Community Gallery",
+    "D4 Community photos",
+    "D4 Community events photos",
+    "D4 Community event gallery",
+    "developer community events photos",
+    "developer meetup photos",
+    "hackathon photos India",
+    "developer events India",
+    "tech events Chandigarh",
+    "developer events Chandigarh",
+    "D4 Community hackathons",
+    "Hack-N-Win photos",
+    "GenAI Conclave photos",
+    "D4 Community events",
+  ],
 };
 
 export default function Page() {
-  // Full routing configuration map derived from your dynamic sitemap
-  const internalLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    { name: "Code of Conduct", href: "/code-of-conduct" },
-    { name: "Events", href: "/events" },
-    { name: "Team", href: "/team" },
-    { name: "Terms", href: "/terms" },
-    { name: "Privacy Policy", href: "/privacy-policy" },
-    { name: "Join Us", href: "/join" },
-    { name: "Gallery", href: "/gallery" },
-    { name: "Twitter Reviews", href: "/twitter-reviews" },
-    { name: "Reviews", href: "/reviews" },
-  ];
-
   return (
     <>
       <OrgSchema />
-      <FAQSchema page={["join-faq", "faq"]} />
       <DetailedGalleryPage />
-      
-      {/* Semantic Crawling Hook. 
-        Hides completely visually, preserving your pristine layouts 
-        while maximizing link discovery for Google search bots.
-      */}
-      <nav className="sr-only" aria-hidden="false" aria-label="Hidden Navigation Map">
-        {internalLinks.map((link) => (
-          <a key={link.href} href={link.href}>
-            {link.name}
-          </a>
-        ))}
-      </nav>
     </>
   );
 }

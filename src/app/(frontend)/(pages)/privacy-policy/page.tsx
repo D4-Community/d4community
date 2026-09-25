@@ -1,57 +1,47 @@
 import PrivacyPolicyPage from "./privacy-policy";
 import OrgSchema from "@/schema/org-schema";
-import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "D4 Community Privacy Policy | Data Safety & Terms",
-  description: "Learn how the D4 Community protects your data privacy.",
+  title: "D4 Community Privacy Policy | Data & Privacy",
+  description:
+    "Read the D4 Community Privacy Policy to understand how we collect, use and protect personal information when you use our website and services.",
+
   alternates: {
     canonical: "https://www.d4community.com/privacy-policy",
   },
+
   openGraph: {
-    title: "D4 Community Privacy Policy | Data Safety & Terms",
-    description: "Learn how the D4 Community protects your data privacy.",
+    title: "D4 Community Privacy Policy | Data & Privacy",
+    description:
+      "Read the D4 Community Privacy Policy to understand how we collect, use and protect personal information when you use our website and services.",
     url: "https://www.d4community.com/privacy-policy",
     siteName: "D4 Community",
     type: "website",
   },
+
+  twitter: {
+    card: "summary",
+    title: "D4 Community Privacy Policy | Data & Privacy",
+    description:
+      "Learn how D4 Community handles and protects personal information.",
+  },
+
+  keywords: [
+    "D4 Community Privacy Policy",
+    "D4 Community privacy",
+    "D4 Community data privacy",
+    "D4 Community data protection",
+    "D4 Community personal information",
+    "D4 Community terms and policies",
+  ],
 };
 
 export default function Page() {
-  // Full routing configuration map matching your sitemap entries
-  const internalLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    { name: "Code of Conduct", href: "/code-of-conduct" },
-    { name: "Events", href: "/events" },
-    { name: "Team", href: "/team" },
-    { name: "Terms", href: "/terms" },
-    { name: "Privacy Policy", href: "/privacy-policy" },
-    { name: "Join Us", href: "/join" },
-    { name: "Gallery", href: "/gallery" },
-    { name: "Twitter Reviews", href: "/twitter-reviews" },
-    { name: "Reviews", href: "/reviews" },
-  ];
-
   return (
     <>
       <OrgSchema />
-      <FAQSchema page={["join-faq", "faq"]} />
       <PrivacyPolicyPage />
-      
-      {/* Semantic HTML layout structure. 
-        'sr-only' hides this elements group from all graphic viewports,
-        enabling search crawlers to follow the graph cleanly.
-      */}
-      <nav className="sr-only" aria-hidden="false" aria-label="Hidden Navigation Map">
-        {internalLinks.map((link) => (
-          <a key={link.href} href={link.href}>
-            {link.name}
-          </a>
-        ))}
-      </nav>
     </>
   );
 }

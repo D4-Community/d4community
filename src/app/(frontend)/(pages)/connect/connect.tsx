@@ -296,9 +296,9 @@ interface ChatMessage {
 }
 
 const OFFLINE_RESPONSES: Record<string, string> = {
-  "How to join?": "Join via our WhatsApp group or Discord — links are in the panel on the left! We'd love to have you.",
+  "How to join?": "Join via our WhatsApp group or Discord, links are in the panel on the left! We'd love to have you.",
   "Upcoming events": "We regularly host hackathons, workshops, and meetups in Chandigarh. Join our WhatsApp group for announcements!",
-  "What is D4?": "D4 Community is a Chandigarh-based tech community for developers, designers, and enthusiasts — focused on learning, building, and collaboration.",
+  "What is D4?": "D4 Community is a Chandigarh-based tech community for developers, designers, and enthusiasts, focused on learning, building, and collaboration.",
   "Volunteer opportunities": "We're always looking for volunteers! Click 'Become a Volunteer' in the community links to apply.",
   "General questions": "For specific questions, please use the contact form and our team will respond within 24 hours!",
 };
@@ -332,7 +332,7 @@ const ChatInterface = () => {
     setUserInput("");
     setIsTyping(true);
     await new Promise((r) => setTimeout(r, 700));
-    const resp = OFFLINE_RESPONSES[text] ?? "Thanks for reaching out! For detailed inquiries, please use the contact form — our team responds within 24 hours.";
+    const resp = OFFLINE_RESPONSES[text] ?? "Thanks for reaching out! For detailed inquiries, please use the contact form our team responds within 24 hours.";
     addBotMessage(resp + "\n\n💡 Tip: The contact form is the best way to connect with our team directly.");
   };
 
@@ -462,7 +462,7 @@ const SuccessModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#fd7d6e] to-[#ff9a8b] flex items-center justify-center mb-5 shadow-lg shadow-[#fd7d6e]/30">
               <CheckCircle2 className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">You're awesome — thanks!</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">You're awesome, thanks!</h3>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm">
               We received your application and will get back to you within 24 hours.
             </p>
@@ -812,7 +812,7 @@ export function D4ContactForm() {
               <span className="text-white/80">together</span>
             </h1>
             <p className="text-white/80 text-sm md:text-base max-w-lg leading-relaxed">
-              Connect with developers, designers, and tech enthusiasts. Whether you're looking to collaborate, learn, or grow — we're here for you.
+              Connect with developers, designers, and tech enthusiasts. Whether you're looking to collaborate, learn, or grow - we're here for you.
             </p>
           </div>
         </motion.div>

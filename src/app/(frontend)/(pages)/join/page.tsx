@@ -1,57 +1,65 @@
 import JoinCommunityPage from "./join";
 import OrgSchema from "@/schema/org-schema";
-import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Join Us | D4 Community",
-  description: "Join North India's largest developer community today.",
+  title: "Join D4 Community | Learn, Build & Connect",
+  description:
+    "Join D4 Community to learn, build, collaborate and connect with developers through events, hackathons, workshops and community activities.",
+
   alternates: {
     canonical: "https://www.d4community.com/join",
   },
+
   openGraph: {
-    title: "Join the D4 Community",
-    description: "Join North India's largest developer community today.",
+    title: "Join D4 Community | Learn, Build & Connect",
+    description:
+      "Join D4 Community to learn, build, collaborate and connect with developers through events, hackathons, workshops and community activities.",
     url: "https://www.d4community.com/join",
     siteName: "D4 Community",
     type: "website",
+    images: [
+      {
+        url: "https://www.d4community.com/d4logo.webp",
+        width: 1200,
+        height: 630,
+        alt: "Join D4 Community",
+      },
+    ],
   },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Join D4 Community | Learn, Build & Connect",
+    description:
+      "Connect with developers, join tech events, build projects and learn with D4 Community.",
+    images: ["https://www.d4community.com/d4logo.webp"],
+  },
+
+  keywords: [
+    "Join D4 Community",
+    "D4 Community",
+    "developer community India",
+    "developer community Chandigarh",
+    "tech community India",
+    "programming community India",
+    "software developer community",
+    "AI developer community India",
+    "developer networking India",
+    "developer events India",
+    "tech meetups India",
+    "coding workshops India",
+    "hackathons India",
+    "D4 Community events",
+    "D4 Community membership",
+  ],
 };
 
 export default function Page() {
-  // Complete list of internal routes pulled from your sitemap layout graph
-  const internalLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    { name: "Code of Conduct", href: "/code-of-conduct" },
-    { name: "Events", href: "/events" },
-    { name: "Team", href: "/team" },
-    { name: "Terms", href: "/terms" },
-    { name: "Privacy Policy", href: "/privacy-policy" },
-    { name: "Join Us", href: "/join" },
-    { name: "Gallery", href: "/gallery" },
-    { name: "Twitter Reviews", href: "/twitter-reviews" },
-    { name: "Reviews", href: "/reviews" },
-  ];
-
   return (
     <>
       <OrgSchema />
-      <FAQSchema page={["join-faq", "faq"]} />
       <JoinCommunityPage />
-      
-      {/* Semantic Structural Hyperlink Map 
-        'sr-only' hides this elements block completely from the browser canvas layout,
-        retaining standard path discovery graphs strictly for search engine indexers.
-      */}
-      <nav className="sr-only" aria-hidden="false" aria-label="Hidden Navigation Map">
-        {internalLinks.map((link) => (
-          <a key={link.href} href={link.href}>
-            {link.name}
-          </a>
-        ))}
-      </nav>
     </>
   );
 }

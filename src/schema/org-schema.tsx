@@ -26,7 +26,7 @@ export default function OrgSchema() {
     },
     // Merged your exact rich text description detailing Hack-N-Win
     description:
-      "D4 Community (Discite-Develop-Debug-Deploy) is India's largest and most active developer community for students, developers, and creators — home of Hack-N-Win, the second largest in-person 24-hour hackathon in India.",
+      "D4 Community (Discite-Develop-Debug-Deploy) is India's largest and most active developer community for students, developers, and creators - home of Hack-N-Win, the second largest in-person 24-hour hackathon in India.",
     foundingCountry: "IN",
 
     foundingLocation: {

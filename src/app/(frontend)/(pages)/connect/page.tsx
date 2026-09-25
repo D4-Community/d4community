@@ -1,54 +1,87 @@
 import D4ContactForm from "./connect";
 import OrgSchema from "@/schema/org-schema";
-import { FAQSchema } from "@/schema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact Us | D4 Community",
-  description: "Get in touch with the D4 Community team.", 
+  title: "Contact D4 Community | Get in Touch",
+
+  description:
+    "Have a question, collaboration idea or event inquiry? Get in touch with the D4 Community team and connect with India's developer community.",
+
+  keywords: [
+    "Contact D4 Community",
+    "D4 Community contact",
+    "D4 Community",
+    "contact developer community India",
+    "developer community India",
+    "D4 Community team",
+    "D4 Community collaboration",
+    "D4 Community events",
+    "D4 Community Chandigarh",
+    "developer community Chandigarh",
+    "tech community Chandigarh",
+    "D4 Community partnership",
+    "D4 Community event inquiry",
+    "D4 Community organizers",
+  ],
+
   alternates: {
     canonical: "https://www.d4community.com/contact",
   },
+
   openGraph: {
-    title: "Contact D4 Community",
-    description: "Get in touch with the D4 Community team.",
+    title: "Contact D4 Community | Get in Touch",
+
+    description:
+      "Have a question, collaboration idea or event inquiry? Get in touch with the D4 Community team.",
+
     url: "https://www.d4community.com/contact",
     siteName: "D4 Community",
     type: "website",
+    locale: "en_IN",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+
+    title: "Contact D4 Community | Get in Touch",
+
+    description:
+      "Have a question, collaboration idea or event inquiry? Get in touch with the D4 Community team.",
+
+    images: [
+      "https://www.d4community.com/_next/image?url=%2Fd4logo.webp&w=256&q=75",
+    ],
   },
 };
 
 export default function ContactPage() {
-  // Complete data-map layout array structured from your primary sitemap routing configuration
   const internalLinks = [
     { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
+    { name: "About D4 Community", href: "/about" },
+    { name: "D4 Community Events", href: "/events" },
+    { name: "D4 Community Team", href: "/team" },
+    { name: "Join D4 Community", href: "/join" },
+    { name: "D4 Community Gallery", href: "/gallery" },
+    { name: "D4 Community Reviews", href: "/reviews" },
+    { name: "Twitter Reviews", href: "/twitter-reviews" },
+    { name: "Contact D4 Community", href: "/contact" },
     { name: "Code of Conduct", href: "/code-of-conduct" },
-    { name: "Events", href: "/events" },
-    { name: "Team", href: "/team" },
     { name: "Terms", href: "/terms" },
     { name: "Privacy Policy", href: "/privacy-policy" },
-    { name: "Join Us", href: "/join" },
-    { name: "Gallery", href: "/gallery" },
-    { name: "Twitter Reviews", href: "/twitter-reviews" },
-    { name: "Reviews", href: "/reviews" },
   ];
 
   return (
     <>
-      {/* Structural Schema Data */}
       <OrgSchema />
-      <FAQSchema page={["join-faq", "faq"]} />
-      
-      {/* Visual Form Component */}
+
       <D4ContactForm />
 
-      {/* Semantic Structural Link Matrix Container.
-        'sr-only' isolates this markup structure block completely from graphic rendering viewports,
-        enabling programmatic search crawlers to scan cross-route links cleanly.
-      */}
-      <nav className="sr-only" aria-hidden="false" aria-label="Hidden Navigation Map">
+      <nav
+        className="sr-only"
+        aria-hidden="false"
+        aria-label="D4 Community site navigation"
+      >
         {internalLinks.map((link) => (
           <a key={link.href} href={link.href}>
             {link.name}
