@@ -1,21 +1,23 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { HeartHandshake } from "lucide-react";
 import Image from "next/image";
-import { volunteersData } from "../data/volunteers";
+
+import { memberImageUrl } from "../lib/queries";
+import type { TeamMember } from "../lib/types";
 
 /* ===================== MARQUEE ROW COMPONENT ===================== */
 
-const MarqueeRow = ({ 
-  items, 
-  direction = "left", 
-  speed = 50 
-}: { 
-  items: typeof volunteersData, 
-  direction?: "left" | "right", 
-  speed?: number 
+const MarqueeRow = ({
+  items,
+  direction = "left",
+  speed = 50,
+}: {
+  items: TeamMember[];
+  direction?: "left" | "right";
+  speed?: number;
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const requestRef = useRef<number | null>(null);
@@ -30,9 +32,9 @@ const MarqueeRow = ({
 
     const container = scrollRef.current;
     const maxScroll = container.scrollWidth / 3;
-    
+
     // speed is pixels per second, roughly
-    const step = speed / 15; 
+    const step = speed / 15;
 
     if (direction === "left") {
       positionRef.current -= step;
@@ -49,9 +51,9 @@ const MarqueeRow = ({
   useEffect(() => {
     // Initial position for right-moving row to avoid starting at 0
     if (direction === "right" && scrollRef.current) {
-        positionRef.current = -(scrollRef.current.scrollWidth / 3);
+      positionRef.current = -(scrollRef.current.scrollWidth / 3);
     }
-    
+
     requestRef.current = requestAnimationFrame(animate);
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
@@ -59,31 +61,36 @@ const MarqueeRow = ({
   }, []);
 
   return (
-    <div 
+    <div
       className="overflow-hidden w-full py-4 select-none"
       onMouseEnter={() => { isHovered.current = true; }}
       onMouseLeave={() => { isHovered.current = false; animate(); }}
     >
-      <div 
-        ref={scrollRef} 
+      <div
+        ref={scrollRef}
         className="flex gap-8 w-max will-change-transform"
       >
-        {tripledItems.map((member, index) => (
-          <div key={`${member.name}-${index}`} className="flex flex-col items-center gap-3 w-32">
-            <div className="relative w-20 h-20 rounded-full bg-secondary overflow-hidden shadow-sm shadow-black/20">
-              <Image 
-                src={`https://api.dicebear.com/7.x/identicon/svg?seed=${member.name}${direction === 'right' ? 'alt' : ''}`} 
-                alt={member.name} 
-                fill
-                className="object-cover"
-                unoptimized
-              />
+        {tripledItems.map((member, index) => {
+          const avatarSrc = memberImageUrl(member.image, 160, 160)
+            ?? `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(member.name)}${direction === 'right' ? 'alt' : ''}`;
+
+          return (
+            <div key={`${member._id}-${index}`} className="flex flex-col items-center gap-3 w-32">
+              <div className="relative w-20 h-20 rounded-full bg-secondary overflow-hidden shadow-sm shadow-black/20">
+                <Image
+                  src={avatarSrc}
+                  alt={member.name}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+              <p className="text-sm font-semibold text-muted-foreground text-center whitespace-nowrap overflow-hidden text-ellipsis w-full">
+                {member.name}
+              </p>
             </div>
-            <p className="text-sm font-semibold text-muted-foreground text-center whitespace-nowrap overflow-hidden text-ellipsis w-full">
-              {member.name}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -91,17 +98,19 @@ const MarqueeRow = ({
 
 /* ===================== MAIN COMPONENT ===================== */
 
-export const Volunteers = () => {
+export const Volunteers = ({ volunteers }: { volunteers: TeamMember[] }) => {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
-  const half = Math.ceil(volunteersData.length / 2);
-  const row1 = volunteersData.slice(0, half);
-  const row2 = volunteersData.slice(half);
+  if (volunteers.length === 0) return null;
+
+  const half = Math.ceil(volunteers.length / 2);
+  const row1 = volunteers.slice(0, half);
+  const row2 = volunteers.slice(half);
 
   return (
-    <section 
-      className="relative w-full py-24 overflow-hidden border-t border-border/50 bg-secondary/5" 
+    <section
+      className="relative w-full py-24 overflow-hidden border-t border-border/50 bg-secondary/5"
       ref={containerRef}
     >
       <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-10 mb-16">
@@ -126,7 +135,7 @@ export const Volunteers = () => {
         {/* Top Fade Gradient */}
         <div className="pointer-events-none absolute inset-y-0 left-0 w-32 md:w-64 bg-gradient-to-r from-background to-transparent z-20" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-32 md:w-64 bg-gradient-to-l from-background to-transparent z-20" />
-        
+
         <MarqueeRow items={row1} direction="left" speed={60} />
         <MarqueeRow items={row2} direction="right" speed={50} />
       </div>

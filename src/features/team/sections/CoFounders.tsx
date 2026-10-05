@@ -3,72 +3,27 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { Linkedin, Twitter, Github, Users, Globe } from "lucide-react";
+import { Linkedin, Twitter, Github, Users } from "lucide-react";
 
-const organizers = [
-  {
-    name: "Ayush Kumar Tiwari",
-    title: "Organizer",
-    bio: "Ayush is a Software Engineer with 3+ years of experience building user-focused web applications using React.js, Next.js, TypeScript, and Angular, with experience across B2B platforms and cross-platform mobile apps.",
-    image: "/images/team/ayush-tiwari.png",
-    socials: {
-      linkedin: "https://www.linkedin.com/in/itsayu/",
-      twitter: "https://twitter.com/its_AKT_/",
-      github: "https://github.com/itsayu/",
-      website: "https://itsayu.d4community.com",
-      bioWebsite: "https://itsakt.d4community.com",
-    },
-  },
-  {
-    name: "Sagar Malhotra",
-    title: "Organizer",
-    bio: "Sagar Malhotra is a friendly neighborhood Android Engineer passionate about helping developers grow. He supports the community through mentoring peers, teaching, writing blogs, and creating educational content.",
-    image: "/images/team/sagar-malhotra.jpg",
-    socials: {
-      linkedin: "https://www.linkedin.com/in/sagar0-0malhotra/",
-      twitter: "#",
-      github: "https://github.com/Sagar0-0",
-    },
-  },
-  {
-    name: "Qazi Zaid",
-    title: "Co-Organizer",
-    bio: "Qazi Zaid is a Co-Organizer at D4 Community, contributing to the growth of the developer ecosystem by organizing events, managing collaborations, and supporting community initiatives. He actively works to create opportunities for students and developers to learn, connect, and build together. With interests in technology, design, and community building, he helps drive impactful initiatives within the community.",
-    image: "/images/team/qazi-zaid.png",
-    socials: {
-      linkedin: "https://www.linkedin.com/in/qazi-zaid/",
-      twitter: "#",
-      github: "https://github.com/QaziZaid16",
-    },
-  },
-];
+import { memberImageUrl } from "../lib/queries";
+import type { TeamMember } from "../lib/types";
 
-// Helper function to dynamically find and link the first name in the bio string
-const formatBio = (bio: string, fullName: string, website: string | undefined): React.ReactNode => {
-  if (!website) return bio;
-  const firstName = fullName.split(" ")[0];
-  if (!bio.includes(firstName)) return bio;
+// A link field is treated as "missing" when it's undefined/empty or just a "#"
+// placeholder (matches the convention from the previous data files).
+const isUsableUrl = (url?: string): url is string =>
+  Boolean(url && url !== "#" && url !== "/");
 
-  const index = bio.indexOf(firstName);
-  return (
-    <>
-      {bio.substring(0, index)}
-      <a
-        href={website}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary hover:underline font-semibold"
-      >
-        {firstName}
-      </a>
-      {bio.substring(index + firstName.length)}
-    </>
-  );
-};
-
-export const CoFounders = () => {
+export const CoFounders = ({ organizers }: { organizers: TeamMember[] }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  // First 2 → "Top Row" 2-col grid. The rest → stacked full-width cards.
+  const topRow = organizers.slice(0, 2);
+  const bottomRow = organizers.slice(2);
+
+  if (organizers.length === 0) {
+    return null;
+  }
 
   return (
     <section className="relative w-full py-24 overflow-hidden" ref={ref}>
@@ -93,96 +48,103 @@ export const CoFounders = () => {
         </motion.div>
 
         <div className="flex flex-col gap-8 lg:gap-12 w-full">
-          {/* Top Row: 2 Founders */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 w-full">
-            {organizers.slice(0, 2).map((founder, index) => (
-              <motion.div
-                key={founder.name}
-                initial={{ opacity: 0, scale: 0.95, y: 30 }}
-                animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                className="relative group flex flex-col w-full h-full"
-              >
-                {/* Outer sharp accent border */}
-                <div
-                  className="absolute inset-0 bg-linear-to-br from-white/10 via-border/50 to-white/10 group-hover:from-primary group-hover:to-primary/30 transition-colors duration-500"
-                  style={{ clipPath: "polygon(0 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 40px 100%, 0 calc(100% - 40px))" }}
-                />
-
-                {/* Inner main card */}
-                <div
-                  className="relative m-[1px] h-full bg-background/95 backdrop-blur-2xl flex flex-col gap-0"
-                  style={{ clipPath: "polygon(0 0, calc(100% - 39px) 0, 100% 39px, 100% 100%, 39px 100%, 0 calc(100% - 39px))" }}
+          {/* Top Row: up to 2 founders in a 2-col grid */}
+          {topRow.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 w-full">
+              {topRow.map((founder, index) => (
+                <motion.div
+                  key={founder._id}
+                  initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                  animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  className="relative group flex flex-col w-full h-full"
                 >
-                  {/* Image Box - Filling the top area completely */}
-                  <div className="relative w-full aspect-[4/3] overflow-hidden group-hover:opacity-90 transition-opacity duration-300">
-                    <Image
-                      src={founder.image}
-                      alt={founder.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover object-top transition-all duration-700 group-hover:scale-[1.03]"
-                      priority={index === 0}
-                    />
-                    {/* Gradient fade to background */}
-                    <div className="absolute inset-0 bg-linear-to-t from-background/95 via-background/20 to-transparent z-10" />
-                  </div>
+                  {/* Outer sharp accent border */}
+                  <div
+                    className="absolute inset-0 bg-linear-to-br from-white/10 via-border/50 to-white/10 group-hover:from-primary group-hover:to-primary/30 transition-colors duration-500"
+                    style={{ clipPath: "polygon(0 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 40px 100%, 0 calc(100% - 40px))" }}
+                  />
 
-                  {/* Content taking the bottom space, overflowing slightly */}
-                  <div className="relative z-10 flex flex-col flex-grow px-6 md:px-10 pb-8 pt-2 -mt-12">
-                    <div className="flex flex-col gap-3">
-                      <div
-                        className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-primary/10 border border-primary/30 text-primary text-xs font-bold self-start uppercase tracking-[0.2em] backdrop-blur-md"
-                        style={{ clipPath: "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))" }}
-                      >
-                        {founder.title}
-                      </div>
-                      <h3 className="text-3xl md:text-4xl font-black text-foreground group-hover:text-primary transition-colors duration-300 tracking-tight">
-                        {founder.socials.website ? (
-                          <a href={founder.socials.website} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-primary decoration-2">
-                            {founder.name}
-                          </a>
+                  {/* Inner main card */}
+                  <div
+                    className="relative m-[1px] h-full bg-background/95 backdrop-blur-2xl flex flex-col gap-0"
+                    style={{ clipPath: "polygon(0 0, calc(100% - 39px) 0, 100% 39px, 100% 100%, 39px 100%, 0 calc(100% - 39px))" }}
+                  >
+                    {/* Image Box - Filling the top area completely */}
+                    <div className="relative w-full aspect-[4/3] overflow-hidden bg-secondary/20 group-hover:opacity-90 transition-opacity duration-300">
+                      {(() => {
+                        const src = memberImageUrl(founder.image, 800);
+                        return src ? (
+                          <Image
+                            src={src}
+                            alt={founder.name}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="object-cover object-top transition-all duration-700 group-hover:scale-[1.03]"
+                            priority={index === 0}
+                          />
                         ) : (
-                          founder.name
-                        )}
-                      </h3>
+                          <div className="absolute inset-0 bg-linear-to-br from-primary/20 via-secondary to-primary/10" />
+                        );
+                      })()}
+                      {/* Gradient fade to background */}
+                      <div className="absolute inset-0 bg-linear-to-t from-background/95 via-background/20 to-transparent z-10" />
                     </div>
-                    <p className="text-muted-foreground leading-relaxed text-base mt-4 mb-8">
-                      {formatBio(founder.bio, founder.name, founder.socials.bioWebsite || founder.socials.website)}
-                    </p>
 
-                    {/* Socials anchored to bottom */}
-                    <div className="mt-auto flex gap-3 pt-6 border-t border-white/10">
-                      <a href={founder.socials.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                        <Linkedin className="w-5 h-5 relative z-10" />
-                      </a>
-                      <a href={founder.socials.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                        <Twitter className="w-5 h-5 relative z-10" />
-                      </a>
-                      <a href={founder.socials.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                        <Github className="w-5 h-5 relative z-10" />
-                      </a>
-                      {founder.socials.website && (
-                        <a href={founder.socials.website} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                          <Globe className="w-5 h-5 relative z-10" />
-                        </a>
+                    {/* Content taking the bottom space, overflowing slightly */}
+                    <div className="relative z-10 flex flex-col flex-grow px-6 md:px-10 pb-8 pt-2 -mt-12">
+                      <div className="flex flex-col gap-3">
+                        <div
+                          className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-primary/10 border border-primary/30 text-primary text-xs font-bold self-start uppercase tracking-[0.2em] backdrop-blur-md"
+                          style={{ clipPath: "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))" }}
+                        >
+                          {founder.designation}
+                        </div>
+                        <h3 className="text-3xl md:text-4xl font-black text-foreground group-hover:text-primary transition-colors duration-300 tracking-tight">
+                          {isUsableUrl(founder.linkedin) ? (
+                            <a href={founder.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-primary decoration-2">
+                              {founder.name}
+                            </a>
+                          ) : (
+                            founder.name
+                          )}
+                        </h3>
+                      </div>
+                      {founder.description && (
+                        <p className="text-muted-foreground leading-relaxed text-base mt-4 mb-8">
+                          {founder.description}
+                        </p>
                       )}
-                      {/* {founder.socials.bioWebsite && (
-                        <a href={founder.socials.bioWebsite} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                          <Globe className="w-5 h-5 relative z-10 opacity-80" />
-                        </a>
-                      )} */}
+
+                      {/* Socials anchored to bottom */}
+                      <div className="mt-auto flex gap-3 pt-6 border-t border-white/10">
+                        {isUsableUrl(founder.linkedin) && (
+                          <a href={founder.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                            <Linkedin className="w-5 h-5 relative z-10" />
+                          </a>
+                        )}
+                        {isUsableUrl(founder.twitter) && (
+                          <a href={founder.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                            <Twitter className="w-5 h-5 relative z-10" />
+                          </a>
+                        )}
+                        {isUsableUrl(founder.github) && (
+                          <a href={founder.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                            <Github className="w-5 h-5 relative z-10" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
 
-          {/* Bottom Row: 1 Co-Organizer spanning full width */}
-          {organizers.slice(2).map((organizer) => (
+          {/* Bottom Row: remaining organizers in full-width horizontal cards */}
+          {bottomRow.map((organizer) => (
             <motion.div
-              key={organizer.name}
+              key={organizer._id}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -204,13 +166,20 @@ export const CoFounders = () => {
               >
                 {/* Horizontal Image Section */}
                 <div className="relative w-full md:w-[40%] aspect-[4/3] md:aspect-auto md:min-h-[350px] overflow-hidden bg-secondary/10 border-r border-white/5">
-                  <Image
-                    src={organizer.image}
-                    alt={organizer.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 40vw"
-                    className="object-cover object-center transition-all duration-700 group-hover:scale-[1.03]"
-                  />
+                  {(() => {
+                    const src = memberImageUrl(organizer.image, 640);
+                    return src ? (
+                      <Image
+                        src={src}
+                        alt={organizer.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 40vw"
+                        className="object-cover object-center transition-all duration-700 group-hover:scale-[1.03]"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-linear-to-br from-[#6d9eeb]/20 via-secondary to-[#6d9eeb]/10" />
+                    );
+                  })()}
                   <div className="absolute inset-0 bg-linear-to-t md:bg-linear-to-r from-background/95 via-background/40 md:via-background/20 to-transparent z-10" />
                 </div>
 
@@ -221,11 +190,11 @@ export const CoFounders = () => {
                       className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#6d9eeb]/10 border border-[#6d9eeb]/30 text-[#6d9eeb] text-xs font-bold self-start uppercase tracking-[0.2em] backdrop-blur-md"
                       style={{ clipPath: "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))" }}
                     >
-                      {organizer.title}
+                      {organizer.designation}
                     </div>
                     <h3 className="text-3xl md:text-5xl font-black text-foreground group-hover:text-[#6d9eeb] transition-colors duration-300 tracking-tight">
-                      {organizer.socials.website ? (
-                        <a href={organizer.socials.website} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-[#6d9eeb] decoration-2">
+                      {isUsableUrl(organizer.linkedin) ? (
+                        <a href={organizer.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-[#6d9eeb] decoration-2">
                           {organizer.name}
                         </a>
                       ) : (
@@ -233,29 +202,27 @@ export const CoFounders = () => {
                       )}
                     </h3>
                   </div>
-                  <p className="text-muted-foreground leading-relaxed text-base md:text-lg max-w-xl">
-                    {formatBio(organizer.bio, organizer.name, organizer.socials.bioWebsite || organizer.socials.website)}
-                  </p>
+                  {organizer.description && (
+                    <p className="text-muted-foreground leading-relaxed text-base md:text-lg max-w-xl">
+                      {organizer.description}
+                    </p>
+                  )}
 
                   {/* Socials horizontal card */}
                   <div className="flex gap-3 pt-6 md:pt-4 md:mt-auto border-t border-white/10">
-                    <a href={organizer.socials.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                      <Linkedin className="w-5 h-5 relative z-10" />
-                    </a>
-                    <a href={organizer.socials.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                      <Twitter className="w-5 h-5 relative z-10" />
-                    </a>
-                    <a href={organizer.socials.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                      <Github className="w-5 h-5 relative z-10" />
-                    </a>
-                    {organizer.socials.website && (
-                      <a href={organizer.socials.website} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                        <Globe className="w-5 h-5 relative z-10" />
+                    {isUsableUrl(organizer.linkedin) && (
+                      <a href={organizer.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                        <Linkedin className="w-5 h-5 relative z-10" />
                       </a>
                     )}
-                    {organizer.socials.bioWebsite && (
-                      <a href={organizer.socials.bioWebsite} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
-                        <Globe className="w-5 h-5 relative z-10 opacity-80" />
+                    {isUsableUrl(organizer.twitter) && (
+                      <a href={organizer.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                        <Twitter className="w-5 h-5 relative z-10" />
+                      </a>
+                    )}
+                    {isUsableUrl(organizer.github) && (
+                      <a href={organizer.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                        <Github className="w-5 h-5 relative z-10" />
                       </a>
                     )}
                   </div>
