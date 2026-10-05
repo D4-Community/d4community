@@ -1128,7 +1128,7 @@ export const siteConfig = {
         { id: 5, title: "Code Of Conduct", url: "/code-of-conduct" },
         { id: 6, title: "Privacy Policy", url: "/privacy-policy" },
         { id: 7, title: "Terms of Use", url: "/terms" },
-        { id: 10, title: "Sitemap", url: "/sitemap" },
+        { id: 10, title: "Sitemap", url: "/site-map" },
       ],
     },
   ],
