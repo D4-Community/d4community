@@ -22,6 +22,7 @@ const NAV_ITEMS = [
   { name: "Team", link: "/team" },
   { name: "About", link: "/about" },
   { name: "Events", link: "/events" },
+  { name: "Gallery", link: "/gallery" },
 ];
 
 const Header = () => {
@@ -85,7 +86,10 @@ const Header = () => {
         >
           <div className="flex flex-col space-y-1 py-2">
             {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.link;
+              const isActive =
+                item.link === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(item.link);
               return (
                 <Link
                   key={item.link}

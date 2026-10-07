@@ -90,6 +90,18 @@ export const teamMemberType = defineType({
       validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
     }),
     defineField({
+      name: 'medium',
+      title: 'Medium',
+      type: 'url',
+      validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
+    }),
+    defineField({
+      name: 'portfolio',
+      title: 'Portfolio / Website',
+      type: 'url',
+      validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
+    }),
+    defineField({
       name: 'startDate',
       title: 'Start Date',
       type: 'date',
