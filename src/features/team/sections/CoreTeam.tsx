@@ -66,11 +66,17 @@ export const CoreTeam = ({ core }: { core: TeamMember[] }) => {
                   <p className="text-xs text-muted-foreground mt-1 line-clamp-2" title={member.designation}>{member.designation}</p>
                 </div>
                 {isUsableUrl(member.linkedin) && (
-                  <div className="mt-auto pt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translation-y-2 group-hover:translate-y-0">
-                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[#0A66C2]">
-                      <Linkedin className="w-5 h-5" />
-                    </a>
-                  </div>
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-auto pt-2 text-muted-foreground hover:text-[#0077B5] transition-colors relative z-10"
+                    aria-label={`${member.name}'s LinkedIn profile`}
+                  >
+                    <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-secondary/50 border border-border group-hover:border-[#0077B5]/30 group-hover:bg-[#0077B5]/10 transition-all">
+                      <Linkedin className="w-4.5 h-4.5" />
+                    </div>
+                  </a>
                 )}
               </motion.div>
             );
