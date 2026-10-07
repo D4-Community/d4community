@@ -13,6 +13,17 @@ import type { TeamMember } from "../lib/types";
 const isUsableUrl = (url?: string): url is string =>
   Boolean(url && url !== "#" && url !== "/");
 
+const MediumIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg
+    viewBox="0 0 640 512"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M180.5,74.262C80.813,74.262,0,155.633,0,256S80.819,437.738,180.5,437.738,361,356.373,361,256,280.191,74.262,180.5,74.262Zm288.25,10.646c-49.845,0-90.245,76.619-90.245,171.095s40.406,171.1,90.251,171.1,90.251-76.619,90.251-171.1H559C559,161.5,518.6,84.908,468.752,84.908Zm139.506,17.821c-17.526,0-31.735,68.628-31.735,153.274s14.2,153.274,31.735,153.274S640,340.631,640,256C640,171.351,625.785,102.729,608.258,102.729Z" />
+  </svg>
+);
+
 /**
  * Returns the portfolio / personal website URL for a founder or organizer.
  * Fetched dynamically from Sanity CMS (portfolio / website field),
@@ -148,20 +159,25 @@ export const CoFounders = ({ organizers }: { organizers: TeamMember[] }) => {
                       )}
 
                       {/* Socials anchored to bottom */}
-                      <div className="mt-auto flex gap-3 pt-6 border-t border-white/10">
+                      <div className="mt-auto flex flex-wrap gap-3 pt-6 border-t border-white/10">
                         {isUsableUrl(founder.linkedin) && (
-                          <a href={founder.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                          <a href={founder.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${founder.name}'s LinkedIn`}>
                             <Linkedin className="w-5 h-5 relative z-10" />
                           </a>
                         )}
                         {isUsableUrl(founder.twitter) && (
-                          <a href={founder.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                          <a href={founder.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${founder.name}'s Twitter`}>
                             <Twitter className="w-5 h-5 relative z-10" />
                           </a>
                         )}
                         {isUsableUrl(founder.github) && (
                           <a href={founder.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${founder.name}'s GitHub`}>
                             <Github className="w-5 h-5 relative z-10" />
+                          </a>
+                        )}
+                        {isUsableUrl(founder.medium) && (
+                          <a href={founder.medium} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${founder.name}'s Medium profile`} title="Medium">
+                            <MediumIcon className="w-5 h-5 relative z-10" />
                           </a>
                         )}
                         {getPortfolioUrl(founder) && (
@@ -245,7 +261,7 @@ export const CoFounders = ({ organizers }: { organizers: TeamMember[] }) => {
                   )}
 
                   {/* Socials horizontal card */}
-                  <div className="flex gap-3 pt-6 md:pt-4 md:mt-auto border-t border-white/10">
+                  <div className="flex flex-wrap gap-3 pt-6 md:pt-4 md:mt-auto border-t border-white/10">
                     {isUsableUrl(organizer.linkedin) && (
                       <a href={organizer.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${organizer.name}'s LinkedIn`}>
                         <Linkedin className="w-5 h-5 relative z-10" />
@@ -259,6 +275,11 @@ export const CoFounders = ({ organizers }: { organizers: TeamMember[] }) => {
                     {isUsableUrl(organizer.github) && (
                       <a href={organizer.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${organizer.name}'s GitHub`}>
                         <Github className="w-5 h-5 relative z-10" />
+                      </a>
+                    )}
+                    {isUsableUrl(organizer.medium) && (
+                      <a href={organizer.medium} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${organizer.name}'s Medium profile`} title="Medium">
+                        <MediumIcon className="w-5 h-5 relative z-10" />
                       </a>
                     )}
                     {getPortfolioUrl(organizer) && (

@@ -10,6 +10,17 @@ import type { TeamMember } from "../lib/types";
 const isUsableUrl = (url?: string): url is string =>
   Boolean(url && url !== "#" && url !== "/");
 
+const MediumIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg
+    viewBox="0 0 640 512"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M180.5,74.262C80.813,74.262,0,155.633,0,256S80.819,437.738,180.5,437.738,361,356.373,361,256,280.191,74.262,180.5,74.262Zm288.25,10.646c-49.845,0-90.245,76.619-90.245,171.095s40.406,171.1,90.251,171.1,90.251-76.619,90.251-76.619,90.251-171.1H559C559,161.5,518.6,84.908,468.752,84.908Zm139.506,17.821c-17.526,0-31.735,68.628-31.735,153.274s14.2,153.274,31.735,153.274S640,340.631,640,256C640,171.351,625.785,102.729,608.258,102.729Z" />
+  </svg>
+);
+
 export const CoreTeam = ({ core }: { core: TeamMember[] }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -65,19 +76,34 @@ export const CoreTeam = ({ core }: { core: TeamMember[] }) => {
                   <p className="text-base font-bold tracking-tight text-foreground group-hover:text-[#6d9eeb] transition-colors line-clamp-1" title={member.name}>{member.name}</p>
                   <p className="text-xs text-muted-foreground mt-1 line-clamp-2" title={member.designation}>{member.designation}</p>
                 </div>
-                {isUsableUrl(member.linkedin) && (
-                  <a
-                    href={member.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-auto pt-2 text-muted-foreground hover:text-[#0077B5] transition-colors relative z-10"
-                    aria-label={`${member.name}'s LinkedIn profile`}
-                  >
-                    <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-secondary/50 border border-border group-hover:border-[#0077B5]/30 group-hover:bg-[#0077B5]/10 transition-all">
-                      <Linkedin className="w-4.5 h-4.5" />
-                    </div>
-                  </a>
-                )}
+                <div className="mt-auto pt-2 flex items-center justify-center gap-2 relative z-10">
+                  {isUsableUrl(member.linkedin) && (
+                    <a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-muted-foreground hover:text-[#0077B5] transition-colors"
+                      aria-label={`${member.name}'s LinkedIn profile`}
+                    >
+                      <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-secondary/50 border border-border group-hover:border-[#0077B5]/30 group-hover:bg-[#0077B5]/10 transition-all">
+                        <Linkedin className="w-4.5 h-4.5" />
+                      </div>
+                    </a>
+                  )}
+                  {isUsableUrl(member.medium) && (
+                    <a
+                      href={member.medium}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label={`${member.name}'s Medium profile`}
+                    >
+                      <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-secondary/50 border border-border group-hover:border-foreground/30 group-hover:bg-foreground/10 transition-all">
+                        <MediumIcon className="w-4 h-4" />
+                      </div>
+                    </a>
+                  )}
+                </div>
               </motion.div>
             );
           })}

@@ -49,6 +49,7 @@ export async function getTeamMembers(): Promise<TeamMembersBySection> {
         linkedin,
         github,
         twitter,
+        medium,
         portfolio,
         website,
         image{ asset->{_id, url}, hotspot, alt },
