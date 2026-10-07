@@ -9,6 +9,18 @@ import { memberImageUrl } from "../lib/queries";
 import type { TeamMember } from "../lib/types";
 
 /*
+  UTILITIES
+*/
+
+const slugify = (text: string) =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+/*
   TYPES & INTERFACES
 */
 
@@ -25,82 +37,94 @@ export interface MarqueeRowProps {
 export interface VolunteerCardProps {
   member: TeamMember;
   direction: "left" | "right";
+  isPrimary?: boolean;
 }
 
 /*
   SUB-COMPONENTS
 */
 
-const VolunteerCard = React.memo(({ member, direction }: VolunteerCardProps) => {
-  const avatarSrc = useMemo(() => {
-    return (
-      memberImageUrl(member.image, 160, 160) ??
-      `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(member.name)}${
-        direction === "right" ? "alt" : ""
-      }`
-    );
-  }, [member.image, member.name, direction]);
+const VolunteerCard = React.memo(
+  ({ member, direction, isPrimary }: VolunteerCardProps) => {
+    const avatarSrc = useMemo(() => {
+      return (
+        memberImageUrl(member.image, 160, 160) ??
+        `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(
+          member.name
+        )}${direction === "right" ? "alt" : ""}`
+      );
+    }, [member.image, member.name, direction]);
 
-  return (
-    <div className="flex flex-col items-center gap-3 w-32 flex-shrink-0 select-none">
-      <div className="relative w-20 h-20 rounded-full bg-secondary overflow-hidden shadow-sm shadow-black/20 ring-1 ring-border/20 transition-transform duration-300 hover:scale-105">
-        <Image
-          src={avatarSrc}
-          alt={member.name}
-          fill
-          sizes="80px"
-          className="object-cover pointer-events-none"
-          loading="lazy"
-          unoptimized
-        />
+    const memberSlug = useMemo(() => slugify(member.name), [member.name]);
+
+    return (
+      <div
+        id={isPrimary ? memberSlug : undefined}
+        className="flex flex-col items-center gap-3 w-32 flex-shrink-0 select-none scroll-mt-24"
+      >
+        <div className="relative w-20 h-20 rounded-full bg-secondary overflow-hidden shadow-sm shadow-black/20 ring-1 ring-border/20 transition-transform duration-300 hover:scale-105">
+          <Image
+            src={avatarSrc}
+            alt={member.name}
+            fill
+            sizes="80px"
+            className="object-cover pointer-events-none"
+            loading="lazy"
+            unoptimized
+          />
+        </div>
+        <h3
+          className="text-sm font-semibold text-muted-foreground text-center whitespace-nowrap overflow-hidden text-ellipsis w-full"
+          title={member.name}
+        >
+          {member.name}
+        </h3>
       </div>
-      <p className="text-sm font-semibold text-muted-foreground text-center whitespace-nowrap overflow-hidden text-ellipsis w-full">
-        {member.name}
-      </p>
-    </div>
-  );
-});
+    );
+  }
+);
 
 VolunteerCard.displayName = "VolunteerCard";
 
-const MarqueeRow = React.memo(({
-  items,
-  direction = "left",
-  duration = 55,
-}: MarqueeRowProps) => {
-  // Triple the items to ensure a mathematically seamless infinite loop without gaps
-  const copies = useMemo(() => [0, 1, 2], []);
+const MarqueeRow = React.memo(
+  ({ items, direction = "left", duration = 55 }: MarqueeRowProps) => {
+    // Triple the items to ensure a mathematically seamless infinite loop without gaps
+    const copies = useMemo(() => [0, 1, 2], []);
 
-  if (!items || items.length === 0) return null;
+    if (!items || items.length === 0) return null;
 
-  return (
-    <div
-      className="volunteers-row-wrapper overflow-hidden w-full py-4 select-none"
-      style={{ contain: "layout paint" }}
-    >
+    return (
       <div
-        className={`volunteers-track flex gap-8 w-max ${
-          direction === "left" ? "animate-volunteers-left" : "animate-volunteers-right"
-        }`}
-        style={{
-          animationDuration: `${duration}s`,
-          animationTimingFunction: "linear",
-          animationIterationCount: "infinite",
-        }}
+        className="volunteers-row-wrapper overflow-hidden w-full py-4 select-none"
+        style={{ contain: "layout paint" }}
       >
-        {copies.map((copyIdx) =>
-          items.map((member, itemIdx) => (
-            <VolunteerCard
-              key={`${member._id}-copy-${copyIdx}-${itemIdx}`}
-              member={member}
-              direction={direction}
-            />
-          ))
-        )}
+        <div
+          className={`volunteers-track flex gap-8 w-max ${
+            direction === "left"
+              ? "animate-volunteers-left"
+              : "animate-volunteers-right"
+          }`}
+          style={{
+            animationDuration: `${duration}s`,
+            animationTimingFunction: "linear",
+            animationIterationCount: "infinite",
+          }}
+        >
+          {copies.map((copyIdx) =>
+            items.map((member, itemIdx) => (
+              <VolunteerCard
+                key={`${member._id}-copy-${copyIdx}-${itemIdx}`}
+                member={member}
+                direction={direction}
+                isPrimary={copyIdx === 0}
+              />
+            ))
+          )}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 MarqueeRow.displayName = "MarqueeRow";
 
@@ -144,7 +168,8 @@ export const Volunteers = ({ volunteers }: VolunteersProps) => {
               Volunteers
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl">
-              Our incredible volunteers who passionately contribute their time and energy to our cause and events.
+              Our incredible volunteers who passionately contribute their time
+              and energy to our cause and events.
             </p>
           </motion.div>
         </div>
