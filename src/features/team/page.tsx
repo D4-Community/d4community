@@ -1,26 +1,102 @@
+import type { Metadata } from 'next';
 import { TeamHero, CoFounders, Leads, CoreTeam, Volunteers } from './sections';
-import { getTeamMembers } from './lib/queries';
+import { getTeamMembers, memberImageUrl } from './lib/queries';
+import type { TeamMember } from './lib/types';
+
+export const slugify = (text: string) =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+const getSocialLinks = (member: TeamMember): string[] => {
+  const links = [member.linkedin, member.medium, member.twitter, member.github];
+  return links.filter(
+    (url): url is string => Boolean(url && url !== '#' && url !== '/')
+  );
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { organizers, leads, core, volunteers } = await getTeamMembers();
+  const allMembers = [...organizers, ...leads, ...core, ...volunteers];
+  const allNames = allMembers.map((m) => m.name);
+
+  return {
+    title: 'D4 Community Team | Organizers, Leads, Core & Volunteers',
+    description: `Meet the team behind D4 Community: ${allNames.slice(0, 8).join(', ')}, and more developers, creators, and community leaders.`,
+    keywords: [
+      'D4 Community',
+      'D4 Community Team',
+      'Ayush Kumar Tiwari',
+      ...allNames,
+    ],
+    alternates: {
+      canonical: 'https://d4community.com/team',
+    },
+    openGraph: {
+      title: 'D4 Community Team & Leadership',
+      description: 'Meet the organizers, leads, core team, and volunteers powering D4 Community.',
+      url: 'https://d4community.com/team',
+      type: 'profile',
+    },
+  };
+}
 
 const TeamPage = async () => {
   const { organizers, leads, core, volunteers } = await getTeamMembers();
 
+  const categorisedMembers = [
+    ...organizers.map((m) => ({ ...m, roleCategory: 'Organizer / Co-Founder' })),
+    ...leads.map((m) => ({ ...m, roleCategory: 'Team Lead' })),
+    ...core.map((m) => ({ ...m, roleCategory: 'Core Team Member' })),
+    ...volunteers.map((m) => ({ ...m, roleCategory: 'Volunteer' })),
+  ];
+
+  // Schema.org Graph mapping every single member as an indexable Person entity
   const schemaMarkup = {
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    "mainEntity": {
-      "@type": "Organization",
-      "name": "D4 Community",
-      "url": "https://d4community.com",
-      "description": "D4 Community is a thriving network of tech enthusiasts, developers, and creators collaborating to build the future.",
-      "organizer": {
-        "@type": "Person",
-        "name": "Ayush Kumar Tiwari",
-        "jobTitle": "Organizer",
-        "sameAs": [
-          "https://linkedin.com/in/itsayu/"
-        ]
-      }
-    }
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'AboutPage',
+        '@id': 'https://d4community.com/team/#webpage',
+        'url': 'https://d4community.com/team',
+        'name': 'D4 Community Team & Leadership',
+        'description': 'Official team directory for D4 Community organizers, leads, core team members, and volunteers.',
+        'mainEntity': { '@id': 'https://d4community.com/#organization' },
+      },
+      {
+        '@type': 'Organization',
+        '@id': 'https://d4community.com/#organization',
+        'name': 'D4 Community',
+        'url': 'https://d4community.com',
+        'logo': 'https://d4community.com/logo.png',
+        'description': 'D4 Community is a thriving network of tech enthusiasts, developers, and creators collaborating to build the future.',
+        'organizer': {
+          '@type': 'Person',
+          'name': 'Ayush Kumar Tiwari',
+          'jobTitle': 'Organizer',
+          'sameAs': ['https://linkedin.com/in/itsayu/'],
+        },
+        'member': categorisedMembers.map((member) => {
+          const slug = slugify(member.name);
+          const profileUrl = `https://d4community.com/team#${slug}`;
+
+          return {
+            '@type': 'Person',
+            '@id': profileUrl,
+            'url': profileUrl,
+            'name': member.name,
+            'jobTitle': member.designation || member.roleCategory,
+            'worksFor': { '@id': 'https://d4community.com/#organization' },
+            'memberOf': { '@id': 'https://d4community.com/#organization' },
+            'image': member.image ? memberImageUrl(member.image, 400, 400) : undefined,
+            'sameAs': getSocialLinks(member),
+          };
+        }),
+      },
+    ],
   };
 
   return (
@@ -30,17 +106,21 @@ const TeamPage = async () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
       />
 
-      <h1 className="sr-only">D4 Community Team - Organized by Ayush Kumar Tiwari</h1>
-
-      {/* <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-blue-500/10 blur-[150px] rounded-full pointer-events-none -z-10 -translate-x-1/2" />
-      <div className="absolute bottom-1/4 right-0 w-[600px] h-[600px] bg-purple-500/10 blur-[150px] rounded-full pointer-events-none -z-10 translate-x-1/3" /> */}
+      <h1 className="sr-only">D4 Community Team - Leadership, Core Members, and Volunteers</h1>
 
       <TeamHero />
 
-      <section className="sr-only">
-        <p>
-          The D4 Community is organized by Ayush Kumar Tiwari, alongside a structured leadership group comprising Co-Founders, Team Leads, Core Members, and an active network of Volunteers.
-        </p>
+      {/* Semantic indexable text for search engine crawlers */}
+      <section className="sr-only" aria-label="Team Roster Directory">
+        <h2>D4 Community Team Members</h2>
+        <ul>
+          {categorisedMembers.map((member) => (
+            <li key={member._id || member.name}>
+              <h3>{member.name}</h3>
+              <p>{member.designation || member.roleCategory} at D4 Community</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <CoFounders organizers={organizers} />
@@ -48,7 +128,7 @@ const TeamPage = async () => {
       <CoreTeam core={core} />
       <Volunteers volunteers={volunteers} />
     </div>
-  )
-}
+  );
+};
 
 export default TeamPage;
