@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { Linkedin, Twitter, Github, Users } from "lucide-react";
+import { Linkedin, Twitter, Github, Users, Globe } from "lucide-react";
 
 import { memberImageUrl } from "../lib/queries";
 import type { TeamMember } from "../lib/types";
@@ -13,13 +13,55 @@ import type { TeamMember } from "../lib/types";
 const isUsableUrl = (url?: string): url is string =>
   Boolean(url && url !== "#" && url !== "/");
 
+const MediumIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg
+    viewBox="0 0 640 512"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M180.5,74.262C80.813,74.262,0,155.633,0,256S80.819,437.738,180.5,437.738,361,356.373,361,256,280.191,74.262,180.5,74.262Zm288.25,10.646c-49.845,0-90.245,76.619-90.245,171.095s40.406,171.1,90.251,171.1,90.251-76.619,90.251-171.1H559C559,161.5,518.6,84.908,468.752,84.908Zm139.506,17.821c-17.526,0-31.735,68.628-31.735,153.274s14.2,153.274,31.735,153.274S640,340.631,640,256C640,171.351,625.785,102.729,608.258,102.729Z" />
+  </svg>
+);
+
+/**
+ * Returns the portfolio / personal website URL for a founder or organizer.
+ * Fetched dynamically from Sanity CMS (portfolio / website field),
+ * with fallback for Ayush's personal site.
+ */
+const getPortfolioUrl = (founder: TeamMember): string | undefined => {
+  if (founder.portfolio && isUsableUrl(founder.portfolio)) return founder.portfolio;
+  if (founder.website && isUsableUrl(founder.website)) return founder.website;
+  if (founder.name?.toLowerCase().includes("ayush")) {
+    return "https://itsayu.d4community.com/";
+  }
+  return undefined;
+};
+
 export const CoFounders = ({ organizers }: { organizers: TeamMember[] }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  // First 2 → "Top Row" 2-col grid. The rest → stacked full-width cards.
-  const topRow = organizers.slice(0, 2);
-  const bottomRow = organizers.slice(2);
+  // Separate Organizers and Co-Organizers:
+  // Organizers together in topRow (2-col grid), Co-Organizers below in bottomRow.
+  const isCoOrganizer = (m: TeamMember) => {
+    const d = (m.designation || "").toLowerCase();
+    const n = (m.name || "").toLowerCase();
+    return d.includes("co-organizer") || d.includes("co organizer") || n.includes("qazi zaid");
+  };
+
+  const primaryOrganizers = organizers.filter((m) => !isCoOrganizer(m));
+  const secondaryOrganizers = organizers.filter((m) => isCoOrganizer(m));
+
+  // Top row displays the main Organizers side-by-side
+  const topRow = primaryOrganizers.length > 0
+    ? primaryOrganizers.slice(0, 2)
+    : organizers.slice(0, 2);
+
+  // Bottom row displays the Co-Organizers (and any additional organizers)
+  const bottomRow = primaryOrganizers.length > 0
+    ? [...primaryOrganizers.slice(2), ...secondaryOrganizers]
+    : organizers.slice(2);
 
   if (organizers.length === 0) {
     return null;
@@ -117,20 +159,30 @@ export const CoFounders = ({ organizers }: { organizers: TeamMember[] }) => {
                       )}
 
                       {/* Socials anchored to bottom */}
-                      <div className="mt-auto flex gap-3 pt-6 border-t border-white/10">
+                      <div className="mt-auto flex flex-wrap gap-3 pt-6 border-t border-white/10">
                         {isUsableUrl(founder.linkedin) && (
-                          <a href={founder.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                          <a href={founder.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${founder.name}'s LinkedIn`}>
                             <Linkedin className="w-5 h-5 relative z-10" />
                           </a>
                         )}
                         {isUsableUrl(founder.twitter) && (
-                          <a href={founder.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                          <a href={founder.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${founder.name}'s Twitter`}>
                             <Twitter className="w-5 h-5 relative z-10" />
                           </a>
                         )}
                         {isUsableUrl(founder.github) && (
-                          <a href={founder.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                          <a href={founder.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${founder.name}'s GitHub`}>
                             <Github className="w-5 h-5 relative z-10" />
+                          </a>
+                        )}
+                        {isUsableUrl(founder.medium) && (
+                          <a href={founder.medium} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${founder.name}'s Medium profile`} title="Medium">
+                            <MediumIcon className="w-5 h-5 relative z-10" />
+                          </a>
+                        )}
+                        {getPortfolioUrl(founder) && (
+                          <a href={getPortfolioUrl(founder)} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-primary text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${founder.name}'s Portfolio`} title="Portfolio">
+                            <Globe className="w-5 h-5 relative z-10" />
                           </a>
                         )}
                       </div>
@@ -209,20 +261,30 @@ export const CoFounders = ({ organizers }: { organizers: TeamMember[] }) => {
                   )}
 
                   {/* Socials horizontal card */}
-                  <div className="flex gap-3 pt-6 md:pt-4 md:mt-auto border-t border-white/10">
+                  <div className="flex flex-wrap gap-3 pt-6 md:pt-4 md:mt-auto border-t border-white/10">
                     {isUsableUrl(organizer.linkedin) && (
-                      <a href={organizer.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                      <a href={organizer.linkedin} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${organizer.name}'s LinkedIn`}>
                         <Linkedin className="w-5 h-5 relative z-10" />
                       </a>
                     )}
                     {isUsableUrl(organizer.twitter) && (
-                      <a href={organizer.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                      <a href={organizer.twitter} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${organizer.name}'s Twitter`}>
                         <Twitter className="w-5 h-5 relative z-10" />
                       </a>
                     )}
                     {isUsableUrl(organizer.github) && (
-                      <a href={organizer.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }}>
+                      <a href={organizer.github} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${organizer.name}'s GitHub`}>
                         <Github className="w-5 h-5 relative z-10" />
+                      </a>
+                    )}
+                    {isUsableUrl(organizer.medium) && (
+                      <a href={organizer.medium} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${organizer.name}'s Medium profile`} title="Medium">
+                        <MediumIcon className="w-5 h-5 relative z-10" />
+                      </a>
+                    )}
+                    {getPortfolioUrl(organizer) && (
+                      <a href={getPortfolioUrl(organizer)} target="_blank" rel="noopener noreferrer" className="relative p-2.5 bg-secondary/50 hover:bg-[#6d9eeb] hover:text-black text-foreground transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)" }} aria-label={`${organizer.name}'s Portfolio`} title="Portfolio">
+                        <Globe className="w-5 h-5 relative z-10" />
                       </a>
                     )}
                   </div>

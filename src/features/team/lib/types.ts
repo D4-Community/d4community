@@ -21,6 +21,9 @@ export interface TeamMember {
   linkedin?: string;
   github?: string;
   twitter?: string;
+  medium?: string;
+  portfolio?: string;
+  website?: string;
   /** Resolved by the GROQ projection — passes straight into `urlFor()`. */
   image?: SanityImageSource;
   /** `slug.current` resolved into a flat field. */
