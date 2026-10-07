@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ComposableMap,
@@ -71,7 +77,8 @@ const mapData = {
       country: "Poland",
       name: "Brygida Fiejdasz",
       role: "Senior Frontend Developer @ Avenga",
-      topic: "Console.log is Not a Strategy - Mastering AI and Hidden DevTools Gems",
+      topic:
+        "Console.log is Not a Strategy - Mastering AI and Hidden DevTools Gems",
     },
     {
       lat: 28.5355,
@@ -196,7 +203,7 @@ const mapData = {
       city: "Bangalore",
       country: "India",
       name: "Aditya Thakur",
-      role: "Software Engineer at Scapia",
+      role: "Software Engineer at Scapia | Google Developer Expert",
       topic: "Cross-platform AI Experiences with Flutter & Dart",
     },
     {
@@ -225,6 +232,61 @@ const mapData = {
       name: "Ashwani Kumar",
       role: "CTI Analyst",
       topic: "Cybersecurity in the Age of AI",
+    },
+    {
+      lat: 12.9716,
+      lng: 77.5946,
+      city: "Bangalore",
+      country: "India",
+      name: "Aditya Joshi",
+      role: "Senior Software Engineer at Walmart | Google Developer Expert",
+      topic: "From Prompt to Autonomous: Building AI Agents with Google ADK",
+    },
+    {
+      lat: 18.5204,
+      lng: 73.8567,
+      city: "Pune",
+      country: "India",
+      name: "Saurabh Mishra",
+      role: "Google Developer Expert - Cloud",
+      topic: "Agentic Run: From Build to Autonomous",
+    },
+    {
+      lat: 30.7046,
+      lng: 76.7179,
+      city: "Mohali",
+      country: "India",
+      name: "Sarabjeet Singh",
+      role: "Lead Experience Engineer at Publicis Sapient",
+      topic:
+        "Beyond the Prompt: Building Production-Ready Applications with Generative AI",
+    },
+    {
+      lat: 30.7046,
+      lng: 76.7179,
+      city: "Mohali",
+      country: "India",
+      name: "Raveen Singh",
+      role: "Assistant Manager at Plaksha University",
+      topic: "Re-Imagining Tech Education in an AI Driven World",
+    },
+    {
+      lat: 26.9124,
+      lng: 75.7873,
+      city: "Jaipur",
+      country: "India",
+      name: "Harshit Parwal",
+      role: "Senior Software Engineer at LTM",
+      topic: "From Cron to Cognitive: Governing Autonomous AI in the Wild",
+    },
+    {
+      lat: 28.6139,
+      lng: 77.209,
+      city: "Delhi",
+      country: "India",
+      name: "Jitendra Gupta",
+      role: "Enterprise Architect - AIOps & Platform Engineering at EPAM Systems | Google Developer Expert - Google Cloud",
+      topic: "MCP: The USB-C of AI - Connecting AI Agents to the Real World",
     },
   ],
   leads: [
@@ -373,6 +435,26 @@ const mapData = {
       name: "Hack-N-Win 3.0",
       date: "Mar 7-9, 2024",
       attendees: "1700+",
+    },
+    {
+      lat: 30.7333,
+      lng: 76.7794,
+      city: "Mohali",
+      state: "Punjab",
+      country: "India",
+      name: "Zero to Agent:Mohali (w/D4 Community)",
+      date: "Apr 24, 2026",
+      attendees: "100+",
+    },
+    {
+      lat: 30.7333,
+      lng: 76.7794,
+      city: "Chandigarh",
+      state: "Chandigarh",
+      country: "India",
+      name: "GenAI Conclave Chandigarh 2026",
+      date: "Oct 03, 2026",
+      attendees: "100+",
     },
   ],
 };
@@ -593,10 +675,16 @@ export default function AboutSection() {
       lastTimeRef.current = now;
 
       if (!isDraggingGlobe.current) {
-        if (Math.abs(velocityRef.current.x) > 0.01 || Math.abs(velocityRef.current.y) > 0.01) {
+        if (
+          Math.abs(velocityRef.current.x) > 0.01 ||
+          Math.abs(velocityRef.current.y) > 0.01
+        ) {
           rotationRef.current = [
             rotationRef.current[0] + velocityRef.current.x,
-            Math.max(-80, Math.min(80, rotationRef.current[1] - velocityRef.current.y)),
+            Math.max(
+              -80,
+              Math.min(80, rotationRef.current[1] - velocityRef.current.y),
+            ),
             0,
           ];
           velocityRef.current.x *= 0.92;
@@ -662,7 +750,7 @@ export default function AboutSection() {
       const dx = e.clientX - lastMousePos.current.x;
       const dy = e.clientY - lastMousePos.current.y;
       lastMousePos.current = { x: e.clientX, y: e.clientY };
-      
+
       const sens = 0.25;
       velocityRef.current = { x: dx * sens, y: dy * sens };
 
@@ -1507,7 +1595,10 @@ interface MapCanvasProps {
   countryStrokeWidth: number;
   filteredGroups: CityGroup[];
   popup: { group: CityGroup } | null;
-  handleMarkerInteraction: (group: CityGroup, e: React.MouseEvent<SVGGElement>) => void;
+  handleMarkerInteraction: (
+    group: CityGroup,
+    e: React.MouseEvent<SVGGElement>,
+  ) => void;
   handleMarkerLeave: () => void;
   getTypeColor: (type: string) => string;
   markerStroke: string;
@@ -1604,10 +1695,7 @@ const MapCanvas = React.memo(function MapCanvas({
             const color = getTypeColor(group.items[0].type);
             const isActive = popup?.group.id === group.id;
             return (
-              <Marker
-                key={group.id}
-                coordinates={[group.lng, group.lat]}
-              >
+              <Marker key={group.id} coordinates={[group.lng, group.lat]}>
                 <g
                   style={{ pointerEvents: "visiblePainted" }}
                   onClick={(e) => {
@@ -1692,16 +1780,12 @@ const MapCanvas = React.memo(function MapCanvas({
           </Geographies>
 
           {filteredGroups.map((group) => {
-            if (!isPointVisible(group.lng, group.lat, rotation))
-              return null;
+            if (!isPointVisible(group.lng, group.lat, rotation)) return null;
 
             const color = getTypeColor(group.items[0].type);
             const isActive = popup?.group.id === group.id;
             return (
-              <Marker
-                key={group.id}
-                coordinates={[group.lng, group.lat]}
-              >
+              <Marker key={group.id} coordinates={[group.lng, group.lat]}>
                 <g
                   style={{ pointerEvents: "visiblePainted" }}
                   onClick={(e) => {
@@ -1728,11 +1812,7 @@ const MapCanvas = React.memo(function MapCanvas({
                     fill="transparent"
                     style={{ pointerEvents: "visiblePainted" }}
                   />
-                  <circle
-                    r={isActive ? 12 : 5}
-                    fill={color}
-                    opacity={0.2}
-                  />
+                  <circle r={isActive ? 12 : 5} fill={color} opacity={0.2} />
                   <circle
                     r={isActive ? 6 : 3.5}
                     fill={color}
