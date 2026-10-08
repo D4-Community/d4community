@@ -26,15 +26,11 @@ const MediumIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
 
 /**
  * Returns the portfolio / personal website URL for a founder or organizer.
- * Fetched dynamically from Sanity CMS (portfolio / website field),
- * with fallback for Ayush's personal site.
+ * Fetched dynamically from Sanity CMS (portfolio / website field).
  */
 const getPortfolioUrl = (founder: TeamMember): string | undefined => {
   if (founder.portfolio && isUsableUrl(founder.portfolio)) return founder.portfolio;
   if (founder.website && isUsableUrl(founder.website)) return founder.website;
-  if (founder.name?.toLowerCase().includes("ayush")) {
-    return "https://itsayu.d4community.com/";
-  }
   return undefined;
 };
 
