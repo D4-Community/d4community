@@ -16,6 +16,7 @@ import {
 import Image from "next/image";
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 /* ===================== TYPES ===================== */
 
@@ -116,6 +117,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
 
 export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
   const [hovered, setHovered] = useState<number | null>(null);
+  const pathname = usePathname();
 
   return (
     <div
@@ -125,23 +127,36 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
         className,
       )}
     >
-      {items.map((item, idx) => (
-        <Link
-          key={idx}
-          href={item.link}
-          onMouseEnter={() => setHovered(idx)}
-          onClick={onItemClick}
-          className="relative px-4 py-2 text-neutral-600 dark:text-neutral-300"
-        >
-          {hovered === idx && (
-            <motion.div
-              layoutId="hovered"
-              className="absolute inset-0 rounded-full bg-gray-100 dark:bg-neutral-800"
-            />
-          )}
-          <span className="relative z-10">{item.name}</span>
-        </Link>
-      ))}
+      {items.map((item, idx) => {
+        const isActive =
+          item.link === "/"
+            ? pathname === "/"
+            : pathname.startsWith(item.link);
+
+        return (
+          <Link
+            key={idx}
+            href={item.link}
+            onMouseEnter={() => setHovered(idx)}
+            onClick={onItemClick}
+            aria-current={isActive ? "page" : undefined}
+            className={cn(
+              "relative px-4 py-2 text-sm transition-colors",
+              isActive
+                ? "font-semibold text-black dark:text-white"
+                : "text-neutral-600 hover:text-black dark:text-neutral-300 dark:hover:text-white",
+            )}
+          >
+            {hovered === idx && (
+              <motion.div
+                layoutId="hovered"
+                className="absolute inset-0 rounded-full bg-gray-100 dark:bg-neutral-800"
+              />
+            )}
+            <span className="relative z-10">{item.name}</span>
+          </Link>
+        );
+      })}
     </div>
   );
 };

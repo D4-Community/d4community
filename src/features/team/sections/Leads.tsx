@@ -1,14 +1,34 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { Linkedin, Star } from "lucide-react";
 
 import { memberImageUrl } from "../lib/queries";
 import type { TeamMember } from "../lib/types";
 
+const slugify = (text: string) =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 const isUsableUrl = (url?: string): url is string =>
   Boolean(url && url !== "#" && url !== "/");
+
+const MediumIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg
+    viewBox="0 0 640 512"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M180.5,74.262C80.813,74.262,0,155.633,0,256S80.819,437.738,180.5,437.738,361,356.373,361,256,280.191,74.262,180.5,74.262Zm288.25,10.646c-49.845,0-90.245,76.619-90.245,171.095s40.406,171.1,90.251,171.1,90.251-76.619,90.251-76.619,90.251-171.1H559C559,161.5,518.6,84.908,468.752,84.908Zm139.506,17.821c-17.526,0-31.735,68.628-31.735,153.274s14.2,153.274,31.735,153.274S640,340.631,640,256C640,171.351,625.785,102.729,608.258,102.729Z" />
+  </svg>
+);
 
 export const Leads = ({ leads }: { leads: TeamMember[] }) => {
   const ref = useRef(null);
@@ -43,24 +63,31 @@ export const Leads = ({ leads }: { leads: TeamMember[] }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {leads.map((lead, index) => {
-            const avatarSrc = memberImageUrl(lead.image, 224, 224)
-              ?? `https://api.dicebear.com/7.x/lorelei/svg?seed=${encodeURIComponent(lead.name)}&backgroundColor=transparent`;
+            const avatarSrc =
+              memberImageUrl(lead.image, 224, 224) ??
+              `https://api.dicebear.com/7.x/lorelei/svg?seed=${encodeURIComponent(
+                lead.name
+              )}&backgroundColor=transparent`;
+            const leadSlug = slugify(lead.name);
 
             return (
               <motion.div
                 key={lead._id}
+                id={leadSlug}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-card/50 hover:bg-card p-6 transition-all duration-300 hover:border-border/80 hover:shadow-lg flex flex-col items-center text-center gap-5"
+                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-card/50 hover:bg-card p-6 transition-all duration-300 hover:border-border/80 hover:shadow-lg flex flex-col items-center text-center gap-5 scroll-mt-24"
               >
                 <div
                   className="relative w-28 h-28 rounded-3xl text-[#f6b26b] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-md"
                   style={{ backgroundColor: `#f6b26b15` }}
                 >
-                  <img
+                  <Image
                     src={avatarSrc}
                     alt={lead.name}
+                    width={112}
+                    height={112}
                     className="w-full h-full object-cover scale-110"
                   />
                 </div>
@@ -72,18 +99,34 @@ export const Leads = ({ leads }: { leads: TeamMember[] }) => {
                     {lead.designation}
                   </p>
                 </div>
-                {isUsableUrl(lead.linkedin) && (
-                  <a
-                    href={lead.linkedin}
-                    className="mt-2 text-muted-foreground hover:text-[#0077B5] transition-colors relative z-10"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary/50 border border-border group-hover:border-[#0077B5]/30 group-hover:bg-[#0077B5]/10 transition-all">
-                      <Linkedin className="w-5 h-5" />
-                    </div>
-                  </a>
-                )}
+                <div className="mt-2 flex items-center justify-center gap-2 relative z-10">
+                  {isUsableUrl(lead.linkedin) && (
+                    <a
+                      href={lead.linkedin}
+                      className="text-muted-foreground hover:text-[#0077B5] transition-colors"
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`${lead.name}'s LinkedIn`}
+                    >
+                      <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary/50 border border-border group-hover:border-[#0077B5]/30 group-hover:bg-[#0077B5]/10 transition-all">
+                        <Linkedin className="w-5 h-5" />
+                      </div>
+                    </a>
+                  )}
+                  {isUsableUrl(lead.medium) && (
+                    <a
+                      href={lead.medium}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`${lead.name}'s Medium profile`}
+                    >
+                      <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary/50 border border-border group-hover:border-foreground/30 group-hover:bg-foreground/10 transition-all">
+                        <MediumIcon className="w-4.5 h-4.5" />
+                      </div>
+                    </a>
+                  )}
+                </div>
               </motion.div>
             );
           })}

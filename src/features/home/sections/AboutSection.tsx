@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ComposableMap,
@@ -47,8 +53,9 @@ interface AnchorPos {
 const mapData = {
   speakers: [
     {
-      lat: 52.2297,
-      lng: 21.0122,
+      // FIX: was Warsaw coordinates (52.2297, 21.0122) while city is Katowice
+      lat: 50.2649,
+      lng: 19.0238,
       city: "Katowice",
       country: "Poland",
       name: "Kasia Biernat-Kluba",
@@ -71,7 +78,8 @@ const mapData = {
       country: "Poland",
       name: "Brygida Fiejdasz",
       role: "Senior Frontend Developer @ Avenga",
-      topic: "Console.log is Not a Strategy - Mastering AI and Hidden DevTools Gems",
+      topic:
+        "Console.log is Not a Strategy - Mastering AI and Hidden DevTools Gems",
     },
     {
       lat: 28.5355,
@@ -196,7 +204,7 @@ const mapData = {
       city: "Bangalore",
       country: "India",
       name: "Aditya Thakur",
-      role: "Software Engineer at Scapia",
+      role: "Software Engineer at Scapia | Google Developer Expert",
       topic: "Cross-platform AI Experiences with Flutter & Dart",
     },
     {
@@ -225,6 +233,61 @@ const mapData = {
       name: "Ashwani Kumar",
       role: "CTI Analyst",
       topic: "Cybersecurity in the Age of AI",
+    },
+    {
+      lat: 12.9716,
+      lng: 77.5946,
+      city: "Bangalore",
+      country: "India",
+      name: "Aditya Joshi",
+      role: "Senior Software Engineer at Walmart | Google Developer Expert",
+      topic: "From Prompt to Autonomous: Building AI Agents with Google ADK",
+    },
+    {
+      lat: 18.5204,
+      lng: 73.8567,
+      city: "Pune",
+      country: "India",
+      name: "Saurabh Mishra",
+      role: "Google Developer Expert - Cloud",
+      topic: "Agentic Run: From Build to Autonomous",
+    },
+    {
+      lat: 30.7046,
+      lng: 76.7179,
+      city: "Mohali",
+      country: "India",
+      name: "Sarabjeet Singh",
+      role: "Lead Experience Engineer at Publicis Sapient",
+      topic:
+        "Beyond the Prompt: Building Production-Ready Applications with Generative AI",
+    },
+    {
+      lat: 30.7046,
+      lng: 76.7179,
+      city: "Mohali",
+      country: "India",
+      name: "Raveen Singh",
+      role: "Assistant Manager at Plaksha University",
+      topic: "Re-Imagining Tech Education in an AI Driven World",
+    },
+    {
+      lat: 26.922070,
+      lng: 75.778885,
+      city: "Jaipur",
+      country: "India",
+      name: "Harshit Parwal",
+      role: "Senior Software Engineer at LTM",
+      topic: "From Cron to Cognitive: Governing Autonomous AI in the Wild",
+    },
+    {
+      lat: 18.5204,
+      lng: 73.8567,
+      city: "Pune",
+      country: "India",
+      name: "Jitendra Gupta",
+      role: "Enterprise Architect - AIOps & Platform Engineering at EPAM Systems | Google Developer Expert - Google Cloud",
+      topic: "MCP: The USB-C of AI - Connecting AI Agents to the Real World",
     },
   ],
   leads: [
@@ -290,7 +353,7 @@ const mapData = {
       city: "Bangalore",
       state: "Karnataka",
       country: "India",
-      name: "GenAI Conclave Bangalore 2025",
+      name: "GenAI Conclave 2025, Bangalore",
       date: "Nov 29, 2025",
       attendees: "70+",
     },
@@ -300,9 +363,9 @@ const mapData = {
       city: "Ludhiana",
       state: "Punjab",
       country: "India",
-      name: "GenAI Conclave Ludhiana 2025",
+      name: "GenAI Conclave 2025, Ludhiana",
       date: "Sep 06, 2025",
-      attendees: "150+",
+      attendees: "100+",
     },
     {
       lat: 31.326,
@@ -310,7 +373,7 @@ const mapData = {
       city: "Jalandhar",
       state: "Punjab",
       country: "India",
-      name: "GenAI Conclave Jalandhar 2025",
+      name: "GenAI Conclave 2025, Jalandhar",
       date: "Dec 06, 2025",
       attendees: "250+",
     },
@@ -320,7 +383,7 @@ const mapData = {
       city: "Chandigarh",
       state: "Chandigarh",
       country: "India",
-      name: "GenAI Conclave Chandigarh 2024",
+      name: "GenAI Conclave 2024, Chandigarh",
       date: "July 2024",
       attendees: "250+",
     },
@@ -332,13 +395,13 @@ const mapData = {
       country: "India",
       name: "GDG TechShow Chandigarh",
       date: "Feb 18, 2023",
-      attendees: "100+",
+      attendees: "300+",
     },
     {
-      lat: 30.7046,
-      lng: 76.7179,
-      city: "Mohali",
-      state: "Punjab",
+      lat: 30.7333,
+      lng: 76.7794,
+      city: "Chandigarh",
+      state: "Chandigarh",
       country: "India",
       name: "InnoSprint",
       date: "Oct 6-7, 2024",
@@ -374,12 +437,33 @@ const mapData = {
       date: "Mar 7-9, 2024",
       attendees: "1700+",
     },
+    {
+      lat: 30.7333,
+      lng: 76.7794,
+      city: "Chandigarh",
+      state: "Chandigarh",
+      country: "India",
+      name: "Zero to Agent:Mohali (w/D4 Community)",
+      date: "Apr 24, 2026",
+      attendees: "100+",
+    },
+    {
+      lat: 30.7333,
+      lng: 76.7794,
+      city: "Chandigarh",
+      state: "Chandigarh",
+      country: "India",
+      name: "GenAI Conclave 2026, Chandigarh",
+      date: "Oct 03, 2026",
+      attendees: "150+",
+    },
   ],
 };
 
 type FilterType = "all" | "speakers" | "leads" | "events";
 type ViewMode = "map" | "globe";
 
+// ─── Pure helpers (module level) ─────────────────────────────────────────────
 function isPointVisible(
   lng: number,
   lat: number,
@@ -393,7 +477,9 @@ function isPointVisible(
   const dot =
     Math.cos(camLat) * Math.cos(ptLat) * Math.cos(ptLng - camLng) +
     Math.sin(camLat) * Math.sin(ptLat);
-  return dot > -0.05;
+  // FIX: d3's orthographic projection returns null for dot < 0, which made
+  // <Marker> crash near the horizon. Keep a small positive margin.
+  return dot > 0.01;
 }
 
 function calcPopupPos(
@@ -413,6 +499,50 @@ function calcPopupPos(
   const arrowLeft = anchorX - left;
   return { left, top, above, arrowLeft };
 }
+
+function getRegionKey(g: CityGroup): string {
+  if (g.country !== "India") return g.country;
+  const state = g.items[0].state;
+  return state ? `${state}, India` : `${g.city}, India`;
+}
+
+// Region label -> country name used by the world atlas (exact match, no substring)
+function regionToCountry(region: string | null): string | null {
+  if (!region) return null;
+  return region.endsWith(", India") ? "India" : region;
+}
+
+const typeBadge = (type: string) => {
+  if (type === "speaker")
+    return { bg: "bg-blue-500/20", text: "text-blue-400", label: "Speaker" };
+  if (type === "lead")
+    return {
+      bg: "bg-emerald-500/20",
+      text: "text-emerald-400",
+      label: "Lead",
+    };
+  return { bg: "bg-amber-500/20", text: "text-amber-400", label: "Event" };
+};
+
+const typeAccent = (type: string) => {
+  if (type === "speaker")
+    return {
+      card: "bg-blue-500/5 border-blue-500/20",
+      accent: "text-blue-400",
+    };
+  if (type === "lead")
+    return {
+      card: "bg-emerald-500/5 border-emerald-500/20",
+      accent: "text-emerald-400",
+    };
+  return {
+    card: "bg-amber-500/5 border-amber-500/20",
+    accent: "text-amber-400",
+  };
+};
+
+const getTypeColor = (type: string) =>
+  type === "speaker" ? "#3b82f6" : type === "lead" ? "#10b981" : "#f59e0b";
 
 // ─── Reactive dark-mode hook ─────────────────────────────────────────────────
 function useDarkMode() {
@@ -464,6 +594,153 @@ function useMapTheme(isDark: boolean) {
 
 const GLOBE_MIN_SCALE = 150;
 const GLOBE_MAX_SCALE = 650;
+const MAP_BASE_SCALE = 160;
+const MAP_MIN_ZOOM = 1;
+const MAP_MAX_ZOOM = 8;
+
+// ─── Components defined at MODULE level (never inside render) ────────────────
+// FIX: these used to be declared inside the component / popup IIFE, so React
+// saw a brand new component type on every render and remounted them (which is
+// what swallowed zoom-button clicks while the globe was rotating).
+function ZoomControls({
+  onIn,
+  onOut,
+  disabledIn,
+  disabledOut,
+}: {
+  onIn: () => void;
+  onOut: () => void;
+  disabledIn: boolean;
+  disabledOut: boolean;
+}) {
+  return (
+    <div className="absolute bottom-6 right-6 z-40 flex flex-col overflow-hidden rounded-xl border border-neutral-200 dark:border-white/10 bg-white/90 dark:bg-black/85 shadow-xl">
+      <button
+        onClick={onIn}
+        disabled={disabledIn}
+        className="w-10 h-10 flex items-center justify-center text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors disabled:opacity-20 font-mono text-xl"
+      >
+        +
+      </button>
+      <div className="h-px bg-neutral-200 dark:bg-white/10" />
+      <button
+        onClick={onOut}
+        disabled={disabledOut}
+        className="w-10 h-10 flex items-center justify-center text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors disabled:opacity-20 font-mono text-xl"
+      >
+        −
+      </button>
+    </div>
+  );
+}
+
+function PopupDetail({
+  item,
+  isMobile = false,
+}: {
+  item: Location;
+  isMobile?: boolean;
+}) {
+  const badge = typeBadge(item.type);
+  const accent = typeAccent(item.type);
+  return (
+    <motion.div
+      key={item.id}
+      initial={{ opacity: 0, x: 10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -10 }}
+      transition={{ duration: 0.15 }}
+      className={isMobile ? "p-6 space-y-5" : "p-4 space-y-3"}
+    >
+      <div>
+        <span
+          className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase inline-block mb-1.5 ${badge.bg} ${badge.text}`}
+        >
+          {badge.label}
+        </span>
+        <h4
+          className={`${isMobile ? "text-xl" : "text-[14px]"} font-bold text-neutral-900 dark:text-white leading-tight`}
+        >
+          {item.name}
+        </h4>
+        {item.role && (
+          <p
+            className={`${isMobile ? "text-sm" : "text-[11px]"} text-neutral-500 dark:text-neutral-400 mt-1`}
+          >
+            {item.role}
+          </p>
+        )}
+      </div>
+      {item.topic && (
+        <div
+          className={`rounded-xl ${isMobile ? "p-4" : "p-3"} border ${accent.card}`}
+        >
+          <p className="text-[9px] text-neutral-400 font-bold uppercase mb-1 tracking-wider">
+            Topic
+          </p>
+          <p
+            className={`${isMobile ? "text-sm" : "text-[11px]"} text-neutral-800 dark:text-neutral-200 leading-relaxed italic`}
+          >
+            "{item.topic}"
+          </p>
+        </div>
+      )}
+      {item.org && (
+        <div
+          className={`rounded-xl ${isMobile ? "p-4" : "p-3"} border ${accent.card}`}
+        >
+          <p className="text-[9px] text-neutral-400 font-bold uppercase mb-1 tracking-wider">
+            Organization
+          </p>
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+            <span
+              className={`${isMobile ? "text-sm" : "text-[12px]"} font-bold text-neutral-900 dark:text-neutral-100`}
+            >
+              {item.org}
+            </span>
+          </div>
+        </div>
+      )}
+      {item.type === "event" && (
+        <div className="grid grid-cols-2 gap-2">
+          <div
+            className={`rounded-xl ${isMobile ? "p-3" : "p-2.5"} border ${accent.card}`}
+          >
+            <p className="text-[9px] text-neutral-400 font-bold uppercase mb-0.5 tracking-wider">
+              Date
+            </p>
+            <p
+              className={`${isMobile ? "text-sm" : "text-[11px]"} font-bold ${accent.accent}`}
+            >
+              {item.date}
+            </p>
+          </div>
+          <div
+            className={`rounded-xl ${isMobile ? "p-3" : "p-2.5"} border ${accent.card}`}
+          >
+            <p className="text-[9px] text-neutral-400 font-bold uppercase mb-0.5 tracking-wider">
+              Reach
+            </p>
+            <p
+              className={`${isMobile ? "text-sm" : "text-[11px]"} font-bold ${accent.accent}`}
+            >
+              {item.attendees}
+            </p>
+          </div>
+        </div>
+      )}
+      <div className="pt-2 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+        <span className="text-[9px] text-neutral-400">
+          {item.city}, {item.country}
+        </span>
+        <span className="text-[9px] text-neutral-400 font-mono">
+          {item.lat.toFixed(2)}°, {item.lng.toFixed(2)}°
+        </span>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function AboutSection() {
   const [filter, setFilter] = useState<FilterType>("all");
@@ -484,6 +761,9 @@ export default function AboutSection() {
   } | null>(null);
 
   const [mounted, setMounted] = useState(false);
+  // FIX: topojson is fetched ONCE and reused, instead of being re-fetched and
+  // re-parsed by <Geographies> every time the map/globe view remounts.
+  const [geoData, setGeoData] = useState<object | null>(null);
 
   const isDark = useDarkMode();
   const theme = useMapTheme(isDark);
@@ -501,12 +781,14 @@ export default function AboutSection() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const isDraggingGlobe = useRef(false);
+  const downPosRef = useRef<{ x: number; y: number } | null>(null);
   const lastMousePos = useRef<{ x: number; y: number } | null>(null);
   const rotationRef = useRef<[number, number, number]>([-78, -20, 0]);
   const velocityRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const autoRotateRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastPinchDistance = useRef<number | null>(null);
+  const pinchingRef = useRef(false);
+  const dragRafRef = useRef<number | null>(null);
   const viewModeRef = useRef<ViewMode>(viewMode);
 
   useEffect(() => {
@@ -515,6 +797,17 @@ export default function AboutSection() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const ctrl = new AbortController();
+    fetch(geoUrl, { signal: ctrl.signal })
+      .then((r) => r.json())
+      .then((data) => setGeoData(data))
+      .catch(() => {
+        /* ignore (aborted / offline) */
+      });
+    return () => ctrl.abort();
   }, []);
 
   // ─── Data Logic ───
@@ -555,77 +848,105 @@ export default function AboutSection() {
 
   const regionOptions = useMemo(() => {
     const set = new Set<string>();
-    cityGroups.forEach((g) => {
-      const key =
-        g.country !== "India"
-          ? g.country
-          : g.items[0].state
-            ? `${g.items[0].state}, India`
-            : `${g.city}, India`;
-      set.add(key);
-    });
+    cityGroups.forEach((g) => set.add(getRegionKey(g)));
     return Array.from(set).sort();
   }, [cityGroups]);
 
   const filteredGroups = useMemo(() => {
     if (!selectedRegion) return cityGroups;
-    return cityGroups.filter((g) => {
-      const key =
-        g.country !== "India"
-          ? g.country
-          : g.items[0].state
-            ? `${g.items[0].state}, India`
-            : `${g.city}, India`;
-      return key === selectedRegion;
-    });
+    return cityGroups.filter((g) => getRegionKey(g) === selectedRegion);
   }, [cityGroups, selectedRegion]);
 
-  // ─── High precision frame-rate auto-rotate & momentum loop ───
+  const selectedCountry = useMemo(
+    () => regionToCountry(selectedRegion),
+    [selectedRegion],
+  );
+
+  // ─── Hide-timer helpers (stable) ───
+  const clearHide = useCallback(() => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleHide = useCallback(
+    (ms = 250) => {
+      if (typeof window === "undefined" || window.innerWidth < 768) return;
+      clearHide();
+      hideTimerRef.current = setTimeout(() => setPopup(null), ms);
+    },
+    [clearHide],
+  );
+
+  useEffect(() => {
+    return () => {
+      clearHide();
+      if (dragRafRef.current) cancelAnimationFrame(dragRafRef.current);
+    };
+  }, [clearHide]);
+
+  // ─── Frame-rate independent auto-rotate & momentum loop ───
+  // React state is only updated at ~30fps (the globe doesn't need 60+ React
+  // renders per second), and nothing is updated while paused / tab hidden.
   const rafRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
-
-  const startAutoRotate = useCallback(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    lastTimeRef.current = performance.now();
-
-    const tick = (now: number) => {
-      const dt = Math.min((now - lastTimeRef.current) / 1000, 0.1);
-      lastTimeRef.current = now;
-
-      if (!isDraggingGlobe.current) {
-        if (Math.abs(velocityRef.current.x) > 0.01 || Math.abs(velocityRef.current.y) > 0.01) {
-          rotationRef.current = [
-            rotationRef.current[0] + velocityRef.current.x,
-            Math.max(-80, Math.min(80, rotationRef.current[1] - velocityRef.current.y)),
-            0,
-          ];
-          velocityRef.current.x *= 0.92;
-          velocityRef.current.y *= 0.92;
-        } else {
-          rotationRef.current = [
-            rotationRef.current[0] + 12 * dt,
-            rotationRef.current[1],
-            0,
-          ];
-        }
-        setRotation([rotationRef.current[0], rotationRef.current[1], 0]);
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-  }, []);
+  const sinceRenderRef = useRef<number>(0);
 
   const stopAutoRotate = useCallback(() => {
     if (rafRef.current) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     }
-    if (autoRotateRef.current) {
-      clearInterval(autoRotateRef.current);
-      autoRotateRef.current = null;
-    }
+  }, []);
+
+  const startAutoRotate = useCallback(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    lastTimeRef.current = performance.now();
+    sinceRenderRef.current = 0;
+
+    const tick = (now: number) => {
+      const dt = Math.min((now - lastTimeRef.current) / 1000, 0.1);
+      lastTimeRef.current = now;
+
+      if (!document.hidden && !isDraggingGlobe.current) {
+        const f = dt * 60; // normalise to "frames at 60fps"
+        let changed = false;
+        const v = velocityRef.current;
+
+        if (Math.abs(v.x) > 0.01 || Math.abs(v.y) > 0.01) {
+          rotationRef.current = [
+            rotationRef.current[0] + v.x * f,
+            Math.max(-80, Math.min(80, rotationRef.current[1] - v.y * f)),
+            0,
+          ];
+          const damp = Math.pow(0.92, f);
+          v.x *= damp;
+          v.y *= damp;
+          changed = true;
+        } else {
+          // auto spin (stops by itself while a popup is open, see effect below)
+          rotationRef.current = [
+            rotationRef.current[0] + 12 * dt,
+            rotationRef.current[1],
+            0,
+          ];
+          changed = true;
+        }
+
+        if (changed) {
+          sinceRenderRef.current += dt;
+          if (sinceRenderRef.current >= 1 / 30) {
+            sinceRenderRef.current = 0;
+            setRotation([rotationRef.current[0], rotationRef.current[1], 0]);
+          }
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
   }, []);
 
   useEffect(() => {
@@ -638,31 +959,48 @@ export default function AboutSection() {
   }, [viewMode, selectedRegion, popup, startAutoRotate, stopAutoRotate]);
 
   // ─── Smooth Globe Dragging ───
+  // FIX: pointer capture used to be taken on pointerdown, which redirected the
+  // following `click` to the container, so pins could not be clicked/tapped.
+  // Now capture only starts once the pointer actually moves (> 4px).
   const handleGlobePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       if (viewMode !== "globe") return;
       if ((e.target as HTMLElement).closest("button")) return;
-      isDraggingGlobe.current = true;
       velocityRef.current = { x: 0, y: 0 };
+      downPosRef.current = { x: e.clientX, y: e.clientY };
       lastMousePos.current = { x: e.clientX, y: e.clientY };
-      (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
-      e.preventDefault();
     },
     [viewMode],
   );
 
   const handleGlobePointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      if (
-        viewMode !== "globe" ||
-        !isDraggingGlobe.current ||
-        !lastMousePos.current
-      )
+      if (viewMode !== "globe" || !downPosRef.current || pinchingRef.current)
         return;
+
+      if (!isDraggingGlobe.current) {
+        const moved = Math.hypot(
+          e.clientX - downPosRef.current.x,
+          e.clientY - downPosRef.current.y,
+        );
+        if (moved < 4) return;
+        isDraggingGlobe.current = true;
+        lastMousePos.current = { x: e.clientX, y: e.clientY };
+        try {
+          (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+        } catch {
+          /* ignore */
+        }
+        clearHide();
+        setPopup(null);
+        return;
+      }
+
+      if (!lastMousePos.current) return;
       const dx = e.clientX - lastMousePos.current.x;
       const dy = e.clientY - lastMousePos.current.y;
       lastMousePos.current = { x: e.clientX, y: e.clientY };
-      
+
       const sens = 0.25;
       velocityRef.current = { x: dx * sens, y: dy * sens };
 
@@ -671,131 +1009,77 @@ export default function AboutSection() {
         Math.max(-80, Math.min(80, rotationRef.current[1] - dy * sens)),
         0,
       ];
-      setRotation([...rotationRef.current]);
+
+      // at most one React update per animation frame while dragging
+      if (!dragRafRef.current) {
+        dragRafRef.current = requestAnimationFrame(() => {
+          dragRafRef.current = null;
+          setRotation([rotationRef.current[0], rotationRef.current[1], 0]);
+        });
+      }
     },
-    [viewMode],
+    [viewMode, clearHide],
   );
 
   const handleGlobePointerUp = useCallback(() => {
     if (viewMode !== "globe") return;
+    const wasDragging = isDraggingGlobe.current;
     isDraggingGlobe.current = false;
+    downPosRef.current = null;
     lastMousePos.current = null;
-    if (!selectedRegion && !popup) startAutoRotate();
-  }, [viewMode, selectedRegion, popup, startAutoRotate]);
+    if (wasDragging && !selectedRegion) startAutoRotate();
+  }, [viewMode, selectedRegion, startAutoRotate]);
 
-  // ─── Touch handling ───
-  const mapTouchStartRef = useRef<{ x: number; y: number } | null>(null);
-  const mapTouchZoomRef = useRef<number | null>(null);
-
+  // ─── Touch handling (globe pinch-zoom only) ───
+  // In map mode, <ZoomableGroup> (d3-zoom) already handles one-finger pan and
+  // two-finger pinch, so the old hand-written map touch code is gone.
   const handleTouchStart = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
-      if (viewMode === "map") {
-        if (e.touches.length === 1) {
-          const t = e.touches[0];
-          mapTouchStartRef.current = { x: t.clientX, y: t.clientY };
-          lastPinchDistance.current = null;
-          mapTouchZoomRef.current = null;
-        } else if (e.touches.length === 2) {
-          const t1 = e.touches[0];
-          const t2 = e.touches[1];
-          lastPinchDistance.current = Math.hypot(
-            t2.clientX - t1.clientX,
-            t2.clientY - t1.clientY,
-          );
-          mapTouchZoomRef.current = null;
-          mapTouchStartRef.current = null;
-        }
+      if (e.touches.length === 2) {
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        lastPinchDistance.current = Math.hypot(
+          t2.clientX - t1.clientX,
+          t2.clientY - t1.clientY,
+        );
+        pinchingRef.current = true;
+        isDraggingGlobe.current = false;
       } else {
         lastPinchDistance.current = null;
       }
     },
-    [viewMode],
+    [],
   );
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
-      if (viewMode === "globe") {
-        if (e.touches.length === 2) {
-          e.preventDefault();
-          isDraggingGlobe.current = false;
-          const t1 = e.touches[0];
-          const t2 = e.touches[1];
-          const dist = Math.hypot(
-            t2.clientX - t1.clientX,
-            t2.clientY - t1.clientY,
-          );
-          if (lastPinchDistance.current !== null) {
-            const delta = dist - lastPinchDistance.current;
-            setGlobeScale((s) =>
-              Math.max(
-                GLOBE_MIN_SCALE,
-                Math.min(GLOBE_MAX_SCALE, s + delta * 1.5),
-              ),
-            );
-          }
-          lastPinchDistance.current = dist;
-        }
-        return;
-      }
-
-      if (e.touches.length === 2) {
-        e.preventDefault();
-        const t1 = e.touches[0];
-        const t2 = e.touches[1];
-        const dist = Math.hypot(
-          t2.clientX - t1.clientX,
-          t2.clientY - t1.clientY,
+      if (e.touches.length !== 2) return;
+      isDraggingGlobe.current = false;
+      pinchingRef.current = true;
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const dist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      if (lastPinchDistance.current !== null) {
+        const delta = dist - lastPinchDistance.current;
+        setGlobeScale((s) =>
+          Math.max(
+            GLOBE_MIN_SCALE,
+            Math.min(GLOBE_MAX_SCALE, s + delta * 1.5),
+          ),
         );
-        if (lastPinchDistance.current !== null && dist > 0) {
-          const ratio = dist / lastPinchDistance.current;
-          setPosition((p) => ({
-            ...p,
-            zoom: Math.max(1, Math.min(8, p.zoom * ratio)),
-          }));
-        }
-        lastPinchDistance.current = dist;
-        mapTouchStartRef.current = null;
-      } else if (e.touches.length === 1 && mapTouchStartRef.current) {
-        e.preventDefault();
-        const t = e.touches[0];
-        const dx = t.clientX - mapTouchStartRef.current.x;
-        const dy = t.clientY - mapTouchStartRef.current.y;
-        const degsPerPx = 360 / (2 * Math.PI * 160 * position.zoom);
-        const lngDelta = -dx * degsPerPx;
-        const latDelta = dy * degsPerPx * 0.85;
-
-        setPosition((p) => ({
-          ...p,
-          coordinates: [
-            Math.max(-180, Math.min(180, p.coordinates[0] + lngDelta)),
-            Math.max(-80, Math.min(80, p.coordinates[1] + latDelta)),
-          ] as [number, number],
-        }));
-        mapTouchStartRef.current = { x: t.clientX, y: t.clientY };
       }
+      lastPinchDistance.current = dist;
     },
-    [viewMode, position.zoom],
+    [],
   );
 
-  const handleTouchEnd = useCallback(
-    (e: React.TouchEvent<HTMLDivElement>) => {
-      if (e.touches.length < 2) {
-        lastPinchDistance.current = null;
-        mapTouchZoomRef.current = null;
-      }
-      if (e.touches.length === 0) {
-        mapTouchStartRef.current = null;
-      } else if (e.touches.length === 1 && viewMode === "map") {
-        mapTouchStartRef.current = {
-          x: e.touches[0].clientX,
-          y: e.touches[0].clientY,
-        };
-      }
-    },
-    [viewMode],
-  );
+  const handleTouchEnd = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length < 2) lastPinchDistance.current = null;
+    if (e.touches.length === 0) pinchingRef.current = false;
+  }, []);
 
-  // ─── Non-passive wheel listeners ───
+  // ─── Non-passive wheel listener (globe only; map zoom is handled by d3) ───
+  // FIX: map mode used to be zoomed by this handler AND by ZoomableGroup.
   const mapInnerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -803,33 +1087,22 @@ export default function AboutSection() {
     if (!container) return;
 
     const handler = (e: WheelEvent) => {
+      if (viewModeRef.current !== "globe") return;
       if (!container.contains(e.target as Node)) return;
-
-      if (!e.ctrlKey && !e.metaKey) {
-        return;
-      }
+      if (!e.ctrlKey && !e.metaKey) return;
 
       e.preventDefault();
-
-      if (viewModeRef.current === "globe") {
-        const step = e.deltaY > 0 ? -20 : 20;
-        setGlobeScale((s) =>
-          Math.max(GLOBE_MIN_SCALE, Math.min(GLOBE_MAX_SCALE, s + step)),
-        );
-      } else {
-        const factor = e.deltaY > 0 ? 1 / 1.15 : 1.15;
-        setPosition((p) => ({
-          ...p,
-          zoom: Math.max(1, Math.min(8, p.zoom * factor)),
-        }));
-      }
+      const step = e.deltaY > 0 ? -20 : 20;
+      setGlobeScale((s) =>
+        Math.max(GLOBE_MIN_SCALE, Math.min(GLOBE_MAX_SCALE, s + step)),
+      );
     };
 
     container.addEventListener("wheel", handler, { passive: false });
     return () => container.removeEventListener("wheel", handler);
   }, []);
 
-  // ─── Globe zoom buttons ───
+  // ─── Zoom buttons ───
   const handleGlobeZoomIn = useCallback(
     () => setGlobeScale((s) => Math.min(GLOBE_MAX_SCALE, Math.round(s * 1.35))),
     [],
@@ -839,45 +1112,54 @@ export default function AboutSection() {
     [],
   );
 
-  // ─── Map zoom buttons ───
   const handleZoomIn = () => {
-    if (position.zoom < 8) setPosition((p) => ({ ...p, zoom: p.zoom * 1.5 }));
+    setPopup(null);
+    if (position.zoom < MAP_MAX_ZOOM)
+      setPosition((p) => ({
+        ...p,
+        zoom: Math.min(MAP_MAX_ZOOM, p.zoom * 1.5),
+      }));
   };
   const handleZoomOut = () => {
-    if (position.zoom > 1)
-      setPosition((p) => ({ ...p, zoom: Math.max(1, p.zoom / 1.5) }));
+    setPopup(null);
+    if (position.zoom > MAP_MIN_ZOOM)
+      setPosition((p) => ({
+        ...p,
+        zoom: Math.max(MAP_MIN_ZOOM, p.zoom / 1.5),
+      }));
   };
+
+  // Close popup whenever the user starts panning/zooming the flat map, because
+  // the popup anchor is measured once and would otherwise float in the wrong place.
+  const handleMapMoveStart = useCallback(() => {
+    clearHide();
+    setPopup(null);
+  }, [clearHide]);
 
   // ─── Marker popup ───
   const handleMarkerInteraction = useCallback(
     (group: CityGroup, e: React.MouseEvent<SVGGElement>) => {
       e.stopPropagation();
+      // FIX: cancel any pending hide timer from the previous pin, otherwise the
+      // popup of the pin you just entered gets closed by the old timer.
+      clearHide();
       if (!mapContainerRef.current) return;
       const cr = mapContainerRef.current.getBoundingClientRect();
       const mr = (e.currentTarget as SVGGElement).getBoundingClientRect();
-      setPopup({
-        group,
-        anchor: {
-          x: mr.left + mr.width / 2 - cr.left,
-          y: mr.top + mr.height / 2 - cr.top,
-        },
-        activeIdx: 0,
-      });
+      const anchor = {
+        x: mr.left + mr.width / 2 - cr.left,
+        y: mr.top + mr.height / 2 - cr.top,
+      };
+      setPopup((prev) =>
+        prev && prev.group.id === group.id
+          ? { ...prev, group, anchor }
+          : { group, anchor, activeIdx: 0 },
+      );
     },
-    [],
+    [clearHide],
   );
 
-  const clearHide = () => {
-    if (hideTimerRef.current) {
-      clearTimeout(hideTimerRef.current);
-      hideTimerRef.current = null;
-    }
-  };
-  const scheduleHide = (ms = 250) => {
-    if (typeof window !== "undefined" && window.innerWidth >= 768)
-      hideTimerRef.current = setTimeout(() => setPopup(null), ms);
-  };
-  const handleMarkerLeave = () => scheduleHide();
+  const handleMarkerLeave = useCallback(() => scheduleHide(), [scheduleHide]);
   const handlePopupEnter = () => clearHide();
   const handlePopupLeave = () => scheduleHide();
 
@@ -894,84 +1176,12 @@ export default function AboutSection() {
       handleResetView();
       return;
     }
-    const target = cityGroups.find(
-      (g) =>
-        (g.country !== "India"
-          ? g.country
-          : g.items[0].state
-            ? `${g.items[0].state}, India`
-            : `${g.city}, India`) === region,
-    );
+    const target = cityGroups.find((g) => getRegionKey(g) === region);
     if (target) {
       setViewMode("map");
       setPosition({ coordinates: [target.lng, target.lat], zoom: 4 });
     }
   };
-
-  const getTypeColor = useCallback(
-    (type: string) =>
-      type === "speaker" ? "#3b82f6" : type === "lead" ? "#10b981" : "#f59e0b",
-    [],
-  );
-
-  const typeBadge = (type: string) => {
-    if (type === "speaker")
-      return { bg: "bg-blue-500/20", text: "text-blue-400", label: "Speaker" };
-    if (type === "lead")
-      return {
-        bg: "bg-emerald-500/20",
-        text: "text-emerald-400",
-        label: "Lead",
-      };
-    return { bg: "bg-amber-500/20", text: "text-amber-400", label: "Event" };
-  };
-  const typeAccent = (type: string) => {
-    if (type === "speaker")
-      return {
-        card: "bg-blue-500/5 border-blue-500/20",
-        accent: "text-blue-400",
-      };
-    if (type === "lead")
-      return {
-        card: "bg-emerald-500/5 border-emerald-500/20",
-        accent: "text-emerald-400",
-      };
-    return {
-      card: "bg-amber-500/5 border-amber-500/20",
-      accent: "text-amber-400",
-    };
-  };
-
-  // ─── Shared zoom control widget ───
-  const ZoomControls = ({
-    onIn,
-    onOut,
-    disabledIn,
-    disabledOut,
-  }: {
-    onIn: () => void;
-    onOut: () => void;
-    disabledIn: boolean;
-    disabledOut: boolean;
-  }) => (
-    <div className="absolute bottom-6 right-6 z-40 flex flex-col overflow-hidden rounded-xl border border-neutral-200 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-sm shadow-xl">
-      <button
-        onClick={onIn}
-        disabled={disabledIn}
-        className="w-10 h-10 flex items-center justify-center text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors disabled:opacity-20 font-mono text-xl"
-      >
-        +
-      </button>
-      <div className="h-px bg-neutral-200 dark:bg-white/10" />
-      <button
-        onClick={onOut}
-        disabled={disabledOut}
-        className="w-10 h-10 flex items-center justify-center text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors disabled:opacity-20 font-mono text-xl"
-      >
-        −
-      </button>
-    </div>
-  );
 
   return (
     <section className="w-full py-16 px-4 font-sans overflow-hidden">
@@ -1062,14 +1272,14 @@ export default function AboutSection() {
           </div>
         </div>
 
-        {/* Outer map container: REMOVED overflow-hidden so popup can float outside boundary */}
+        {/* Outer map container: no overflow-hidden so the popup can float outside */}
         <div
           className="relative border border-neutral-200 dark:border-white/15 rounded-[2.5rem] shadow-3xl select-none"
           style={{ background: containerBg }}
           ref={mapContainerRef}
         >
-          {/* View Toggle */}
-          <div className="absolute top-6 right-6 z-30 flex bg-white/80 dark:bg-black/60 backdrop-blur-xl border border-neutral-200 dark:border-white/10 p-1 rounded-xl shadow-2xl">
+          {/* View Toggle (no backdrop-blur: it forced a re-blur every frame over the moving globe) */}
+          <div className="absolute top-6 right-6 z-30 flex bg-white/90 dark:bg-black/80 border border-neutral-200 dark:border-white/10 p-1 rounded-xl shadow-2xl">
             {["map", "globe"].map((mode) => (
               <button
                 key={mode}
@@ -1085,7 +1295,7 @@ export default function AboutSection() {
             ))}
           </div>
 
-          {/* Inner canvas container: ADDED overflow-hidden and rounded corners to keep map contained */}
+          {/* Inner canvas container */}
           <div
             ref={mapInnerRef}
             className="h-[400px] md:h-[600px] w-full relative cursor-grab active:cursor-grabbing overflow-hidden rounded-[2.5rem]"
@@ -1099,29 +1309,33 @@ export default function AboutSection() {
             onPointerUp={
               viewMode === "globe" ? handleGlobePointerUp : undefined
             }
+            onPointerCancel={
+              viewMode === "globe" ? handleGlobePointerUp : undefined
+            }
             onPointerLeave={
               viewMode === "globe" ? handleGlobePointerUp : undefined
             }
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
+            onTouchStart={viewMode === "globe" ? handleTouchStart : undefined}
+            onTouchMove={viewMode === "globe" ? handleTouchMove : undefined}
+            onTouchEnd={viewMode === "globe" ? handleTouchEnd : undefined}
           >
-            {mounted && (
+            {mounted && geoData && (
               <MapCanvas
                 viewMode={viewMode}
+                geoData={geoData}
                 globeScale={globeScale}
                 position={position}
                 rotation={rotation}
                 setPosition={setPosition}
-                selectedRegion={selectedRegion}
+                onMoveStart={handleMapMoveStart}
+                selectedCountry={selectedCountry}
                 landFill={landFill}
                 countryStroke={countryStroke}
                 countryStrokeWidth={countryStrokeWidth}
                 filteredGroups={filteredGroups}
-                popup={popup}
+                activeGroupId={popup?.group.id ?? null}
                 handleMarkerInteraction={handleMarkerInteraction}
                 handleMarkerLeave={handleMarkerLeave}
-                getTypeColor={getTypeColor}
                 markerStroke={markerStroke}
                 oceanFill={oceanFill}
                 sphereStroke={sphereStroke}
@@ -1135,8 +1349,8 @@ export default function AboutSection() {
             <ZoomControls
               onIn={handleZoomIn}
               onOut={handleZoomOut}
-              disabledIn={position.zoom >= 8}
-              disabledOut={position.zoom <= 1}
+              disabledIn={position.zoom >= MAP_MAX_ZOOM}
+              disabledOut={position.zoom <= MAP_MIN_ZOOM}
             />
           ) : (
             <ZoomControls
@@ -1147,7 +1361,7 @@ export default function AboutSection() {
             />
           )}
 
-          <div className="absolute top-4 left-4 bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm rounded-3xl px-4 py-2 border border-neutral-300 dark:border-neutral-700 z-10">
+          <div className="absolute top-4 left-4 bg-white/90 dark:bg-neutral-800/90 rounded-3xl px-4 py-2 border border-neutral-300 dark:border-neutral-700 z-10">
             <div className="text-xs md:text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
               Map Navigation
             </div>
@@ -1160,7 +1374,7 @@ export default function AboutSection() {
           </div>
 
           {/* Legend */}
-          <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm rounded-3xl px-4 py-2 border border-neutral-300 dark:border-neutral-700 z-10 space-y-1">
+          <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-neutral-800/90 rounded-3xl px-4 py-2 border border-neutral-300 dark:border-neutral-700 z-10 space-y-1">
             {[
               ["bg-blue-500", "Speakers"],
               ["bg-green-500", "Leads"],
@@ -1183,8 +1397,6 @@ export default function AboutSection() {
                 const isMobileView = cW < 768;
                 const hasMany = popup.group.items.length > 1;
                 const activeItem = popup.group.items[popup.activeIdx];
-                const badge = typeBadge(activeItem.type);
-                const accent = typeAccent(activeItem.type);
                 const pW = 360;
                 const pHEst = hasMany ? 300 : 240;
                 const { left, top, above, arrowLeft } = calcPopupPos(
@@ -1194,105 +1406,6 @@ export default function AboutSection() {
                   mapContainerRef.current?.offsetHeight ?? 600,
                   pW,
                   pHEst,
-                );
-
-                const DetailContent = ({ isMobile = false }) => (
-                  <motion.div
-                    key={popup.activeIdx}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.15 }}
-                    className={isMobile ? "p-6 space-y-5" : "p-4 space-y-3"}
-                  >
-                    <div>
-                      <span
-                        className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase inline-block mb-1.5 ${badge.bg} ${badge.text}`}
-                      >
-                        {badge.label}
-                      </span>
-                      <h4
-                        className={`${isMobile ? "text-xl" : "text-[14px]"} font-bold text-neutral-900 dark:text-white leading-tight`}
-                      >
-                        {activeItem.name}
-                      </h4>
-                      {activeItem.role && (
-                        <p
-                          className={`${isMobile ? "text-sm" : "text-[11px]"} text-neutral-500 dark:text-neutral-400 mt-1`}
-                        >
-                          {activeItem.role}
-                        </p>
-                      )}
-                    </div>
-                    {activeItem.topic && (
-                      <div
-                        className={`rounded-xl ${isMobile ? "p-4" : "p-3"} border ${accent.card}`}
-                      >
-                        <p className="text-[9px] text-neutral-400 font-bold uppercase mb-1 tracking-wider">
-                          Topic
-                        </p>
-                        <p
-                          className={`${isMobile ? "text-sm" : "text-[11px]"} text-neutral-800 dark:text-neutral-200 leading-relaxed italic`}
-                        >
-                          "{activeItem.topic}"
-                        </p>
-                      </div>
-                    )}
-                    {activeItem.org && (
-                      <div
-                        className={`rounded-xl ${isMobile ? "p-4" : "p-3"} border ${accent.card}`}
-                      >
-                        <p className="text-[9px] text-neutral-400 font-bold uppercase mb-1 tracking-wider">
-                          Organization
-                        </p>
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
-                          <span
-                            className={`${isMobile ? "text-sm" : "text-[12px]"} font-bold text-neutral-900 dark:text-neutral-100`}
-                          >
-                            {activeItem.org}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {activeItem.type === "event" && (
-                      <div className="grid grid-cols-2 gap-2">
-                        <div
-                          className={`rounded-xl ${isMobile ? "p-3" : "p-2.5"} border ${accent.card}`}
-                        >
-                          <p className="text-[9px] text-neutral-400 font-bold uppercase mb-0.5 tracking-wider">
-                            Date
-                          </p>
-                          <p
-                            className={`${isMobile ? "text-sm" : "text-[11px]"} font-bold ${accent.accent}`}
-                          >
-                            {activeItem.date}
-                          </p>
-                        </div>
-                        <div
-                          className={`rounded-xl ${isMobile ? "p-3" : "p-2.5"} border ${accent.card}`}
-                        >
-                          <p className="text-[9px] text-neutral-400 font-bold uppercase mb-0.5 tracking-wider">
-                            Reach
-                          </p>
-                          <p
-                            className={`${isMobile ? "text-sm" : "text-[11px]"} font-bold ${accent.accent}`}
-                          >
-                            {activeItem.attendees}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    <div className="pt-2 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-                      <span className="text-[9px] text-neutral-400">
-                        {activeItem.city}, {activeItem.country}
-                      </span>
-                      <span className="text-[9px] text-neutral-400 font-mono">
-                        {activeItem.lat.toFixed(2)}°,{" "}
-                        {activeItem.lng.toFixed(2)}°
-                      </span>
-                    </div>
-                  </motion.div>
                 );
 
                 return (
@@ -1357,7 +1470,7 @@ export default function AboutSection() {
                               </div>
                             )}
                             <div className="overflow-y-auto custom-scrollbar">
-                              <DetailContent isMobile={true} />
+                              <PopupDetail item={activeItem} isMobile={true} />
                             </div>
                           </div>
                         </motion.div>
@@ -1439,7 +1552,7 @@ export default function AboutSection() {
                               </div>
                             )}
                             <div className="flex-1 overflow-y-auto custom-scrollbar">
-                              <DetailContent isMobile={false} />
+                              <PopupDetail item={activeItem} isMobile={false} />
                             </div>
                           </div>
                         </div>
@@ -1495,151 +1608,178 @@ export default function AboutSection() {
 // ─── Memoized Isolated Map Canvas Component ──────────────────────────────────
 interface MapCanvasProps {
   viewMode: ViewMode;
+  geoData: object;
   globeScale: number;
   position: { coordinates: [number, number]; zoom: number };
   rotation: [number, number, number];
   setPosition: React.Dispatch<
     React.SetStateAction<{ coordinates: [number, number]; zoom: number }>
   >;
-  selectedRegion: string | null;
+  onMoveStart: () => void;
+  selectedCountry: string | null;
   landFill: string;
   countryStroke: string;
   countryStrokeWidth: number;
   filteredGroups: CityGroup[];
-  popup: { group: CityGroup } | null;
-  handleMarkerInteraction: (group: CityGroup, e: React.MouseEvent<SVGGElement>) => void;
+  activeGroupId: string | null;
+  handleMarkerInteraction: (
+    group: CityGroup,
+    e: React.MouseEvent<SVGGElement>,
+  ) => void;
   handleMarkerLeave: () => void;
-  getTypeColor: (type: string) => string;
   markerStroke: string;
   oceanFill: string;
   sphereStroke: string;
   hoverFill: string;
 }
 
+const SELECTED_FILL = "#3b82f6";
+
 const MapCanvas = React.memo(function MapCanvas({
   viewMode,
+  geoData,
   globeScale,
   position,
   rotation,
   setPosition,
-  selectedRegion,
+  onMoveStart,
+  selectedCountry,
   landFill,
   countryStroke,
   countryStrokeWidth,
   filteredGroups,
-  popup,
+  activeGroupId,
   handleMarkerInteraction,
   handleMarkerLeave,
-  getTypeColor,
   markerStroke,
   oceanFill,
   sphereStroke,
   hoverFill,
 }: MapCanvasProps) {
+  const isGlobe = viewMode === "globe";
+  // keep pins / borders a constant on-screen size while the flat map is zoomed
+  const k = isGlobe ? 1 : position.zoom;
+  const strokeW = countryStrokeWidth / k;
+
+  // Stable style objects: avoids allocating ~177 x 3 new objects per frame
+  const styles = useMemo(() => {
+    const make = (fill: string) => ({
+      outline: "none",
+      fill,
+      stroke: countryStroke,
+      strokeWidth: strokeW,
+    });
+    const land = make(landFill);
+    const selected = make(SELECTED_FILL);
+    const hover = make(isGlobe ? landFill : hoverFill);
+    return {
+      normal: { default: land, hover, pressed: land },
+      selected: { default: selected, hover: selected, pressed: selected },
+    };
+  }, [landFill, hoverFill, countryStroke, strokeW, isGlobe]);
+
+  const renderGeographies = () => (
+    <Geographies geography={geoData}>
+      {({ geographies }) =>
+        geographies.map((geo) => {
+          const isSelected =
+            !!selectedCountry && geo.properties.name === selectedCountry;
+          return (
+            <Geography
+              key={geo.rsmKey}
+              geography={geo}
+              className="outline-none"
+              style={isSelected ? styles.selected : styles.normal}
+            />
+          );
+        })
+      }
+    </Geographies>
+  );
+
+  const renderMarkers = (onlyVisible: boolean) =>
+    filteredGroups.map((group) => {
+      if (onlyVisible && !isPointVisible(group.lng, group.lat, rotation))
+        return null;
+
+      const color = getTypeColor(group.items[0].type);
+      const isActive = activeGroupId === group.id;
+      return (
+        <Marker key={group.id} coordinates={[group.lng, group.lat]}>
+          <g
+            style={{ pointerEvents: "visiblePainted" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleMarkerInteraction(group, e);
+            }}
+            onMouseEnter={(e) => {
+              if (window.innerWidth >= 768) handleMarkerInteraction(group, e);
+            }}
+            onMouseLeave={() => {
+              if (window.innerWidth >= 768) handleMarkerLeave();
+            }}
+            className="cursor-pointer"
+          >
+            <circle
+              r={18 / k}
+              fill="transparent"
+              style={{ pointerEvents: "visiblePainted" }}
+            />
+            <circle
+              r={(isActive ? 12 : 5) / k}
+              fill={color}
+              opacity={0.2}
+              className={isGlobe ? undefined : "animate-pulse"}
+            />
+            <circle
+              r={(isActive ? 6 : 3.5) / k}
+              fill={color}
+              stroke={markerStroke}
+              strokeWidth={1 / k}
+            />
+          </g>
+        </Marker>
+      );
+    });
+
   return (
     <ComposableMap
-      projection={viewMode === "globe" ? "geoOrthographic" : "geoMercator"}
+      projection={isGlobe ? "geoOrthographic" : "geoMercator"}
       projectionConfig={{
-        scale: viewMode === "globe" ? globeScale : 160 * position.zoom,
-        rotate: viewMode === "globe" ? rotation : [0, 0, 0],
-        center: viewMode === "map" ? position.coordinates : [0, 0],
+        // FIX: in map mode the projection scale stays FIXED. Zoom is applied
+        // only by <ZoomableGroup>; before it was applied twice (zoom squared),
+        // which broke centering, marker positions and popup anchors.
+        scale: isGlobe ? globeScale : MAP_BASE_SCALE,
+        rotate: isGlobe ? rotation : [0, 0, 0],
+        center: [0, 0],
       }}
       style={{
         width: "100%",
         height: "100%",
-        pointerEvents: viewMode === "globe" ? "none" : "auto",
+        pointerEvents: isGlobe ? "none" : "auto",
       }}
     >
-      {viewMode === "map" ? (
+      {!isGlobe ? (
         /* ─── MAP MODE ─── */
         <ZoomableGroup
           center={position.coordinates}
           zoom={position.zoom}
+          minZoom={MAP_MIN_ZOOM}
+          maxZoom={MAP_MAX_ZOOM}
+          onMoveStart={onMoveStart}
           onMoveEnd={({ coordinates, zoom }) =>
             setPosition({ coordinates, zoom })
           }
-          filterZoomEvent={() => false}
+          // FIX: was `() => false`, which disabled ALL d3 pan/zoom (mouse drag
+          // didn't work on desktop). Allow drag + touch + Ctrl/Cmd+wheel only.
+          filterZoomEvent={(e: any) => {
+            if (e.type === "wheel") return !!(e.ctrlKey || e.metaKey);
+            if (e.type === "dblclick") return false;
+            return !e.button;
+          }}
         >
-          <Geographies geography={geoUrl}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const isSelected = selectedRegion?.includes(
-                  geo.properties.name,
-                );
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    className="outline-none transition-all duration-200"
-                    fill={isSelected ? "#3b82f6" : landFill}
-                    stroke={countryStroke}
-                    strokeWidth={countryStrokeWidth}
-                    style={{
-                      default: {
-                        outline: "none",
-                        fill: isSelected ? "#3b82f6" : landFill,
-                        stroke: countryStroke,
-                        strokeWidth: countryStrokeWidth,
-                      },
-                      hover: {
-                        outline: "none",
-                        fill: isSelected ? "#3b82f6" : hoverFill,
-                        stroke: countryStroke,
-                        strokeWidth: countryStrokeWidth,
-                      },
-                      pressed: {
-                        outline: "none",
-                        fill: isSelected ? "#3b82f6" : landFill,
-                        stroke: countryStroke,
-                        strokeWidth: countryStrokeWidth,
-                      },
-                    }}
-                  />
-                );
-              })
-            }
-          </Geographies>
-
-          {filteredGroups.map((group) => {
-            const color = getTypeColor(group.items[0].type);
-            const isActive = popup?.group.id === group.id;
-            return (
-              <Marker
-                key={group.id}
-                coordinates={[group.lng, group.lat]}
-              >
-                <g
-                  style={{ pointerEvents: "visiblePainted" }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleMarkerInteraction(group, e);
-                  }}
-                  onMouseEnter={(e) =>
-                    window.innerWidth >= 768 &&
-                    handleMarkerInteraction(group, e)
-                  }
-                  onMouseLeave={() =>
-                    window.innerWidth >= 768 && handleMarkerLeave()
-                  }
-                  className="cursor-pointer"
-                >
-                  <circle r={18} fill="transparent" />
-                  <circle
-                    r={isActive ? 12 : 5}
-                    fill={color}
-                    opacity={0.2}
-                    className="animate-pulse"
-                  />
-                  <circle
-                    r={isActive ? 6 : 3.5}
-                    fill={color}
-                    stroke={markerStroke}
-                    strokeWidth={1}
-                  />
-                </g>
-              </Marker>
-            );
-          })}
+          {renderGeographies()}
+          {renderMarkers(false)}
         </ZoomableGroup>
       ) : (
         /* ─── GLOBE MODE ─── */
@@ -1650,99 +1790,8 @@ const MapCanvas = React.memo(function MapCanvas({
             stroke={sphereStroke}
             strokeWidth={0.8}
           />
-
-          <Geographies geography={geoUrl}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const isSelected = selectedRegion?.includes(
-                  geo.properties.name,
-                );
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    className="outline-none"
-                    fill={isSelected ? "#3b82f6" : landFill}
-                    stroke={countryStroke}
-                    strokeWidth={countryStrokeWidth}
-                    style={{
-                      default: {
-                        outline: "none",
-                        fill: isSelected ? "#3b82f6" : landFill,
-                        stroke: countryStroke,
-                        strokeWidth: countryStrokeWidth,
-                      },
-                      hover: {
-                        outline: "none",
-                        fill: isSelected ? "#3b82f6" : landFill,
-                        stroke: countryStroke,
-                        strokeWidth: countryStrokeWidth,
-                      },
-                      pressed: {
-                        outline: "none",
-                        fill: isSelected ? "#3b82f6" : landFill,
-                        stroke: countryStroke,
-                        strokeWidth: countryStrokeWidth,
-                      },
-                    }}
-                  />
-                );
-              })
-            }
-          </Geographies>
-
-          {filteredGroups.map((group) => {
-            if (!isPointVisible(group.lng, group.lat, rotation))
-              return null;
-
-            const color = getTypeColor(group.items[0].type);
-            const isActive = popup?.group.id === group.id;
-            return (
-              <Marker
-                key={group.id}
-                coordinates={[group.lng, group.lat]}
-              >
-                <g
-                  style={{ pointerEvents: "visiblePainted" }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleMarkerInteraction(
-                      group,
-                      e as unknown as React.MouseEvent<SVGGElement>,
-                    );
-                  }}
-                  onMouseEnter={(e) => {
-                    if (window.innerWidth >= 768)
-                      handleMarkerInteraction(
-                        group,
-                        e as unknown as React.MouseEvent<SVGGElement>,
-                      );
-                  }}
-                  onMouseLeave={() =>
-                    window.innerWidth >= 768 && handleMarkerLeave()
-                  }
-                  className="cursor-pointer"
-                >
-                  <circle
-                    r={18}
-                    fill="transparent"
-                    style={{ pointerEvents: "visiblePainted" }}
-                  />
-                  <circle
-                    r={isActive ? 12 : 5}
-                    fill={color}
-                    opacity={0.2}
-                  />
-                  <circle
-                    r={isActive ? 6 : 3.5}
-                    fill={color}
-                    stroke={markerStroke}
-                    strokeWidth={1}
-                  />
-                </g>
-              </Marker>
-            );
-          })}
+          {renderGeographies()}
+          {renderMarkers(true)}
         </g>
       )}
     </ComposableMap>
