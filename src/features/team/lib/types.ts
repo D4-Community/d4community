@@ -5,12 +5,18 @@ import type { SanityImageSource } from "@sanity/image-url";
  *
  * `group` matches the radio choices in the schema and maps 1:1 to the
  * team-page sections:
- *   - "organizer" → CoFounders
- *   - "leads"     → Leads
- *   - "core"      → CoreTeam
- *   - "volunteer" → Volunteers
+ *   - "organizer"    → CoFounders (Primary)
+ *   - "co-organizer" → CoFounders (Secondary / Co-Organizers)
+ *   - "leads"        → Leads
+ *   - "core"         → CoreTeam
+ *   - "volunteer"    → Volunteers
  */
-export type TeamMemberGroup = "organizer" | "leads" | "core" | "volunteer";
+export type TeamMemberGroup =
+  | "organizer"
+  | "co-organizer"
+  | "leads"
+  | "core"
+  | "volunteer";
 
 export interface TeamMember {
   _id: string;
@@ -34,6 +40,7 @@ export interface TeamMember {
 
 export interface TeamMembersBySection {
   organizers: TeamMember[];
+  coOrganizers: TeamMember[];
   leads: TeamMember[];
   core: TeamMember[];
   volunteers: TeamMember[];

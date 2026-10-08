@@ -38,32 +38,46 @@ const getPortfolioUrl = (founder: TeamMember): string | undefined => {
   return undefined;
 };
 
-export const CoFounders = ({ organizers }: { organizers: TeamMember[] }) => {
+export const CoFounders = ({
+  organizers,
+  coOrganizers = [],
+}: {
+  organizers: TeamMember[];
+  coOrganizers?: TeamMember[];
+}) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   // Separate Organizers and Co-Organizers:
-  // Organizers together in topRow (2-col grid), Co-Organizers below in bottomRow.
+  // Organizers in topRow (2-col grid), Co-Organizers below in bottomRow.
   const isCoOrganizer = (m: TeamMember) => {
+    if (m.group === "co-organizer") return true;
     const d = (m.designation || "").toLowerCase();
     const n = (m.name || "").toLowerCase();
     return d.includes("co-organizer") || d.includes("co organizer") || n.includes("qazi zaid");
   };
 
   const primaryOrganizers = organizers.filter((m) => !isCoOrganizer(m));
-  const secondaryOrganizers = organizers.filter((m) => isCoOrganizer(m));
+  const detectedCoOrganizers = organizers.filter((m) => isCoOrganizer(m));
+
+  // Merge coOrganizers prop with any detected co-organizers from organizers array, deduplicated
+  const allCoOrganizers = Array.from(
+    new Map(
+      [...coOrganizers, ...detectedCoOrganizers].map((m) => [m._id, m])
+    ).values()
+  );
 
   // Top row displays the main Organizers side-by-side
   const topRow = primaryOrganizers.length > 0
     ? primaryOrganizers.slice(0, 2)
-    : organizers.slice(0, 2);
+    : organizers.filter((m) => !allCoOrganizers.some((co) => co._id === m._id)).slice(0, 2);
 
-  // Bottom row displays the Co-Organizers (and any additional organizers)
+  // Bottom row displays Co-Organizers (and any additional organizers beyond top 2)
   const bottomRow = primaryOrganizers.length > 0
-    ? [...primaryOrganizers.slice(2), ...secondaryOrganizers]
-    : organizers.slice(2);
+    ? [...primaryOrganizers.slice(2), ...allCoOrganizers]
+    : allCoOrganizers;
 
-  if (organizers.length === 0) {
+  if (topRow.length === 0 && bottomRow.length === 0) {
     return null;
   }
 
@@ -194,12 +208,12 @@ export const CoFounders = ({ organizers }: { organizers: TeamMember[] }) => {
           )}
 
           {/* Bottom Row: remaining organizers in full-width horizontal cards */}
-          {bottomRow.map((organizer) => (
+          {bottomRow.map((organizer, idx) => (
             <motion.div
               key={organizer._id}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.4 + idx * 0.15 }}
               className="relative group flex flex-col w-full mt-4"
             >
               {/* Glow shadow to emphasize the wide panel */}

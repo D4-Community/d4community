@@ -33,6 +33,7 @@ export function memberImageUrl(
 export async function getTeamMembers(): Promise<TeamMembersBySection> {
   const empty: TeamMembersBySection = {
     organizers: [],
+    coOrganizers: [],
     leads: [],
     core: [],
     volunteers: [],
@@ -63,23 +64,31 @@ export async function getTeamMembers(): Promise<TeamMembersBySection> {
 
     return all.reduce<TeamMembersBySection>(
       (acc, member) => {
-        switch (member.group) {
+        const group = member.group?.toLowerCase();
+        switch (group) {
           case "organizer":
             acc.organizers.push(member);
             break;
+          case "co-organizer":
+          case "coorganizer":
+          case "co_organizer":
+            acc.coOrganizers.push(member);
+            break;
           case "leads":
+          case "lead":
             acc.leads.push(member);
             break;
           case "core":
             acc.core.push(member);
             break;
           case "volunteer":
+          case "volunteers":
             acc.volunteers.push(member);
             break;
         }
         return acc;
       },
-      { organizers: [], leads: [], core: [], volunteers: [] },
+      { organizers: [], coOrganizers: [], leads: [], core: [], volunteers: [] },
     );
   } catch (error) {
     console.error("Failed to fetch team members from Sanity:", error);

@@ -19,12 +19,12 @@ const getSocialLinks = (member: TeamMember): string[] => {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { organizers, leads, core, volunteers } = await getTeamMembers();
-  const allMembers = [...organizers, ...leads, ...core, ...volunteers];
+  const { organizers, coOrganizers, leads, core, volunteers } = await getTeamMembers();
+  const allMembers = [...organizers, ...coOrganizers, ...leads, ...core, ...volunteers];
   const allNames = allMembers.map((m) => m.name);
 
   return {
-    title: 'D4 Community Team | Organizers, Leads, Core & Volunteers',
+    title: 'D4 Community Team | Organizers, Co-Organizers, Leads, Core & Volunteers',
     description: `Meet the team behind D4 Community: ${allNames.slice(0, 8).join(', ')}, and more developers, creators, and community leaders.`,
     keywords: [
       'D4 Community',
@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       title: 'D4 Community Team & Leadership',
-      description: 'Meet the organizers, leads, core team, and volunteers powering D4 Community.',
+      description: 'Meet the organizers, co-organizers, leads, core team, and volunteers powering D4 Community.',
       url: 'https://d4community.com/team',
       type: 'profile',
     },
@@ -45,10 +45,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const TeamPage = async () => {
-  const { organizers, leads, core, volunteers } = await getTeamMembers();
+  const { organizers, coOrganizers, leads, core, volunteers } = await getTeamMembers();
 
   const categorisedMembers = [
     ...organizers.map((m) => ({ ...m, roleCategory: 'Organizer / Co-Founder' })),
+    ...coOrganizers.map((m) => ({ ...m, roleCategory: 'Co-Organizer' })),
     ...leads.map((m) => ({ ...m, roleCategory: 'Team Lead' })),
     ...core.map((m) => ({ ...m, roleCategory: 'Core Team Member' })),
     ...volunteers.map((m) => ({ ...m, roleCategory: 'Volunteer' })),
@@ -63,7 +64,7 @@ const TeamPage = async () => {
         '@id': 'https://d4community.com/team/#webpage',
         'url': 'https://d4community.com/team',
         'name': 'D4 Community Team & Leadership',
-        'description': 'Official team directory for D4 Community organizers, leads, core team members, and volunteers.',
+        'description': 'Official team directory for D4 Community organizers, co-organizers, leads, core team members, and volunteers.',
         'mainEntity': { '@id': 'https://d4community.com/#organization' },
       },
       {
@@ -123,7 +124,7 @@ const TeamPage = async () => {
         </ul>
       </section>
 
-      <CoFounders organizers={organizers} />
+      <CoFounders organizers={organizers} coOrganizers={coOrganizers} />
       <Leads leads={leads} />
       <CoreTeam core={core} />
       <Volunteers volunteers={volunteers} />
