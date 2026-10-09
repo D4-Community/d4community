@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { TeamHero, CoFounders, Leads, CoreTeam, Volunteers } from './sections';
+import { TeamHero, CoOrganizers, Leads, CoreTeam, Volunteers } from './sections';
 import { getTeamMembers, memberImageUrl } from './lib/queries';
 import type { TeamMember } from './lib/types';
 
@@ -48,7 +48,7 @@ const TeamPage = async () => {
   const { organizers, coOrganizers, leads, core, volunteers } = await getTeamMembers();
 
   const categorisedMembers = [
-    ...organizers.map((m) => ({ ...m, roleCategory: 'Organizer / Co-Founder' })),
+    ...organizers.map((m) => ({ ...m, roleCategory: 'Organizer' })),
     ...coOrganizers.map((m) => ({ ...m, roleCategory: 'Co-Organizer' })),
     ...leads.map((m) => ({ ...m, roleCategory: 'Team Lead' })),
     ...core.map((m) => ({ ...m, roleCategory: 'Core Team Member' })),
@@ -124,7 +124,7 @@ const TeamPage = async () => {
         </ul>
       </section>
 
-      <CoFounders organizers={organizers} coOrganizers={coOrganizers} />
+      <CoOrganizers organizers={organizers} coOrganizers={coOrganizers} />
       <Leads leads={leads} />
       <CoreTeam core={core} />
       <Volunteers volunteers={volunteers} />

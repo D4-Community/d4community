@@ -5,8 +5,8 @@ import type { SanityImageSource } from "@sanity/image-url";
  *
  * `group` matches the radio choices in the schema and maps 1:1 to the
  * team-page sections:
- *   - "organizer"    → CoFounders (Primary)
- *   - "co-organizer" → CoFounders (Secondary / Co-Organizers)
+ *   - "organizer"    → CoOrganizers (Primary)
+ *   - "co-organizer" → CoOrganizers (Secondary / Co-Organizers)
  *   - "leads"        → Leads
  *   - "core"         → CoreTeam
  *   - "volunteer"    → Volunteers
