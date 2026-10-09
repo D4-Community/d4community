@@ -42,6 +42,7 @@ export const metadata: Metadata = {
     "D4 Community Team",
     "D4 Community",
     "D4 Community organizers",
+    "D4 Community co-organizers",
     "D4 Community volunteers",
     "D4 Community leadership",
     "D4 Community developers",

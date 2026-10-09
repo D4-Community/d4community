@@ -26,6 +26,7 @@ export const teamMemberType = defineType({
       options: {
         list: [
           {title: 'Organizer', value: 'organizer'},
+          {title: 'Co-Organizer', value: 'co-organizer'},
           {title: 'Leads', value: 'leads'},
           {title: 'Core', value: 'core'},
           {title: 'Volunteer', value: 'volunteer'},
