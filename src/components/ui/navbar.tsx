@@ -14,7 +14,7 @@ import {
   useMotionValueEvent,
 } from "motion/react";
 import Image from "next/image";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -80,9 +80,9 @@ export const Navbar = ({ children, className }: NavbarProps) => {
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
           ? React.cloneElement(
-              child as React.ReactElement<{ visible?: boolean }>,
-              { visible },
-            )
+            child as React.ReactElement<{ visible?: boolean }>,
+            { visible },
+          )
           : child,
       )}
     </motion.div>
@@ -104,7 +104,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
       className={cn(
         "relative z-60 mx-auto hidden max-w-7xl items-center justify-between rounded-xl px-4 py-2 lg:flex",
         visible &&
-          "border border-black/10 bg-white/80 dark:border-white/10 dark:bg-neutral-950/80",
+        "border border-black/10 bg-white/80 dark:border-white/10 dark:bg-neutral-950/80",
         className,
       )}
     >
@@ -115,48 +115,99 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
 
 /* ===================== NAV ITEMS ===================== */
 
+interface PillState {
+  left: number;
+  width: number;
+  opacity: number;
+  hasMoved: boolean;
+}
+
 export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
   const [hovered, setHovered] = useState<number | null>(null);
+  const [pill, setPill] = useState<PillState>({
+    left: 0,
+    width: 0,
+    opacity: 0,
+    hasMoved: false,
+  });
   const pathname = usePathname();
+
+  const handleMouseEnter = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, idx: number) => {
+      const { offsetLeft, offsetWidth } = e.currentTarget;
+
+      setPill((prev) => ({
+        left: offsetLeft,
+        width: offsetWidth,
+        opacity: 1,
+        hasMoved: prev.opacity === 1,
+      }));
+      setHovered(idx);
+    },
+    [],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    setHovered(null);
+    setPill((prev) => ({
+      ...prev,
+      opacity: 0,
+      hasMoved: false,
+    }));
+  }, []);
 
   return (
     <div
-      onMouseLeave={() => setHovered(null)}
       className={cn(
-        "absolute inset-0 hidden items-center justify-center space-x-2 lg:flex",
+        "absolute inset-0 hidden items-center justify-center lg:flex pointer-events-none",
         className,
       )}
     >
-      {items.map((item, idx) => {
-        const isActive =
-          item.link === "/"
-            ? pathname === "/"
-            : pathname.startsWith(item.link);
+      <nav
+        onMouseLeave={handleMouseLeave}
+        className="relative flex items-center gap-1 pointer-events-auto"
+        aria-label="Main Navigation"
+      >
+        {/* Hardware-accelerated sliding hover pill */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 rounded-full bg-neutral-100 dark:bg-neutral-800 will-change-transform"
+          style={{
+            transform: `translate3d(${pill.left}px, 0, 0)`,
+            width: `${pill.width}px`,
+            opacity: pill.opacity,
+            transition: pill.hasMoved
+              ? "transform 180ms cubic-bezier(0.2, 0, 0, 1), width 180ms cubic-bezier(0.2, 0, 0, 1), opacity 150ms ease"
+              : "opacity 150ms ease",
+          }}
+        />
 
-        return (
-          <Link
-            key={idx}
-            href={item.link}
-            onMouseEnter={() => setHovered(idx)}
-            onClick={onItemClick}
-            aria-current={isActive ? "page" : undefined}
-            className={cn(
-              "relative px-4 py-2 text-sm transition-colors",
-              isActive
-                ? "font-semibold text-black dark:text-white"
-                : "text-neutral-600 hover:text-black dark:text-neutral-300 dark:hover:text-white",
-            )}
-          >
-            {hovered === idx && (
-              <motion.div
-                layoutId="hovered"
-                className="absolute inset-0 rounded-full bg-gray-100 dark:bg-neutral-800"
-              />
-            )}
-            <span className="relative z-10">{item.name}</span>
-          </Link>
-        );
-      })}
+        {items.map((item, idx) => {
+          const isHovered = hovered === idx;
+          const isActive =
+            item.link === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.link);
+
+          return (
+            <Link
+              key={item.link}
+              href={item.link}
+              onMouseEnter={(e) => handleMouseEnter(e, idx)}
+              onClick={onItemClick}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "relative z-10 px-4 py-2 text-sm font-medium select-none transition-colors duration-150",
+                isHovered || isActive
+                  ? "text-black dark:text-white"
+                  : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white",
+              )}
+            >
+              {item.name}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 };
@@ -170,7 +221,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
       className={cn(
         "fixed top-3 left-1/2 z-50 w-[calc(100%-2rem)] -translate-x-1/2 rounded-xl px-3 py-2 lg:hidden",
         visible &&
-          "border border-black/10 bg-white/80 dark:border-white/10 dark:bg-neutral-950/80",
+        "border border-black/10 bg-white/80 dark:border-white/10 dark:bg-neutral-950/80",
         className,
       )}
     >
@@ -252,10 +303,10 @@ export const ThemeToggle = () => {
 
   useEffect(() => {
     setMounted(true);
-    
+
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
     const root = document.documentElement;
-    
+
     if (savedTheme) {
       if (savedTheme === "dark") {
         root.classList.add("dark");
@@ -277,7 +328,7 @@ export const ThemeToggle = () => {
 
   const toggleTheme = () => {
     const root = document.documentElement;
-    
+
     if (theme === "dark") {
       root.classList.remove("dark");
       setTheme("light");
@@ -320,7 +371,7 @@ export const ThemeToggle = () => {
         >
           <IconSun size={20} />
         </motion.div>
-        
+
         <motion.div
           initial={false}
           animate={{
