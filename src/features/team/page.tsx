@@ -11,20 +11,28 @@ export const slugify = (text: string) =>
     .replace(/[\s_-]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
+const isUsableUrl = (url?: string): url is string =>
+  Boolean(url && url !== '#' && url !== '/');
+
 const getSocialLinks = (member: TeamMember): string[] => {
-  const links = [member.linkedin, member.medium, member.twitter, member.github];
-  return links.filter(
-    (url): url is string => Boolean(url && url !== '#' && url !== '/')
-  );
+  const links = [
+    member.linkedin,
+    member.twitter,
+    member.github,
+    member.medium,
+    member.portfolio,
+    member.website,
+  ];
+  return links.filter(isUsableUrl);
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { organizers, coOrganizers, leads, core, volunteers } = await getTeamMembers();
-  const allMembers = [...organizers, ...coOrganizers, ...leads, ...core, ...volunteers];
+  const { organizers = [], leads = [], core = [], volunteers = [] } = await getTeamMembers();
+  const allMembers = [...organizers, ...leads, ...core, ...volunteers];
   const allNames = allMembers.map((m) => m.name);
 
   return {
-    title: 'D4 Community Team | Organizers, Co-Organizers, Leads, Core & Volunteers',
+    title: 'D4 Community Team | Organizers, Leads, Core & Volunteers',
     description: `Meet the team behind D4 Community: ${allNames.slice(0, 8).join(', ')}, and more developers, creators, and community leaders.`,
     keywords: [
       'D4 Community',
@@ -33,70 +41,82 @@ export async function generateMetadata(): Promise<Metadata> {
       ...allNames,
     ],
     alternates: {
-      canonical: 'https://d4community.com/team',
+      canonical: 'https://www.d4community.com/team',
     },
     openGraph: {
       title: 'D4 Community Team & Leadership',
-      description: 'Meet the organizers, co-organizers, leads, core team, and volunteers powering D4 Community.',
-      url: 'https://d4community.com/team',
+      description: 'Meet the organizers, leads, core team, and volunteers powering D4 Community.',
+      url: 'https://www.d4community.com/team',
       type: 'profile',
     },
   };
 }
 
 const TeamPage = async () => {
-  const { organizers, coOrganizers, leads, core, volunteers } = await getTeamMembers();
+  const { organizers = [], leads = [], core = [], volunteers = [] } = await getTeamMembers();
 
   const categorisedMembers = [
-    ...organizers.map((m) => ({ ...m, roleCategory: 'Organizer' })),
-    ...coOrganizers.map((m) => ({ ...m, roleCategory: 'Co-Organizer' })),
+    ...organizers.map((m) => ({ ...m, roleCategory: 'Organizer / Co-Founder' })),
     ...leads.map((m) => ({ ...m, roleCategory: 'Team Lead' })),
     ...core.map((m) => ({ ...m, roleCategory: 'Core Team Member' })),
     ...volunteers.map((m) => ({ ...m, roleCategory: 'Volunteer' })),
   ];
 
-  // Schema.org Graph mapping every single member as an indexable Person entity
+  // First-class Person nodes for search crawlers and AI answer engines
+  const personEntities = categorisedMembers.map((member) => {
+    const slug = slugify(member.name);
+    const profileUrl = `https://www.d4community.com/team#${slug}`;
+    const rawImage = member.image ? memberImageUrl(member.image, 600, 600) : undefined;
+    const socialLinks = getSocialLinks(member);
+
+    return {
+      '@type': 'Person',
+      '@id': profileUrl,
+      'name': member.name,
+      'url': profileUrl,
+      ...(rawImage ? { 'image': rawImage } : {}),
+      'jobTitle': member.designation || member.roleCategory,
+      ...(member.description ? { 'description': member.description } : {}),
+      'worksFor': { '@id': 'https://www.d4community.com/#organization' },
+      'memberOf': { '@id': 'https://www.d4community.com/#organization' },
+      'sameAs': socialLinks,
+      // Topical entity associations for generative engine disambiguation
+      'knowsAbout': [
+        'Software Engineering',
+        'Developer Community',
+        'Open Source',
+        'Technology',
+      ],
+    };
+  });
+
   const schemaMarkup = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'AboutPage',
-        '@id': 'https://d4community.com/team/#webpage',
-        'url': 'https://d4community.com/team',
+        '@id': 'https://www.d4community.com/team/#webpage',
+        'url': 'https://www.d4community.com/team',
         'name': 'D4 Community Team & Leadership',
-        'description': 'Official team directory for D4 Community organizers, co-organizers, leads, core team members, and volunteers.',
-        'mainEntity': { '@id': 'https://d4community.com/#organization' },
+        'description': 'Official team directory for D4 Community organizers, leads, core team members, and volunteers.',
+        'isPartOf': {
+          '@type': 'WebSite',
+          '@id': 'https://www.d4community.com/#website',
+          'name': 'D4 Community',
+          'url': 'https://www.d4community.com',
+        },
+        'about': { '@id': 'https://www.d4community.com/#organization' },
       },
       {
         '@type': 'Organization',
-        '@id': 'https://d4community.com/#organization',
+        '@id': 'https://www.d4community.com/#organization',
         'name': 'D4 Community',
-        'url': 'https://d4community.com',
-        'logo': 'https://d4community.com/logo.png',
+        'url': 'https://www.d4community.com',
+        'logo': 'https://www.d4community.com/d4logo.webp',
         'description': 'D4 Community is a thriving network of tech enthusiasts, developers, and creators collaborating to build the future.',
-        'organizer': {
-          '@type': 'Person',
-          'name': 'Ayush Kumar Tiwari',
-          'jobTitle': 'Organizer',
-          'sameAs': ['https://linkedin.com/in/itsayu/'],
-        },
-        'member': categorisedMembers.map((member) => {
-          const slug = slugify(member.name);
-          const profileUrl = `https://d4community.com/team#${slug}`;
-
-          return {
-            '@type': 'Person',
-            '@id': profileUrl,
-            'url': profileUrl,
-            'name': member.name,
-            'jobTitle': member.designation || member.roleCategory,
-            'worksFor': { '@id': 'https://d4community.com/#organization' },
-            'memberOf': { '@id': 'https://d4community.com/#organization' },
-            'image': member.image ? memberImageUrl(member.image, 400, 400) : undefined,
-            'sameAs': getSocialLinks(member),
-          };
-        }),
+        'member': personEntities.map((p) => ({ '@id': p['@id'] })),
       },
+      ...personEntities,
     ],
   };
 
@@ -124,7 +144,7 @@ const TeamPage = async () => {
         </ul>
       </section>
 
-      <CoOrganizers organizers={organizers} coOrganizers={coOrganizers} />
+      <CoOrganizers organizers={organizers} />
       <Leads leads={leads} />
       <CoreTeam core={core} />
       <Volunteers volunteers={volunteers} />

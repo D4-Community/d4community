@@ -1,5 +1,6 @@
 import TeamPage from "@/features/team/page";
 import OrgSchema from "@/schema/org-schema";
+import TeamSchema from "@/schema/TeamSchema";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -42,7 +43,6 @@ export const metadata: Metadata = {
     "D4 Community Team",
     "D4 Community",
     "D4 Community organizers",
-    "D4 Community co-organizers",
     "D4 Community volunteers",
     "D4 Community leadership",
     "D4 Community developers",
@@ -65,6 +65,7 @@ export default function Page() {
   return (
     <>
       <OrgSchema />
+      <TeamSchema />
       <TeamPage />
     </>
   );
