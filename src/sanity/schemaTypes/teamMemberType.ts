@@ -103,6 +103,12 @@ export const teamMemberType = defineType({
       validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
     }),
     defineField({
+      name: 'instagram',
+      title: 'Instagram',
+      type: 'url',
+      validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
+    }),
+    defineField({
       name: 'startDate',
       title: 'Start Date',
       type: 'date',

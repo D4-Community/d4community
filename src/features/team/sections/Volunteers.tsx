@@ -7,6 +7,7 @@ import Image from "next/image";
 
 import { memberImageUrl } from "../lib/queries";
 import type { TeamMember } from "../lib/types";
+import { useTeamModal } from "../components/TeamModalContext";
 
 /*
   UTILITIES
@@ -46,6 +47,7 @@ export interface VolunteerCardProps {
 
 const VolunteerCard = React.memo(
   ({ member, direction, isPrimary }: VolunteerCardProps) => {
+    const { openModal } = useTeamModal();
     const avatarSrc = useMemo(() => {
       return (
         memberImageUrl(member.image, 160, 160) ??
@@ -60,9 +62,19 @@ const VolunteerCard = React.memo(
     return (
       <div
         id={isPrimary ? memberSlug : undefined}
-        className="flex flex-col items-center gap-3 w-32 flex-shrink-0 select-none scroll-mt-24"
+        className="group/vol flex flex-col items-center gap-3 w-32 flex-shrink-0 select-none scroll-mt-24 cursor-pointer focus:outline-hidden"
+        role="button"
+        tabIndex={0}
+        onClick={() => openModal(member)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openModal(member);
+          }
+        }}
+        aria-label={`View ${member.name}'s profile`}
       >
-        <div className="relative w-20 h-20 rounded-full bg-secondary overflow-hidden shadow-sm shadow-black/20 ring-1 ring-border/20 transition-transform duration-300 hover:scale-105">
+        <div className="relative w-20 h-20 rounded-full bg-secondary overflow-hidden shadow-sm shadow-black/20 ring-1 ring-border/20 group-hover/vol:ring-2 group-hover/vol:ring-[#5ccb5f]/70 transition-all duration-300 group-hover/vol:scale-105">
           <Image
             src={avatarSrc}
             alt={member.name}
@@ -74,7 +86,7 @@ const VolunteerCard = React.memo(
           />
         </div>
         <h3
-          className="text-sm font-semibold text-muted-foreground text-center whitespace-nowrap overflow-hidden text-ellipsis w-full"
+          className="text-sm font-semibold text-muted-foreground group-hover/vol:text-[#5ccb5f] transition-colors text-center whitespace-nowrap overflow-hidden text-ellipsis w-full"
           title={member.name}
         >
           {member.name}
@@ -99,11 +111,10 @@ const MarqueeRow = React.memo(
         style={{ contain: "layout paint" }}
       >
         <div
-          className={`volunteers-track flex gap-8 w-max ${
-            direction === "left"
+          className={`volunteers-track flex gap-8 w-max ${direction === "left"
               ? "animate-volunteers-left"
               : "animate-volunteers-right"
-          }`}
+            }`}
           style={{
             animationDuration: `${duration}s`,
             animationTimingFunction: "linear",

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { TeamHero, CoOrganizers, Leads, CoreTeam, Volunteers } from './sections';
 import { getTeamMembers, memberImageUrl } from './lib/queries';
 import type { TeamMember } from './lib/types';
+import { TeamModalProvider, TeamMemberModal } from './components';
 
 export const slugify = (text: string) =>
   text
@@ -19,6 +20,7 @@ const getSocialLinks = (member: TeamMember): string[] => {
     member.linkedin,
     member.twitter,
     member.github,
+    member.instagram,
     member.medium,
     member.portfolio,
     member.website,
@@ -27,8 +29,8 @@ const getSocialLinks = (member: TeamMember): string[] => {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { organizers = [], leads = [], core = [], volunteers = [] } = await getTeamMembers();
-  const allMembers = [...organizers, ...leads, ...core, ...volunteers];
+  const { organizers = [], coOrganizers = [], leads = [], core = [], volunteers = [] } = await getTeamMembers();
+  const allMembers = [...organizers, ...coOrganizers, ...leads, ...core, ...volunteers];
   const allNames = allMembers.map((m) => m.name);
 
   return {
@@ -53,10 +55,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const TeamPage = async () => {
-  const { organizers = [], leads = [], core = [], volunteers = [] } = await getTeamMembers();
+  const { organizers = [], coOrganizers = [], leads = [], core = [], volunteers = [] } = await getTeamMembers();
 
   const categorisedMembers = [
     ...organizers.map((m) => ({ ...m, roleCategory: 'Organizer / Co-Founder' })),
+    ...coOrganizers.map((m) => ({ ...m, roleCategory: 'Co-Organizer' })),
     ...leads.map((m) => ({ ...m, roleCategory: 'Team Lead' })),
     ...core.map((m) => ({ ...m, roleCategory: 'Core Team Member' })),
     ...volunteers.map((m) => ({ ...m, roleCategory: 'Volunteer' })),
@@ -144,10 +147,13 @@ const TeamPage = async () => {
         </ul>
       </section>
 
-      <CoOrganizers organizers={organizers} />
-      <Leads leads={leads} />
-      <CoreTeam core={core} />
-      <Volunteers volunteers={volunteers} />
+      <TeamModalProvider>
+        <CoOrganizers organizers={organizers} coOrganizers={coOrganizers} />
+        <Leads leads={leads} />
+        <CoreTeam core={core} />
+        <Volunteers volunteers={volunteers} />
+        <TeamMemberModal />
+      </TeamModalProvider>
     </div>
   );
 };
