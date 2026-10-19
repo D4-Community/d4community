@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { TeamHero, CoOrganizers, Leads, CoreTeam, Volunteers } from './sections';
 import { getTeamMembers, memberImageUrl } from './lib/queries';
 import type { TeamMember } from './lib/types';
+import { TeamModalProvider, TeamMemberModal } from './components';
 
 export const slugify = (text: string) =>
   text
@@ -19,6 +20,7 @@ const getSocialLinks = (member: TeamMember): string[] => {
     member.linkedin,
     member.twitter,
     member.github,
+    member.instagram,
     member.medium,
     member.portfolio,
     member.website,
@@ -145,10 +147,13 @@ const TeamPage = async () => {
         </ul>
       </section>
 
-      <CoOrganizers organizers={organizers} coOrganizers={coOrganizers} />
-      <Leads leads={leads} />
-      <CoreTeam core={core} />
-      <Volunteers volunteers={volunteers} />
+      <TeamModalProvider>
+        <CoOrganizers organizers={organizers} coOrganizers={coOrganizers} />
+        <Leads leads={leads} />
+        <CoreTeam core={core} />
+        <Volunteers volunteers={volunteers} />
+        <TeamMemberModal />
+      </TeamModalProvider>
     </div>
   );
 };
