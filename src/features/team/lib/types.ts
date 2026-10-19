@@ -24,12 +24,15 @@ export interface TeamMember {
   designation: string;
   group: TeamMemberGroup;
   description?: string;
+  email?: string;
   linkedin?: string;
   github?: string;
   twitter?: string;
   medium?: string;
   portfolio?: string;
   website?: string;
+  instagram?: string;
+  roleCategory?: string;
   /** Resolved by the GROQ projection — passes straight into `urlFor()`. */
   image?: SanityImageSource;
   /** `slug.current` resolved into a flat field. */

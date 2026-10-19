@@ -3,13 +3,12 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { Linkedin, Twitter, Github, Users, Globe } from "lucide-react";
+import { Users, Linkedin, Twitter, Github, Globe, Instagram } from "lucide-react";
 
 import { memberImageUrl } from "../lib/queries";
 import type { TeamMember } from "../lib/types";
+import { useTeamModal } from "../components/TeamModalContext";
 
-// A link field is treated as "missing" when it's undefined/empty or just a "#"
-// placeholder (matches the convention from the previous data files).
 const isUsableUrl = (url?: string): url is string =>
   Boolean(url && url !== "#" && url !== "/");
 
@@ -24,10 +23,6 @@ const MediumIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
   </svg>
 );
 
-/**
- * Returns the portfolio / personal website URL for an organizer.
- * Fetched dynamically from Sanity CMS (portfolio / website field).
- */
 const getPortfolioUrl = (organizer: TeamMember): string | undefined => {
   if (organizer.portfolio && isUsableUrl(organizer.portfolio)) return organizer.portfolio;
   if (organizer.website && isUsableUrl(organizer.website)) return organizer.website;
@@ -41,6 +36,7 @@ export const CoOrganizers = ({
   organizers: TeamMember[];
   coOrganizers?: TeamMember[];
 }) => {
+  const { openModal } = useTeamModal();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -118,7 +114,17 @@ export const CoOrganizers = ({
                 initial={{ opacity: 0, scale: 0.95, y: 30 }}
                 animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: index * 0.15 }}
-                className="relative group flex flex-col w-full h-full"
+                className="relative group flex flex-col w-full h-full cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-xs"
+                role="button"
+                tabIndex={0}
+                onClick={() => openModal(member)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    openModal(member);
+                  }
+                }}
+                aria-label={`View ${member.name}'s profile`}
               >
                 {/* Outer sharp accent border */}
                 <div
@@ -149,6 +155,7 @@ export const CoOrganizers = ({
                           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           className="object-cover object-top transition-all duration-700 group-hover:scale-[1.03]"
                           priority={index < 3}
+                          unoptimized={Boolean(src && (src.includes("dicebear.com") || src.endsWith(".svg")))}
                         />
                       ) : (
                         <div className="absolute inset-0 bg-linear-to-br from-primary/20 via-secondary to-primary/10" />
@@ -170,19 +177,8 @@ export const CoOrganizers = ({
                       >
                         {member.designation}
                       </div>
-                      <h3 className="text-2xl lg:text-3xl font-black text-foreground transition-colors duration-300 tracking-tight">
-                        {isUsableUrl(member.linkedin) ? (
-                          <a
-                            href={member.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`hover:underline decoration-2 ${nameHover}`}
-                          >
-                            {member.name}
-                          </a>
-                        ) : (
-                          member.name
-                        )}
+                      <h3 className={`text-2xl lg:text-3xl font-black text-foreground transition-colors duration-300 tracking-tight ${nameHover}`}>
+                        {member.name}
                       </h3>
                     </div>
 
@@ -192,13 +188,14 @@ export const CoOrganizers = ({
                       </p>
                     )}
 
-                    {/* Socials anchored to bottom so all cards have identical baseline */}
-                    <div className="mt-auto pt-4 border-t border-white/10 flex flex-wrap gap-2.5">
+                    {/* Socials anchored to bottom with stopPropagation so individual links work */}
+                    <div className="mt-auto pt-4 border-t border-white/10 flex flex-wrap gap-2.5 relative z-20">
                       {isUsableUrl(member.linkedin) && (
                         <a
                           href={member.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className={`relative p-2.5 bg-secondary/50 ${socialHover} text-foreground transition-all duration-300`}
                           style={{
                             clipPath:
@@ -214,6 +211,7 @@ export const CoOrganizers = ({
                           href={member.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className={`relative p-2.5 bg-secondary/50 ${socialHover} text-foreground transition-all duration-300`}
                           style={{
                             clipPath:
@@ -229,6 +227,7 @@ export const CoOrganizers = ({
                           href={member.github}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className={`relative p-2.5 bg-secondary/50 ${socialHover} text-foreground transition-all duration-300`}
                           style={{
                             clipPath:
@@ -239,11 +238,28 @@ export const CoOrganizers = ({
                           <Github className="w-5 h-5 relative z-10" />
                         </a>
                       )}
+                      {isUsableUrl(member.instagram) && (
+                        <a
+                          href={member.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className={`relative p-2.5 bg-secondary/50 ${socialHover} text-foreground transition-all duration-300`}
+                          style={{
+                            clipPath:
+                              "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)",
+                          }}
+                          aria-label={`${member.name}'s Instagram`}
+                        >
+                          <Instagram className="w-5 h-5 relative z-10" />
+                        </a>
+                      )}
                       {isUsableUrl(member.medium) && (
                         <a
                           href={member.medium}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className={`relative p-2.5 bg-secondary/50 ${socialHover} text-foreground transition-all duration-300`}
                           style={{
                             clipPath:
@@ -260,6 +276,7 @@ export const CoOrganizers = ({
                           href={getPortfolioUrl(member)}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className={`relative p-2.5 bg-secondary/50 ${socialHover} text-foreground transition-all duration-300`}
                           style={{
                             clipPath:
@@ -282,4 +299,4 @@ export const CoOrganizers = ({
     </section>
   );
 };
-
+
