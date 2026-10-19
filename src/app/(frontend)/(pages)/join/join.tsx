@@ -109,10 +109,88 @@ export default function JoinCommunityPage() {
     return true;
   };
 
+  // Real-time name validation
+  const validateName = (name: string): string | null => {
+    const trimmed = name.trim();
+
+    if (!trimmed) {
+      return "Full name is required";
+    }
+
+    // Disallow numbers
+    if (/\d/.test(trimmed)) {
+      return "Name cannot contain numbers";
+    }
+
+    // Disallow characters that are not letters, spaces, hyphens, dots, or apostrophes
+    const validLettersRegex = /^[\p{L}\s'\-\.]+$/u;
+    if (!validLettersRegex.test(trimmed)) {
+      return "Name contains invalid special characters";
+    }
+
+    // Disallow continuous keyboard mash sequences (horizontal rows, both directions)
+    const lower = trimmed.toLowerCase();
+    const keyboardPatterns = [
+      "qwerty", "wertyu", "ertyui", "rtyuio", "tyuiop",
+      "asdf", "sdfg", "dfgh", "fghj", "ghjk", "hjkl",
+      "zxcv", "xcvb", "cvbn", "vbnm",
+      "poiuy", "oiuyt", "iuytr", "uytre", "ytrew", "trewq",
+      "lkjh", "kjhg", "jhgf", "hgfd", "gfdsa",
+      "mnbv", "nbvc", "bvcx", "vcxz"
+    ];
+
+    if (keyboardPatterns.some(pattern => lower.includes(pattern))) {
+      return "Name cannot contain keyboard mash patterns";
+    }
+
+    // Disallow 3+ identical consecutive characters
+    if (/(.)\1{2,}/i.test(trimmed)) {
+      return "Name cannot have 3 or more repeated characters";
+    }
+
+    // Length requirements
+    if (trimmed.length < 2) {
+      return "Name must be at least 2 characters long";
+    }
+
+    if (trimmed.length > 60) {
+      return "Name cannot exceed 60 characters";
+    }
+
+    // Ensure at least 2 alphabetic characters exist
+    const lettersCount = (trimmed.match(/[\p{L}]/gu) || []).length;
+    if (lettersCount < 2) {
+      return "Name must contain at least 2 letters";
+    }
+
+    return null;
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setFormData(prev => ({ ...prev, name: val }));
+
+    const errorMsg = validateName(val);
+    setErrors(prev => {
+      const next = { ...prev };
+      if (errorMsg) {
+        next.name = errorMsg;
+      } else {
+        delete next.name;
+      }
+      return next;
+    });
+  };
+
   const handleSubmit = async () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = "Full name is required";
     
+    const nameError = validateName(formData.name);
+    if (nameError) {
+      newErrors.name = nameError;
+    }
+    
+    // Stop forward progression if there are any errors
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -245,7 +323,7 @@ export default function JoinCommunityPage() {
                         className={`w-full bg-background border ${errors.name ? 'border-red-500' : 'border-input'} rounded-xl px-4 py-3 text-sm outline-none focus:border-[#fd7d6e]`}
                         placeholder="Iti Tiwari"
                         value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        onChange={handleNameChange}
                       />
                       {errors.name && <p className="text-red-500 text-[9px] ml-1">{errors.name}</p>}
                     </div>
@@ -426,7 +504,6 @@ export default function JoinCommunityPage() {
           <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground font-medium">
             Discite • Develop • Debug • Deploy
           </p>
-          {/* <p className="mt-4 text-[9px] text-muted-foreground/40">© 2026 D4 Community. All rights reserved.</p> */}
         </footer>
       </div>
     </div>
